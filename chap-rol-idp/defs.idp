@@ -1,0 +1,139 @@
+vocabulary V {
+    type ClassObject constructed from { DerivedStatisticStrategy, DerivedStatistic, WeaponType, CharacterClass, Inventory, Weapon, Character, SupportAffinity, WeaponLevel, Statistic, Item, Loose, A, B, C, D}
+    type PrimitiveType constructed from { boolean, byte, character, double, floating, integer, long, short, astring, void}
+    IsSupertypeOf(ClassObject, ClassObject)
+    
+    type LimitedInt = {1 .. 21} isa int
+    
+    BiAssoc(ClassObject, ClassObject)
+    BiAssocLow(ClassObject, ClassObject, ClassObject, LimitedInt)
+    BiAssocHigh(ClassObject, ClassObject, ClassObject, LimitedInt)
+    
+    ManyToMany(ClassObject, ClassObject)
+    LooseClass(ClassObject)
+    SubclassMorePermissiveMult(ClassObject, ClassObject, ClassObject)
+}
+
+theory T:V {
+    
+    // ------- BAD DESIGN THAT MAY OCCUR IN UML -------
+    
+    // many-to-many associations
+    ! x [ClassObject] y [ClassObject] : ManyToMany(x, y) <=> (BiAssoc(x, y) & ~ (? z [LimitedInt] : BiAssocHigh(x, y, x, z)) & ~ (? z [LimitedInt] : BiAssocHigh(x, y, y, z))).
+    
+    // classes that are not associated with any other class
+    ! x [ClassObject] : LooseClass(x) <=> ~ ((? y [ClassObject] : BiAssoc(x, y)) | (? s [ClassObject] y [ClassObject] : IsSupertypeOf(s, x) & (BiAssoc(s, y)))).
+    
+    ! x [ClassObject] y [ClassObject] : SubclassMorePermissiveMult(x, y, x) <=> ((? sx [ClassObject] : IsSupertypeOf(sx, x) 
+                                                                                    &  ((BiAssoc(sx, y) & ((? z1 [LimitedInt] z2 [LimitedInt] : BiAssocLow(x, y, x, z1) & BiAssocLow(sx, y, sx, z2) & z1 < z2)
+                                                                                                            | (? z1 [LimitedInt] z2 [LimitedInt] : BiAssocHigh(x, y, x, z1) & BiAssocHigh(sx, y, sx, z2) & z1 > z2)))
+                                                                                      |
+                                                                                        (? sy [ClassObject] : IsSupertypeOf(sy, y)
+                                                                                            & (BiAssoc(sx, sy) & ((? z1 [LimitedInt] z2 [LimitedInt] : BiAssocLow(x, y, x, z1) & BiAssocLow(sx, sy, sx, z2) & z1 < z2)
+                                                                                                            | (? z1 [LimitedInt] z2 [LimitedInt] : BiAssocHigh(x, y, x, z1) & BiAssocHigh(sx, sy, sx, z2) & z1 > z2))))))
+                                                                                | (? sy [ClassObject] : IsSupertypeOf(sy, y)
+                                                                                        & BiAssoc(x, sy) & ((? z1 [LimitedInt] z2 [LimitedInt] : BiAssocLow(x, y, x, z1) & BiAssocLow(x, sy, x, z2) & z1 < z2)
+                                                                                                            | (? z1 [LimitedInt] z2 [LimitedInt] : BiAssocHigh(x, y, x, z1) & BiAssocHigh(x, sy, x, z2) & z1 > z2)))).
+    // ------- INFORMATION FROM DIAGRAM -------
+    
+    // class hierarchy
+    {
+        IsSupertypeOf(Statistic, WeaponLevel) <- .
+        IsSupertypeOf(Item, Weapon) <- .
+        IsSupertypeOf(Statistic, DerivedStatistic) <- .
+        IsSupertypeOf(A,B) <- .
+        IsSupertypeOf(C,D) <- .
+        IsSupertypeOf(A,E) <- .
+        IsSupertypeOf(C,F) <- .
+    }
+    
+    // associations between classes
+    { 
+        BiAssoc(A, C) <- .
+        BiAssocLow(A, C, A, 3) <- .
+        BiAssocHigh(A, C, A, 5) <- .
+        BiAssocLow(A, C, C, 10) <- .
+        BiAssocHigh(A, C, C, 20) <- .
+        
+        BiAssoc(B, D) <- .
+        BiAssocLow(B, D, B, 1) <- .
+        BiAssocHigh(B, D, B, 6) <- .
+        BiAssocLow(B, D, D, 9) <- .
+        BiAssocHigh(B, D, D, 21) <- .
+        
+        BiAssoc(Statistic, CharacterClass) <- .
+        BiAssocLow(Statistic, CharacterClass, Statistic, 1) <- .
+        BiAssocLow(Statistic, CharacterClass, CharacterClass, 1) <- .
+        BiAssocHigh(Statistic, CharacterClass, CharacterClass, 1) <- .
+        
+        BiAssoc(DerivedStatisticStrategy, Statistic) <- .
+        BiAssocLow(DerivedStatisticStrategy, Statistic, Statistic, 1) <- .
+        BiAssoc(WeaponType, WeaponLevel) <- .
+        
+        BiAssocLow(WeaponType, WeaponLevel, WeaponType, 1) <- .
+        BiAssocHigh(WeaponType, WeaponLevel, WeaponType, 1) <- .
+        
+        BiAssoc(Character, Statistic) <- .
+        BiAssocLow(Character, Statistic, Character, 1) <- .
+        BiAssocHigh(Character, Statistic, Character, 1) <- .
+        BiAssocLow(Character, Statistic, Statistic, 1) <- .
+        
+        BiAssoc(Character, Inventory) <- .
+        BiAssocLow(Character, Inventory, Character, 1) <- .
+        BiAssocHigh(Character, Inventory, Character, 1) <- .
+        BiAssocLow(Character, Inventory, Inventory, 1) <- .
+        BiAssocHigh(Character, Inventory, Inventory, 1) <- .
+        
+        BiAssoc(Character, Character) <- .
+        
+        BiAssoc(WeaponType, Weapon) <- .
+        BiAssocHigh(WeaponType, Weapon, WeaponType, 1) <- .
+        
+        BiAssoc(DerivedStatistic, DerivedStatisticStrategy) <- .
+        BiAssocLow(DerivedStatistic, DerivedStatisticStrategy, DerivedStatistic, 1) <- .
+        BiAssocHigh(DerivedStatistic, DerivedStatisticStrategy, DerivedStatistic, 1) <- .
+        BiAssocLow(DerivedStatistic, DerivedStatisticStrategy, DerivedStatisticStrategy, 1) <- .
+        BiAssocHigh(DerivedStatistic, DerivedStatisticStrategy, DerivedStatisticStrategy, 1) <- .
+        
+        BiAssoc(Statistic, WeaponType) <- .
+        BiAssocHigh(Statistic, WeaponType, Statistic, 1) <- .
+        
+        BiAssoc(Item, Inventory) <- .
+        BiAssocHigh(Item, Inventory, Item, 5) <- .
+        BiAssocHigh(Item, Inventory, Inventory, 1) <- .
+        
+        BiAssoc(Item, CharacterClass) <- .
+        
+        BiAssoc(Character, CharacterClass) <- .
+        BiAssocLow(Character, CharacterClass, CharacterClass, 1) <- .
+        BiAssocHigh(Character, CharacterClass, CharacterClass, 1) <- .
+        
+        BiAssoc(CharacterClass, CharacterClass) <- .
+        
+        BiAssoc(Character, SupportAffinity) <- .
+        BiAssocLow(Character, SupportAffinity, Character, 1) <- .
+        BiAssocHigh(Character, SupportAffinity, Character, 1) <- .
+        BiAssocLow(DerivedStatistic, SupportAffinity, SupportAffinity, 1) <- .
+        BiAssocHigh(DerivedStatistic, SupportAffinity, SupportAffinity, 1) <- .
+        
+        ! x [ClassObject] y [ClassObject] : BiAssoc(y, x) <- BiAssoc(x, y).
+        ! x [ClassObject] y [ClassObject] z [nat] : BiAssocHigh(y, x, x, z) <- BiAssocHigh(x, y, x, z).
+        ! x [ClassObject] y [ClassObject] z [nat] : BiAssocHigh(y, x, y, z) <- BiAssocHigh(x, y, y, z).
+        ! x [ClassObject] y [ClassObject] z [nat] : BiAssocLow(y, x, x, z) <- BiAssocLow(x, y, x, z).
+        ! x [ClassObject] y [ClassObject] z [nat] : BiAssocLow(y, x, y, z) <- BiAssocLow(x, y, y, z).
+    }
+        
+
+        //! x [ClassObject] y [ClassObject] : BiAssocDef(x, y) <=> BiAssocDef(y, x).
+}
+
+theory U:V {
+    ~ (? z [ClassObject] : BiAssoc(Loose, z)).
+}
+
+structure thestruct:V {
+}
+
+procedure main() {
+    print(modelexpand(T,thestruct)[1])
+}

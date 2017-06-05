@@ -1,0 +1,69 @@
+\documentclass[master=cws,masteroption=gs,dutch]{kulemt}
+\setup{title={Automatische verificatie en kwaliteitscontrole van UML-diagrammen met FO(.)},
+	author={Thomas Vochten},
+	promotor={Prof. dr. Marc Denecker},
+	assessor={TBD},
+	assistant={Matthias van der Hallen}}
+
+%\setup{coverpageonly}
+\setup{font=lm}
+
+\setup{filingcard,
+	translatedtitle={TBD},
+	udc=TBD,
+	shortabstract={\lipsum[2]}}
+
+\usepackage[pdfusetitle,colorlinks,plainpages=false]{hyperref}
+\usepackage{float}
+\usepackage{todonotes}
+\usepackage{amsmath}
+\usepackage{listings}
+
+\lstset{
+	basicstyle=\scriptsize\ttfamily,
+	commentstyle=\ttfamily\color{gray},
+	numbers=left,
+	numberstyle=\ttfamily\color{gray}\footnotesize,
+	stepnumber=1,
+	numbersep=5pt,
+	backgroundcolor=\color{white},
+	showspaces=false,
+	showstringspaces=false,
+	showtabs=false,
+	frame=single,
+	tabsize=2,
+	captionpos=b,
+	breaklines=true,
+	breakatwhitespace=false,
+	title=\lstname,
+	escapeinside={},
+	keywordstyle={},
+	morekeywords={}
+}
+
+\IfFileExists{lipsum.sty}%
+{\usepackage{lipsum}\setlipsumdefault{11-13}}%
+{\newcommand{\lipsum}[1][11-13]{\par And some text: lipsum ##1.\par}}
+
+\begin{document}
+	
+\begin{preface}
+	\lipsum[1]
+\end{preface}
+
+\tableofcontents*
+
+\begin{abstract}
+	\lipsum[1]
+\end{abstract}
+
+\mainmatter
+
+\include{intro/intro}
+\include{chap-consistentie/chap-consistentie}
+\include{chap-kwaliteitsgebrek/chap-kwaliteitsgebrek}
+\include{chap-rol-idp/chap-rol-idp}
+
+\backmatter
+
+\end{document}

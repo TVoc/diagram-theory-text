@@ -1,0 +1,27 @@
+\section{De rol van IDP}\label{sec:rol-idp}
+\subsection{Korte inleiding in IDP}
+IDP is een kennisbanksysteem. Deze kennisbanken zijn opgesteld in FO($\cdot$), een uitbreiding van predikatenlogica. De basisblokken van een specificatie in IDP zijn als volgt:
+
+\begin{itemize}
+	\item \textbf{Vocabularium}: Hier specificeert de ontwerper de logische types die bestaan in het beschouwd domein, predikaten en functies
+	\item \textbf{Theorie}: Hier schrijft de ontwerper zinnen in FO($\cdot$) die bepalen welke structuren over het beschouwde vocabularium modellen zijn (waarbij natuurlijk niet wordt uitgesloten dat de ontwerper een inconsistente theorie ontwerpt).
+	\item \textbf{Structuur}: De ontwerper vult hier de logische types gedefinieerd in het vocabularium in (waar nodig) en geeft voor \'e\'en of meerdere predikaten aan welke tupels wel of geen lid zijn, als hij dat wil.
+\end{itemize}
+
+De ontwerper kan meerdere vocabularia, theorie\"en en structuren neerschrijven. Elke theorie kan wel maar de symbolen van \'e\'en vocabularium gebruiken en men kan in een structuur alleen spreken over \'e\'en theorie.
+
+IDP gebruikt zijn eigen symbolen voor universele kwantoren, existenti\"ele kwantoren en logische connectieven. Voor meer informatie over IDP, zie \todo{verwijzing naar relevant document}
+
+\subsection{Gebruik van modeluitbreiding}
+Gegeven een structuur over een bepaalde theorie en vocabularium kan de gebruiker de opdracht geven aan IDP om een uitbreiding te vinden van deze structuur die ervoor zorgt de structuur een model is van de theorie. Dit is een vorm van inferentie die men \textbf{modeluitbreiding} noemt. Het kan echter het geval zijn dat IDP antwoordt dat zulk een uitbreiding niet bestaat of dat de uitvoering nooit eindigt.
+
+
+\subsubsection{Controleren van consistentie}
+In codebestand \ref{code:consistentie} staat de logische theorie die werd gegenereerd volgens de regels uitgelijnd in hoofdstuk \ref{sec:consistentie}. Als men dit geeft als invoer aan IDP, is het besluit dat er een model bestaat voor de theorie en dat het diagram inderdaad consistent is.
+
+\subsection{Detecteren van kwaliteitsgebreken}
+In codebestand \ref{code:kwaliteitsgebrek} staat de logische theorie die werd gegenereerd uit een combinatie van de diagrammen uit figuren \ref{fig:diagram-voorbeeld} en \ref{fig:hierarchie} volgens de regels uitgelijnd in hoofdstuk \ref{sec:kwaliteitsgebrek}. IDP vindt alle many-to-many associaties, besluit dat \textit{Loose} een losstaande klasse is en dat de associatie \textit{B}---\text overbodig is door de samenloop van de klassehi\"erarchie en de opgelegde multipliciteiten.
+
+\todo{kuis codebestanden flink op}
+\lstinputlisting[title=Codebestand 0.4.3]{chap-rol-idp/generatedtheory.idp}\label{code:consistentie}
+\lstinputlisting{chap-rol-idp/defs.idp}\label{code:kwaliteitsgebrek}
