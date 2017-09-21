@@ -17,6 +17,7 @@
 \usepackage{float}
 \usepackage{todonotes}
 \usepackage{amsmath}
+\usepackage{amssymb}
 \usepackage{listings}
 
 \lstset{
@@ -45,6 +46,8 @@
 {\usepackage{lipsum}\setlipsumdefault{11-13}}%
 {\newcommand{\lipsum}[1][11-13]{\par And some text: lipsum ##1.\par}}
 
+\newcommand{\parbreak}{\vspace{5mm}}
+
 \begin{document}
 	
 \begin{preface}
@@ -63,6 +66,7 @@
 \include{chap-consistentie/chap-consistentie}
 \include{chap-kwaliteitsgebrek/chap-kwaliteitsgebrek}
 \include{chap-rol-idp/chap-rol-idp}
+\include{chap-gedrag/chap-gedrag}
 
 \backmatter
 
