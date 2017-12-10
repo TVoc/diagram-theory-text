@@ -23,12 +23,12 @@ In dit hoofdstuk beschouwen we hoe we het vocabularium en de logische theorie di
 \end{figure}
 \end{landscape}
 
-\subsection{De keuze voor lineaire tijdscalculus}
+\section{De keuze voor lineaire tijdscalculus}
 UML-diagrammen schrijven mogelijke toestanden van, en acties, op softwaresystemen voor. Die systemen kunnen van toestand veranderen tussen tijdstappen. Sequentiediagrammen zijn een manier om te beschrijven hoe zulke veranderingen teweeg kunnen gebracht worden. Tijdens de uitvoering van een sequentiediagram mag het systeem enkel veranderen zoals beschreven door de huidige actie. Daarom hebben we een mechanisme nodig binnen FO(.) dat dynamische systemen en acties op deze kan beschrijven. Tegelijk moet dat mechanisme garanderen dat eigenschappen van het systeem die niet worden be\"invloed door de huidige beschouwde actie van het sequentiediagram niet veranderen. Lineaire tijdscalculus\cite{BogaertsBart2014Sdsu}, oftewel LTC, voldoet aan deze voorwaarden. Daarom zullen we om sequentiediagrammen uitvoerbaar te maken binnen FO(.) het generatieproces voor het vocabularium en de theorie dat we bekomen zijn in hoofdstuk \ref{sec:consistentie} uitbreiden volgens de principes van LTC.
 
 In de volgende secties werken we deze uitbreiding uit voor het sequentiediagram in figuur \ref{fig:seq-diagram-game}.
 
-\subsection{Uitbreiding van het vocabularium}
+\section{Uitbreiding van het vocabularium}
 In LTC is tijd een centraal concept, dus daarom introduceren we allereerst een logisch type $Time \subset \mathbb{N}$. Verder defini\"eren we een parti\"ele functie \textit{Next(Time)} dat voor alle tijdpunten het volgende tijdpunt geeft behalve voor het laatst mogelijke tijdpunt. We defini\"eren ook een constante \textit{Start}, wat het eerst mogelijke tijdpunt aanduidt.
 
 Voor elk tijdpunt is het mogelijk dat er een bepaalde instructie van het sequentiediagram wordt uitgevoerd. We duiden deze instructie aan met zijn volgnummer.
@@ -63,10 +63,10 @@ We passen ook de predicaten die overeenkomen met klasseattributen aan. Het kan i
 
 Hier voegen we een oncausatiepredicaat toe omdat het mogelijk is dat een attribuut meer dan \'e\'en waarde heeft op een bepaald tijdstip. Met dit predicaat geven we aan dat bepaalde waardes die voor een bepaalde tijdstap gelden ongedaan moeten worden gemaakt in de volgende tijdstap.
 
-\subsection{Uitbreiden van de theorie}
+\section{Uitbreiden van de theorie}
 Voor elke inerti\"ele eigenschap van het systeem moeten er twee dingen gebeuren: Toestandszinnen opstellen en voorwaardes voor causatiezinnen en oncausatiezinnen specificeren. Het resultaat is een inductieve definitie die de inerti\"ele predicaten definieert en een inductieve definitie die de causatiepredicaten en oncausatiepredicaten definieert.
 
-\subsubsection{Toestandszinnen opstellen}
+\subsection{Toestandszinnen opstellen}
 Toestandszinnen worden geschreven in termen van begintoestandspredicaten, causatiepredicaten en oncausatiepredicaten. Ze garanderen dat inerti\"ele eigenschappen enkel veranderen wanneer het ook echt de bedoeling is dat ze veranderen.
 
 Als eerste kijken we naar toestandszinnen voor \textit{SDPointAt}. \textit{I\_SDPointAt} geeft aan welke de eerste instructie is die we willen uitvoeren, en daarom schrijven we een definitie die deze overeenkomst uitdrukt:
@@ -142,7 +142,7 @@ Voor deze sequentiediagram krijgen we:
 	&\forall{t}[Time](C\_SDPointAt(Next(t), 21) \leftarrow SDPointAt(t, 19) \lor SDPointAt(t, 20)). \label{eq:sdexit}
 \end{align}
 
-Zin \ref{eq:sdprog} verzekert het juiste gedrag van instructieteller, namelijk dat hij doorgaans met \'e\'en wordt verhoogd tussen tijdstappen. De uitzonderingen worden hier ook opgelijst; in dit geval verspringt de teller wanneer men het begin van de \textit{if-else}-constructie tegenkomt en wanneer het einde van het \textit{if}-deel is bereikt. Zinnen \ref{eq:sdif} en \ref{eq:sdthen} controleren de voorwaarde voor de uitvoering van het \textit{if}- en \textit{else}-deel en selecteren wat correct is. Zin \ref{eq:sdexit} zegt dat zowel het \textit{if}-deel als het \textit{else}-deel uitkomen op de instructie die direct volgt op de \textit{if-else}-constructie.
+Zin \ref{eq:sdprog} verzekert het juiste gedrag van de instructieteller, namelijk dat hij doorgaans met \'e\'en wordt verhoogd tussen tijdstappen. De uitzonderingen worden hier ook opgelijst; in dit geval verspringt de teller wanneer men het begin van de \textit{if-else}-constructie tegenkomt en wanneer het einde van het \textit{if}-deel is bereikt. Zinnen \ref{eq:sdif} en \ref{eq:sdthen} controleren de voorwaarde voor de uitvoering van het \textit{if}- en \textit{else}-deel en selecteren wat correct is. Zin \ref{eq:sdexit} zegt dat zowel het \textit{if}-deel als het \textit{else}-deel uitkomen op de instructie die direct volgt op de \textit{if-else}-constructie.
 
 \parbreak
 
@@ -160,4 +160,122 @@ De zin drukt uit dat de getter wordt opgeroepen op \textit{target} en dat er wor
 Zie appendix \ref{app:seq-diagram-game} voor het volledig model voor het gedrag van het sequentiediagram in figuur \ref{fig:seq-diagram-game}.
 
 
-\subsection{Interactie tussen meerdere sequentiediagrammen}
+\section{Interactie tussen meerdere sequentiediagrammen}\label{sec:interaction}
+In een project stelt men doorgaans meerdere sequentiediagrammen op die elkaar ook kunnen oproepen. Men gebruikt soms ook recursie in deze diagrammen. In deze sectie beschrijven we hoe we het oproepen van andere sequentiediagrammen en een recursiemechanisme ondersteunen.
+
+
+	\begin{figure}[h]
+		\centering
+		\includegraphics[width=0.25\textwidth]{chap-gedrag/recursion-class.png}
+		\caption{Klasse gebruikt in voorbeeld over recursie}
+		\label{fig:recursion-class}
+	\end{figure}
+\begin{landscape}
+\thispagestyle{plain}
+	\begin{figure}
+		\centering
+		\begin{subfigure}{\textwidth}
+			\includegraphics[width=0.4\textwidth]{chap-gedrag/methodOne.png}
+			\caption{Sequentiediagram voor methodOne()}
+			\label{fig:methodOne}
+		\end{subfigure}%
+		\begin{subfigure}{\textwidth}
+			\includegraphics[width=0.75\textwidth]{chap-gedrag/methodTwo.png}
+			\caption{Sequentiediagram voor methodTwo()}
+			\label{fig:methodtwo}
+		\end{subfigure}
+		\caption{Sequentiediagrammen voor klasse A in figuur \ref{fig:recursion-class}}
+		\label{fig:seq-recursion}
+	\end{figure}
+\end{landscape}
+
+In de volgende subsecties gebruiken we het voorbeeld uitgebeeld in figuren \ref{fig:recursion-class} en \ref{fig:seq-recursion} om de gebruikte principes te illustreren.
+
+\subsection{Aanpassingen aan \textit{SDPoint}}
+Het is niet meer voldoende om \textit{SDPoint}s te modelleren als natuurlijke getallen aangezien elk diagram zijn eigen \textit{SDPoint}s heeft. Om de \textit{SDPoint}s horende bij elk diagram van elkaar te kunnen onderscheiden, maken we van het logisch type \textit{SDPoint} nu een constructed type in IDP. We gebruiken als patroon voor de naamgeving van elk logisch object $<diagramnaam>\_<instructienummer>$. Voor het voorbeeld krijgen we o.a. $methodOne\_2$ en $methodTwo\_3$. We voegen ook een nieuwe functie toe aan het vocabularium dat gegeven een \textit{SDPoint} het volgende \textit{SDPoint} teruggeeft, namelijk $NextSD(SDPoint) : SDPoint$.
+
+Een andere aanpassing is dat we een virtuele \textit{SDPoint} inpassen na elke instructie voor een oproep. Het naamgevingspatroon hiervoor is $<diagramnaam>\_<instructienummer>post$. Aangezien de derde instructie in figuur \ref{fig:methodOne} een oproep is, krijgen we $methodOne\_3post$. Met deze toevoeging ontkoppelen we twee zaken die bij een oproep komen kijken: enerzijds dat het mogelijk is dat het resultaat van een oproep wordt toegekend aan een variabele; en anderzijds dat na een oproep er mogelijks een alt-fragment of lusfragment volgt, en dat het dus v\'o\'or de oproep niet duidelijk is welke de volgende instructie is na de uitvoering van de oproep. Het zou niet mogelijk zijn om deze twee zaken op een correcte manier af te handelen zonder een oproepinstructie op deze manier op te splitsen.
+
+\subsection{Het stapelmechanisme}
+Om oproepen van andere sequentiediagrammen correct uit te voeren, moet de theorie bijhouden welke variabelen er bestaan tijdens een bepaalde oproep. Bovendien moet de theorie voor recursieve oproepen ook de waardes van een set variabelen kunnen bewaren v\'o\'or een oproep en die waardes herstellen na een oproep. Hiertoe ontwerpen we een stapelmechanisme. Er gebeuren volgende aanpassingen aan het vocabularium:
+
+\begin{itemize}
+	\item Toevoeging van het logisch type $StackLevel \subset \mathbb{N}$: Dit stelt de oproepdiepte van oproep voor.
+	\item Toevoeging van een inerti\"ele functie $CurrentStackLevel(Time) : StackLevel$: De oproepdiepte op een bepaald tijdstip.
+	\item Toevoeging van een intertieel predicaaat $ReturnPoint(Time, StackLevel, SDPoint)$: Op een bepaald tijdstip, de \textit{SDPoint} naar waar de uitvoering moet terugkeren wanneer de laatste instructie voor de gegeven \textit{StackLevel} bereikt is.
+	\item Alle diagramvariabelen worden nu gemodelleerd door een ternair predicaat dat nu ook de oproepdiepte in rekening neemt. Voor het voorbeeld krijgen we dus bijvoorbeeld $FinishedT(Time, StackLevel, bool)$.
+\end{itemize}
+
+De volgende subsecties beschrijven hoe we in het definitieblok voor de causatiezinnen dit stapelmechanisme gebruiken.
+
+\subsubsection{Causatiezinnen voor \textit{SDPointAt/2}}\label{sec:sd-rec-cause}
+Oproepinstructies betekenen bijkomende uitzonderingen op het normale verloop van \textit{SDPoints} naast deze die voortkomen uit alt-- en lusfragmenten. In dit geval zijn $methodOne\_3$, $methodTwo\_3$, $methodOne\_5$, $methodTwo\_5$ en $finished$ de nieuwe uitzonderingen. $methodOne\_5$ en $methodTwo\_5$ zijn ook \textit{SDPoint}s die niet in het diagram terug te vinden zijn, maar die we zelf toevoegen. Daarmee markeren we het einde van elk van de diagrammen. $finished$ is een speciale \textit{SDPoint} die het einde van de uitvoering aanduidt. De zin die het normale verloop van \textit{SDPoint}s regelt wordt dus:
+
+\begin{align}
+	& \nonumber \forall{t}[Time]\forall{s}[SDPoint](C\_SDPointAt(Next(t), NextSD(s) \leftarrow \\ \nonumber &SDPointAt(t,s) \land \lnot((s = methodOne\_3) \lor (s = methodOne\_5) \\ \nonumber &\lor (s = methodTwo\_1) \lor (s = methodTwo\_3) \lor (s = methodTwo\_3post) \\ &\lor (methodTwo\_4) \lor (methodTwo\_5) \lor (s = finished)).
+\end{align}
+
+De uitzonderingen als resultaat van een oproep worden als volgt gemodelleerd:
+
+\begin{align}
+	 \forall{t}[Time](C\_SDPointAt(Next(t), methodTwo\_1) \leftarrow SDPointAt(t, methodOne\_3).\label{eq:callOne} \\
+	 \forall{t}[Time](C\_SDPointAt(Next(t), methodTwo\_1) \leftarrow SDPointAt(t, methodOne\_3).\label{eq:callTwo}
+\end{align}
+
+Zin \ref{eq:callOne} resulteert uit instructie 3 van het diagram voor \textit{methodOne} en zin \ref{eq:callTwo} resulteert uit instructie 3 van het diagram voor \textit{methodTwo}.
+
+De tweede aanpassing is dat er een terugkeer moet gebeuren wanneer het einde van een sequentiediagram is bereikt. Hiervoor maken we gebruik van $ReturnPoint/3$:
+
+\begin{align}
+	&\nonumber \forall{t}[Time]\forall{s}[SDPoint](C\_SDPointAt(Next(t), s) \leftarrow \\ \nonumber &ReturnPoint(t, CurrentStackLevel(t), s) \land (SDPointAt(t, methodOne\_5) \\ &\lor SDPointAt(t, methodTwo\_5))).\label{eq:sd-return}
+\end{align}
+
+Deze zin drukt uit dat het terugkeerpunt dat is genoteerd voor deze oproepdiepte wordt genomen als de volgende \textit{SDPoint} wanneer het einde van een sequentiediagram is bereikt, in dit geval $methodOne\_5$ of $methodTwo\_5$. We schrijven geen nieuwe zin voor $finished$ omdat er niets op volgt.
+
+\subsubsection{Causatiezinnen voor \textit{ReturnPoint/3}}
+Wanneer de uitvoering een oproep bereikt, willen we voor de nieuwe oproepdiepte dat het terugkeerpunt wordt gezet naar de \textit{SDPoint} direct na de oproepinstructie. Daarmee krijgen we de volgende twee zinnen:
+
+\begin{align}
+	\nonumber &\forall{t}[Time]\forall{st}[StackLevel](C\_ReturnPoint(Next(t), st, methodOne\_3post) \\ &\leftarrow (CurrentStackLevel(t) = (st-1)) \land SDPointAt(t, methodOne\_3)). \\
+	\nonumber &\forall{t}[Time]\forall{st}[StackLevel](C\_ReturnPoint(Next(t), st, methodTwo\_3post) \\ &\leftarrow (CurrentStackLevel(t) = (st-1)) \land SDPointAt(t, methodOne\_3)).
+\end{align}
+
+We willen ook dat een terugkeerpunt verdwijnt eenmaal dat het wordt gebruikt aan het einde van een diagram. Daarom schrijven we de volgende voorwaarde neer voor het oncausatiepredicaat voor \textit{ReturnPoint/3}:
+
+\begin{align}
+ \nonumber &\forall{t}[Time]\forall{st}[StackLevel]\forall{sd}[SDPoint](Cn\_ReturnPoint(Next(t), st, sd) \\ \nonumber &\leftarrow (CurrentStackLevel(t) = st) \land ReturnPoint(t, st, sd) \\ &\land (SDPointAt(t, methodOne\_5) \lor SDPointAt(t, methodTwo\_5))).\label{eq:return-uncauses}
+\end{align}
+
+Zinnen \ref{eq:sd-return} en \ref{eq:return-uncauses} samen garanderen dat terugkeerpunten gebruikt worden en verdwijnen wanneer het einde van een diagram is bereikt.
+
+\subsubsection{Causatiezinnen voor \textit{CurrentStackLevel(Time) : StackLevel}}
+
+De oproepdiepte moet toenemen wanneer een oproepinstructie wordt uitgevoerd en afnemen wanneer het einde van een diagram is bereikt. Deze respectievelijke gevallen modelleren we als volgt:
+
+\begin{align}
+	\nonumber &\forall{t}[Time]\forall{st}[StackLevel](C\_CurrentStackLevel(Next(t), st) \leftarrow \\ \nonumber &(CurrentStackLevel(t) = (st-1)) \land (SDPointAt(t, methodOne\_3) \\ &\lor SDPointAt(t, methodTwo\_3))). \\
+	\nonumber &\forall{t}[Time]\forall{st}[StackLevel](C\_CurrentStackLevel(Next(t), st) \leftarrow \\ \nonumber &(CurrentStackLevel(t) = (st+1)) \land (SDPointAt(t, methodOne\_5) \\ &\lor SDPointAt(t, methodTwo\_5))).
+\end{align}
+
+\subsubsection{Causatiezinnen voor oproepobjecten en parameters}
+Er komen twee nieuwe soorten variabelen bij: Objecten waarvan een methode wordt opgeroepen en parameters van een methode. In het sequentiediagram voor \textit{methodTwo} is \textit{obj2} de naam van het object dat het eerste bericht ontvangt. Wanneer het diagram voor \textit{methodOne} deze methode oproept, moet \textit{obj2} dus gezet worden naar de juiste waarde, in dit geval \textit{obj} omdat \textit{obj} de methode oproept op zichzelf. Een gelijkaardig geval doet zich voor bij de recursieve oproep in het diagram voor \textit{methodTwo}. Daarom krijgen we de volgende zinnen voor \textit{C\_Obj2T/3}:
+
+\begin{align}
+	\nonumber &\forall{t}[Time]\forall{s}[StackLevel]\forall{obj}[A](C\_Obj2T(Next(t), s, obj) \leftarrow
+	\\ \nonumber &(CurrentStackLevel(t) = (s-1)) \land SDPointAt(t, methodOne\_3) \\ &\land ObjT(t, (s-1), obj)). \\
+	\nonumber &\forall{t}[Time]\forall{s}[StackLevel]\forall{obj}[A](C\_Obj2T(Next(t), s, obj) \leftarrow
+	\\ \nonumber &(CurrentStackLevel(t) = (s-1)) \land SDPointAt(t, methodTwo\_3) \\ &\land Obj2T(t, (s-1), obj)).
+\end{align}
+
+\textit{mTwoArg} in het diagram voor \textit{methodTwo} is een parameter van \textit{methodTwo} dat ook aangesproken wordt in het diagram zelf. In \textit{methodOne} wordt \textit{mTwoArg} gelijkgesteld aan 1 terwijl in \textit{methodTwo} deze eerst met \'e\'en wordt verhoogd. Daarom krijgen we de drie volgende zinnen:
+
+\begin{align}
+	\nonumber &\forall{t}[Time]\forall{s}[StackLevel](C\_MTwoArgT(Next(t), s, 1) \leftarrow \\ &(CurrentStackLevel(t) = (s-1)) \land SDPointAt(t, methodOne\_3)). \\
+	\nonumber &\forall{t}[Time]\forall{s}[StackLevel]\forall{n}[int](C\_MTwoArgT(Next(t), s, 1) \leftarrow \\ \nonumber &(CurrentStackLevel(t) = (s-1)) \land SDPointAt(t, methodTwo\_3) \\ &\land MTwoArg(t, (s-1), n)). \\
+	\nonumber &\forall{t}[Time]\forall{s}[StackLevel]\forall{n}[int](C\_MTwoArgT(Next(t), s, 1) \leftarrow \\ \nonumber &(CurrentStackLevel(t) = s) \land SDPointAt(t, methodTwo\_2) \\ &\land (\exists{n1}[int](MTwoArg(t, s, n1) \land (n = n1 + 1)))).\label{eq:mtwoarg-inc}
+\end{align}
+
+Zin \ref{eq:mtwoarg-inc} demonstreert dat ook buiten oproepinstructies of een terugkeer uit een diagram wordt gekeken naar het oproepniveau. Er wordt immers enkel gekeken of geschreven naar de waarde van de 'versie' van de variabele die overeenkomt met het huidige oproepniveau. Dit komt ook terug bij de variabelen die niet het oproepobject of een parameter van een methode voorstellen.
+
+\subsubsection{Uitkomst van de beschreven procedure}
+Er zijn geen noemenswaardige veranderingen aan hoe we de toestandszinnen opstellen. Bijlage \ref{app:seq-recursion} bevat de uitkomst van de procedure die we hebben beschreven in deze sectie. 
