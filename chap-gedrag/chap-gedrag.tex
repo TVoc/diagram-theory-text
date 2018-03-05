@@ -17,9 +17,9 @@ In dit hoofdstuk beschouwen we hoe we het vocabularium en de logische theorie di
 
 \begin{landscape}
 \begin{figure}
-	\label{fig:seq-diagram-game}
 	\includegraphics[width=1.5\textwidth]{chap-gedrag/seq-diagram-game.png}
 	\caption{Sequentiediagram gebaseerd op het klassediagram van figuur \ref{fig:diagram-voorbeeld}}
+	\label{fig:seq-diagram-game}
 \end{figure}
 \end{landscape}
 
@@ -277,5 +277,91 @@ Er komen twee nieuwe soorten variabelen bij: Objecten waarvan een methode wordt 
 
 Zin \ref{eq:mtwoarg-inc} demonstreert dat ook buiten oproepinstructies of een terugkeer uit een diagram wordt gekeken naar het oproepniveau. Er wordt immers enkel gekeken of geschreven naar de waarde van de 'versie' van de variabele die overeenkomt met het huidige oproepniveau. Dit komt ook terug bij de variabelen die niet het oproepobject of een parameter van een methode voorstellen.
 
+\subsubsection{Extra veronderstellingen over het ontwerp van sequentiediagrammen}
+Om de implementatie van theoriegeneratie zoals beschreven in dit hoofdstuk te vergemakkelijken, zijn er een aantal veronderstellingen ten aanzien van sequentiediagrammen die de gebruiker als invoer geeft. In deze subsectie sommen we deze op:
+
+\begin{itemize}
+	\item Er wordt een logisch symbool voorzien voor elke variabele in een sequentiediagram. De naam van dat logisch symbool is gebaseerd op de naam van de variabele, en daarom moeten alle variabelen over alle diagrammen heen een unieke naam hebben. Hoewel de naam van het diagram waarin de variabele voorkomt kan dienen als prefix om de naam van de variabele toch uniek te maken zonder dat tussenkomst van de ontwerper nodig is, hebben we ervoor gekozen om dat niet te doen.
+	\item Het type van een variabele kan niet veranderen over instructies heen. Ofwel komt een variabele overeen met een lifeline en wordt het type dus bepaald door de lifeline, ofwel wordt het type bepaald door de instructie die de variabele instantieert.
+	\item Een variabele kan geen verzameling voorstellen
+	\item Per instructie kan maar \'e\'en associatielink tegelijkertijd genavigeerd worden. Beschouw het voorbeelddiagram van figuur \ref{fig:diagram-voorbeeld}. Als variabele \textit{x} een object van klasse \textit{Item} is, dan zal een oproep van \textit{getInventory()} op \textit{x} een object van klasse \textit{Inventory} opleveren (mocht die associatie zijn ingevuld voor \textit{x}), maar is \textit{getInventory().getCharacter} geen geldige instructie.
+	\item Er mogen geen aanpassingen worden aangebracht aan de associatiestructuur voor een model van een klassediagram. Voor een \textit{Character}---\textit{Inventory}-paar geldt bijvoorbeeld dat die verbinding niet verbroken kan worden en dat geen van beide kanten vervangen mag worden door een andere instantie van de respectievelijke klasse. Aangezien associaties van meervoudige multipliciteit als lijsten worden ge\"implementeerd, betekent dit ook dat men geen elementen kan toevoegen aan of verwijderen uit een lijst.
+	\item Men kan geen nieuwe objecten instanti\"eren.
+	\item Er zijn geen bewerkingen op booleaanse waarden behalve de NOT-functie, die men kan oproepen als \textit{flipBool(boolean)}.
+	\item UML legt op dat men voor beide takken van een alt combined fragment de voorwaarde voor de uitvoering die tak moet specificeren. Ook hier wordt verwacht dat de ontwerper dit telkens doet.
+	\item Als een diagram een uitvoer heeft, dan mag de instructie die bepaalt welke variabele als uitvoer wordt gebruikt geen onderdeel zijn van een combined fragment.
+\end{itemize}
+
 \subsubsection{Uitkomst van de beschreven procedure}
 Er zijn geen noemenswaardige veranderingen aan hoe we de toestandszinnen opstellen. Bijlage \ref{app:seq-recursion} bevat de uitkomst van de procedure die we hebben beschreven in deze sectie. 
+
+\section{Extra soorten instructies voor sequentiediagrammen}\label{sec:newlang}
+UML is een modelleertaal die wordt gebruikt ter ondersteuning van softwareontwerp in imperatieve programmeertalen. In sequentiediagrammen vertaalt zich dat tot een veelvoud van instructies voor eenvoudige taken zoals het selecteren van het eerste getal verschillend van 0 in een lijst van getallen. Aangezien elke nieuwe instructie in een sequentiediagram leidt tot minstens \'e\'en zin in de gegenereerde theorie, impliceert dit een grote kost in zowel rekentijd als geheugengebruik voor modelexpansie en progressie\"inferentie. Daarom geven we in deze sectie een aanzet tot het integreren van logica in het ontwerp van sequentiediagrammen met het zicht op twee doelen:
+
+\begin{enumerate}
+	\item Het totale aantal instructies over alle sequentiediagrammen verminderen
+	\item Het aantal tijdstappen die nodig zijn bij modelexpansie of progressie\"inferentie om een bepaalde taak te verrichten verminderen
+\end{enumerate}
+
+We houden vast aan de structuur van klasses, associaties, levenslijnen en berichten. Wat volgt is een overzicht van nieuwe soorten instructies die gebruikt kunnen worden in berichten.
+
+\subsection{Nieuwe soorten instructies}
+
+Voorheen kon een variabele maar \'e\'en object of waarde van een primitief type voorstellen. Nu laten we toe dat een variabele een verzameling kan voorstellen. In een sequentiediagram wordt dit voorgesteld als een multi-object zoals in figuur \ref{fig:multi-object}. In de theorie behouden voor namen het patroon $<variabelenaam>T/3$.
+
+We laten op variabelen die een verzameling voorstellen enkele nieuwe instructies toe:
+
+\begin{figure}
+	\includegraphics{chap-gedrag/seq-multi-object.png}
+	\centering
+	\caption{Een multi-object}
+	\label{fig:multi-object}
+\end{figure}
+
+\begin{itemize}
+	\item Voor alle leden van een verzameling tegelijkertijd kan een associatie genavigeerd worden. Als op een verzameling S van objecten van klasse X \textit{getY()} wordt uitgevoerd waar Y de naam is van een klasse geassocieerd met X, dan is het resultaat een verzameling van objecten van klasse Y. Die verzameling bestaat uit alle objecten die in verband staan met minstens \'e\'en object uit S.
+	\item $getNumX()$ waar X de naam is van een klasse die in verband staat met de klasse van de verzameling
+	\item $EXISTS\ ONE\ WHERE\ [query]$: Geeft \textbf{true} als en slechts als \textit{query} geldt voor minstens \'e\'en lid van de verzameling. \textit{query} betekent hier een instructie die bestaat uit getters van klassevariabelen verbonden met booleaanse connectieven (klassevariabelen kunnen hierbij rechtstreeks vergeleken worden met een getal of string, waar toepasselijk).
+	\item $EXISTS\ n\ TO\ m\ WHERE\ [query]$ waar $n \leq m$: Geeft \textbf{true} als en slechts als voor minstens $n$ en ten hoogste $m$ leden van de verzameling geldt dat \textit{query} waar is.
+	\item $FOR\ ALL\ APPLIES\ [query]$: Geeft \textbf{true} als en slechts als voor alle leden van de verzameling \textit{query} geldt.
+	\item $NOT\ [query]$: geeft \textbf{true} als en slechts als \textit{query} \textbf{false} geeft. \textit{query} kan hier \'e\'en van de voorgaande soorten instructies zijn.
+	\item $CHOOSE\ ALL\ WHERE\ APPLIES\ [query]$: Geeft een nieuwe verzameling die bestaat uit alle leden van de originele verzameling waarvoor \textit{query} waar is.
+	\item $CHOOSE\ ONE\ WHERE\ APPLIES\ [query]$: Geeft \'e\'en object uit de verzameling waarvoor \textit{query} waar is. Dit vormt een keuzepunt bij simulatie.
+	\item $CHOOSE\ n\ TO\ m\ WHERE\ APPLIES\ [query]$ waar $n \leq m$: Geeft een nieuwe verzameling die bestaat uit minstens $n$ en ten hoogste $m$ leden uit de originele verzameling waarvoor \textit{query} waar is. Dit vormt een keuzepunt bij simulatie.
+	\item $CHOOSE\ <getalnaam>\ WHERE\ APPLIES\ [query\ dat\ <getalnaam>\ bindt]$: Geeft een nieuwe variabele met als naam \textit{getalnaam} waarvoor geldt dat de waarde voldoet aan \textit{query}. Dit soort instructie kan ook toegepast worden op een variabele dat maar \'e\'en object voorstelt. Dit vormt een keuzepunt bij simulatie.
+	\item $SET <klassevariabele> TO <waarde>$: Voor alle leden van de verzameling wordt de waarde van de genoemde klassevariabele veranderd naar de genoemde waarde.
+\end{itemize}
+
+We illustreren het gebruik van deze nieuwe instructies door middel van het voorbeeld van figuur \ref{fig:new-nim}, dat een modellering van het bekende spel Nim voorstelt. De beurt gaat eerst aan de gekozen speler. Dan wordt gecontroleerd of alle stapels leeg zijn. Als dat niet het geval is, kiest de speler eerst een stapel en neemt dan minstens \'e\'en object weg van die stapel. Daarna wordt de beurt gegeven aan de volgende speler. Als alle stapels leeg zijn, is de huidige speler de winnaar. Dit stelt dus een versie van Nim voor waar de speler die als laatste een object wegneemt verliest.
+
+\begin{figure}[H]
+	\includegraphics[width=\textwidth]{chap-gedrag/seq-new-nim.png}
+	\caption{Een modellering van het spel Nim}
+	\label{fig:new-nim}
+\end{figure}
+
+De lusvoorwaarde wordt als volgt gebruikt:
+
+\begin{align}
+	\nonumber &\forall{t}[Time]\forall{st}[StackLevel](C\_SDPointAt(Next(t), play\_3) \leftarrow \\ \nonumber &(CurrentStackLevel(t) = st) \land (SDPointAt(t, play\_2) \lor SDPointAt(t, play\_6)) \land \\ \nonumber &\lnot{}\exists{g}[Game](GameT(t, st, g) \land{}\forall{h}[Heap](GameandHeap(g, h) \\ &\Rightarrow \exists{n}[LimitedInt](HeapamountObjects(t, h, n) \land n = 0)))). \\
+	\nonumber &\forall{t}[Time]\forall{st}[StackLevel](C\_SDPointAt(Next(t), play\_7) \leftarrow \\ \nonumber &(CurrentStackLevel(t) = st) \land SDPointAt(t, play\_6) \land \exists{g}[Game](GameT(t, st, g) \land \\ \nonumber &\forall{h}[Heap](GameandHeap(g, h) \\ &\Rightarrow \exists{n}[LimitedInt](HeapamountObjects(t, h, n) \land n = 0)))).
+\end{align}
+
+In instructie 3 wordt de $CHOOSE\ ONE\ WHERE\ APPLIES\ [query]$ instructie gebruikt. We introduceren hier een open predikaat, $ChosenHeap(Time, Heap)$, om ons te helpen deze instructie te vertalen. We voegen de volgende zin toe aan het definitieblok voor diagramvariabelen:
+
+\begin{align}
+	\nonumber &\forall{t}[Time]\forall{st}[StackLevel]\forall{h}[Heap](C\_HeapT(Next(t), st, h) \\ &\leftarrow (CurrentStackLevel(t) = st) \land SDPointAt(t, play\_3) \land ChosenHeap(t, h)).
+\end{align}
+
+Om ervoor te zorgen dat exact \'e\'en Heap-object wordt gekozen, moeten we voorwaardes leggen op $ChosenHeap/2$. Dit doen we als volgt:
+
+\begin{align}
+	&\forall{t}[Time](SDPointAt(t, play\_3) \Rightarrow \exists_{=1}{h}[Heap](ChosenHeap(t, h))). \\
+	\nonumber &\forall{t}[Time]\forall{h}[Heap](ChosenHeap(t, h) \Rightarrow (SDPointAt(t, play\_3) \\ \nonumber &\land \exists{g}[Game]\exists{st}[StackLevel]\exists{n}[LimitedInt]((CurrentStackLevel(t) = st) \\ &\land GameT(t, st, g) \land GameandHeap(g, h) \land HeapamountObjects(t, h, n) \land \lnot(n = 0)))).
+\end{align}
+
+\todo{meer uitleg bij formules}
+
+Voor instructie 4 introduceren we op een soortgelijke manier een open predikaat $ChosenTake/2$. De zin die we toevoegen aan het definitieblok voor variabelen en de voorwaarden die we opleggen op $ChosenTake/2$ zien er gelijkaardig uit.
+
+Bijlage \ref{code:new-nim} bevat de vertaling van het diagram in figuur \ref{fig:new-nim}.

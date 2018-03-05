@@ -1,4 +1,6 @@
-vocabulary V {
+include<LTC>
+
+LTCvocabulary V {
 
     type Time isa nat
     Start: Time
