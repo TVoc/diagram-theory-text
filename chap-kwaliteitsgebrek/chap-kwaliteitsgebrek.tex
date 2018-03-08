@@ -20,7 +20,7 @@ Er zijn drie kwaliteitsgebreken waarnaar wordt gezocht in de resulterende theori
 	
 	\item \textbf{Losstaande klasse}: Concreet is een losstaande klasse een klasse die geen associatie heeft met een andere klasse in het ontwerp. Zulk een klasse is nutteloos en moet ofwel verbonden worden met een andere klasse of verwijderd worden.
 	
-	\item \textbf{Overbodige associaties in een klassehi\"erarchie}: Beschouw figuur \ref{fig:hierarchie}. Daar is te zien dat de grenzen van de multipliciteiten in de associatie \textit{Alice}---\textit{Charlie} strengere voorwaarden opleggen dan die van de associatie \textit{Bob}---\textit{David}, en dat daarom de associatie \textit{Bob}---\textit{David} overbodig is. Om de verstaanbaarheid van het diagram te verbeteren, wordt die associatie best verwijderd.
+	\item \textbf{Overbodige associaties in een klassehi\"erarchie}\cite{Balaban2015}: Beschouw figuur \ref{fig:hierarchie}. Daar is te zien dat de grenzen van de multipliciteiten in de associatie \textit{Alice}---\textit{Charlie} strengere voorwaarden opleggen dan die van de associatie \textit{Bob}---\textit{David}, en dat daarom de associatie \textit{Bob}---\textit{David} overbodig is. Om de verstaanbaarheid van het diagram te verbeteren, wordt die associatie best verwijderd.
 \end{itemize}
 
 We defini\"eren deze respectievelijke gebreken in de logische theorie door middel van de volgende logische zinnen:
@@ -36,9 +36,9 @@ We defini\"eren deze respectievelijke gebreken in de logische theorie door midde
 \todo{oplossing vinden voor de derde: gewoon verwijzen naar IDP-bestand?}
 
 \begin{figure}
-	\label{fig:hierarchie}
 	\includegraphics{chap-kwaliteitsgebrek/hierarchy.png}
 	\caption{Voorbeeld van meer permissieve multipliciteiten in een klassehi\"erarchie en van een losstaande klasse (zijnde \textit{Loose})}
+	\label{fig:hierarchie}
 \end{figure}
 
 Deze regels worden meteen toegevoegd aan de theorie die wordt gegenereerd zoals uitgelijnd eerder in dit hoofdstuk. In hoofdstuk \ref{sec:rol-idp} wordt uitgelegd hoe deze theorie wordt gebruik om kwaliteitsgebreken te vinden.
