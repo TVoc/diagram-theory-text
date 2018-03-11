@@ -144,6 +144,8 @@ Voor deze sequentiediagram krijgen we:
 
 Zin \ref{eq:sdprog} verzekert het juiste gedrag van de instructieteller, namelijk dat hij doorgaans met \'e\'en wordt verhoogd tussen tijdstappen. De uitzonderingen worden hier ook opgelijst; in dit geval verspringt de teller wanneer men het begin van de \textit{if-else}-constructie tegenkomt en wanneer het einde van het \textit{if}-deel is bereikt. Zinnen \ref{eq:sdif} en \ref{eq:sdthen} controleren de voorwaarde voor de uitvoering van het \textit{if}- en \textit{else}-deel en selecteren wat correct is. Zin \ref{eq:sdexit} zegt dat zowel het \textit{if}-deel als het \textit{else}-deel uitkomen op de instructie die direct volgt op de \textit{if-else}-constructie.
 
+Voor dit diagram is het eenvoudig om deze zinnen op te stellen aangezien er geen geneste combined fragments aanwezig zijn. We beschrijven de algemene methode om het uitvoeringspad doorheen combined fragments te bepalen in sectie \ref{sec:combined-fragment}.
+
 \parbreak
 
 Als laatste zijn er de causatiezinnen voor de verscheidene variabelen die worden aangemaakt en aangesproken in het sequentiediagram. Een aantal van deze variabelen veranderen niet doorheen de uitvoering van het sequentiediagram en er wordt verondersteld dat deze al bekend zijn v\'o\'or de uitvoering begint. Deze variabelen zijn diegenen die betrokken zijn bij de eerste instructie: \textit{attacker}, de instantie die de eerste oproep ontvangt, en \textit{target} en \textit{weapon}, die als parameter worden opgegeven.
@@ -158,6 +160,96 @@ Voor de andere variabelen wordt er een causatiezin toegevoegd voor elke instruct
 De zin drukt uit dat de getter wordt opgeroepen op \textit{target} en dat er wordt gevraagd naar een instantie van \textit{Statistic} dat in verband staat met \textit{target} en als naam "defence" heeft. Die instantie wordt dan als waarde toegekend aan de variabele \textit{defence}.
 
 Zie appendix \ref{app:seq-diagram-game} voor het volledig model voor het gedrag van het sequentiediagram in figuur \ref{fig:seq-diagram-game}.
+
+
+\section{Het uivoeren van combined fragments}\label{sec:combined-fragment}
+Het opstellen van causatiezinnen voor \textit{SDPointAt} ten gevolge van combined fragments is niet vanzelfsprekend. In deze sectie beschrijven we onze methode om dit te bewerkstelligen.
+Bij de vertaling van sequentiediagrammen houden we in de interne voorstelling van een combined fragment volgende zaken bij:
+
+\begin{itemize}
+	\item Alle combined fragments die kinderen zijn van het fragment.
+	\item Het fragment dat de ouder is van het fragment in kwestie, als die bestaat.
+	\item Alle berichten die rechtstreeks deel zijn van het fragment. Een bericht is rechtstreeks deel van een fragment als het bericht een deel is van het fragment, maar geen rechtstreeks deel is van een kind of afstammeling van het fragment.
+	\item De voorwaarde waaraan voldaan moet zijn om het fragment uit te voeren. 
+\end{itemize}
+
+Voor alt-fragmenten maken we het onderscheid tussen kinderen en berichten van het \textit{if}-gedeelte enerzijds en tussen kinderen en berichten van het \textit{else}-gedeelte anderzijds. Ook geldt dat er een voorwaarde is voor de uitvoering van het \textit{if}-gedeelte en voor de uitvoering van het \textit{else}-gedeelte.
+
+In de methode om in de uitvoertheorie het uitvoeringspad doorheen combined fragments correct te vertalen gebruiken we twee procedures: E\'en die bepaalt naar welke berichten wordt gesprongen onder welke voorwaarde bij het binnengaan van een fragment, en \'e\'en die bepaalt naar welke berichten wordt gesprongen onder welke voorwaarde bij het buitengaan van een fragment. We bespreken deze procedures afzonderlijk.
+
+\subsection{Transitie naar een fragment}
+
+Het resultaat van deze procedure is een mapping van berichten waarnaar gesprongen kan worden bij het binnengaan van een fragment naar onder welke voorwaarde deze sprong gebeurt. We willen dat deze procedure dit niet enkel doet voor het gegeven fragment, maar ook voor alle kinderen van het fragment. Op die manier worden alle fragmenten verwerkt wanneer de procedure wordt opgeroepen voor alle fragmenten zonder ouders.
+We geven een overzicht van de procedure in algoritme \ref{alg:transition-to-frag}.
+
+\parbreak
+
+\begin{algorithm}
+	\KwIn{\textit{fragment : combined fragment}; \textit{aggregateVoorwaarde : string}}
+	\KwOut{Een mapping van bericht naar string. De string stelt de voorwaarde voor waaronder naar een bericht wordt gesprongen bij de transitie naar een fragment.}
+	$uitvoer \leftarrow \emptyset$; \\
+	\textit{gezien $\leftarrow \emptyset$}; \\
+	\eIf{eerste bericht is rechtstreeks deel van fragment}{
+	$uitvoer \leftarrow uitvoer $\textit{ + \{eerste bericht $\rightarrow$ aggregateVoorwaarde + voorwaarde voor fragment\}}; \\
+	\textit{kinderen $\leftarrow$ kinderen van fragment}; \\
+	\textit{uitvoer $\leftarrow$ uitvoer $\cup$ vouwLussen(gezien, kinderen, $\epsilon$, \textbf{false}, \textbf{true})}; zie algoritme \ref{alg:wrap-loops} \\
+	\ForEach{kind $\in$ kinderen}{
+		\If{kind $\notin$ gezien}{
+		\textit{uitvoer $\leftarrow$ uitvoer $\cup$ bepaalTransitieIn(kind, ``'')}};}
+	 }{
+	 \textit{eersteFragment $\leftarrow$ fragment waar eerste bericht rechtstreeks deel van is}; \\
+	 \eIf{eersteFragment is lusfragment}{
+	 	\textit{voorwaarde $\leftarrow$ aggregateVoorwaarde + ``$\land$'' voorwaarde voor fragment}; \\
+	 	\textit{uitvoer $\leftarrow$ uitvoer $\cup$ bepaalTransitieIn(gezien, voorwaarde)}; \\
+	 	\textit{voorwaarde $\leftarrow$ voorwaarde + ``$\land \lnot$\('' + voorwaarde voor eersteFragment + ``\)''}; \\
+	 	\textit{kinderen $\leftarrow$ kinderen van fragment}; \\
+	 	\textit{uitvoer $\leftarrow$ uitvoer $\cup$ vouwLussen(gezien, kinderen, voorwaarde, \textbf{true}, \textbf{true})};
+	 }{
+	 \textit{voorwaarde $\leftarrow$ aggregateVoorwaarde + ``$\land$'' voorwaarde voor fragment}; \\
+	 \textit{uitvoer $\leftarrow$ uitvoer $\cup$ bepaalTransitie(eersteFragment, voorwaarde)};
+ 	}
+ 	\ForEach{kind $\in$ kinderen}{
+ 		\If{kind $\notin$ gezien}{
+ 		\textit{uitvoer $\leftarrow$ uitvoer $\cup$ bepaalTransitie(kind, ``'')};}
+ 	}
+	}
+	\textbf{return} \textit{uitvoer};
+	\caption{bepaalTransitieIn}
+	\label{alg:transition-to-frag}
+\end{algorithm}
+
+\begin{algorithm}
+	\KwIn{\textit{gezien : verzameling van combined fragments}; \textit{kinderen : lijst van combined fragments}; \textit{aggregateVoorwaarde : string}; \textit{slaEersteOver : boolean}; \textit{allemaal : boolean}}
+	\KwOut{Een mapping van bericht naar string, zoals in algoritme \ref{alg:transition-to-frag}}
+	\textit{uitvoer $\leftarrow \emptyset$}; \\
+	\ForEach{\textit{kind} $\in$ \textit{kinderen}}{
+	\eIf{kind is lusfragment}{
+	\eIf{allemaal}{
+	\textit{uitvoer $\leftarrow$ uitvoer $\cup$ bepaalTransitieIn(kind, aggregateVoorwaarde)};
+	}{
+	\textit{uitvoer $\leftarrow$ uitvoer $\cup$ bepaalTransitieInOnvolledig(kind, aggregateVoorwaarde)};
+	}
+	\textit{aggregateVoorwaarde} $\leftarrow$ \textit{aggregateVoorwaarde + ``$\land{} \lnot$('' + voorwaarde voor kind + ``)''}; \\
+	\textit{gezien $\leftarrow$ gezien + kind};
+	}{
+	\eIf{$\lnot$ allemaal}{
+	\textbf{break};}{
+	\textit{aggregateVoorwaarde} $\leftarrow \epsilon$;}
+	}}
+	\textbf{return} \textit{uitvoer};
+	\caption{vouwLussen}
+	\label{alg:wrap-loops}
+\end{algorithm}
+
+In algoritme \ref{alg:wrap-loops} is \textit{bepaalTransitieInOnvolledig} een variant van \textit{bepaalTransitieIn} waar er geen recursieve oproep is voor die kinderen die niet betrokken zijn in het vouwproces voor lusfragmenten.
+
+Merk op dat voor alt-fragmenten algoritme \ref{alg:transition-to-frag} wordt uitgevoerd voor het \textit{if}-gedeelte en het \textit{else}-gedeelte afzonderlijk.
+
+De kern van algoritme \ref{alg:transition-to-frag} is dat in de uitvoertheorie in \'e\'en stap bepaald moet worden welk bericht eerst zal worden uitgevoerd wanneer het uitvoerpad een combined fragment binnengaat. Daarom bouwen we doorheen de recursie een aggregate voorwaarde op die bestaat uit een conjunctie van voorwaarden voor fragmenten. Enkel wanneer een fragment bereikt wordt waarvoor geldt dat het eerste bericht rechtstreeks deel is van dat fragment wordt er een mapping van dat bericht naar die aggregate voorwaarde toegevoegd. Hierna maken we de aggregate voorwaarde terug leeg om dan het proces voort te zetten voor de kinderen.
+
+Algoritme \ref{alg:wrap-loops} is nodig omdat lusfragmenten die elkaar opvolgen een speciaal geval vormen. Voor een lusfragment geldt immers dat het wordt uitgevoerd indien de voorwaarde voor dat lusfragment vervuld is en de voorwaarden voor alle voorgaande lusfragmenten niet vervuld zijn. Er moet ook voor gezorgd worden dat alle lusfragmenten in een opvolging van lusfragmenten overgeslagen worden indien voor geen enkele ervan de voorwaarde is vervuld. Algoritme \ref{alg:wrap-loops} vult ook een verzameling met alle fragmenten die het voor zijn rekening neemt zodat ze niet opnieuw worden behandeld in algoritme \ref{alg:transition-to-frag}.
+
+\subsection{Transitie uit een fragment}
 
 
 \section{Interactie tussen meerdere sequentiediagrammen}\label{sec:interaction}
