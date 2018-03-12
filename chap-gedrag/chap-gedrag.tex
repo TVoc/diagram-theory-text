@@ -251,7 +251,68 @@ Algoritme \ref{alg:wrap-loops} is nodig omdat lusfragmenten die elkaar opvolgen 
 
 \subsection{Transitie uit een fragment}
 
+Het doel is om te bepalen welke berichten dienen als punten waar het uitvoerpad een combined fragment verlaat (verder een 'verlaatpunt'), en naar welke berichten de uitvoer springt onder welke voorwaarden. Daarom is het resultaat van deze procedure een mapping van verlaatpunt naar een mapping van berichten en onder welke voorwaarde naar die berichten wordt gesprongen. We geven een overzicht van de procedure in algoritme \ref{alg:calcExitForMessages}.
 
+\begin{algorithm}
+	\KwIn{\textit{fragment : combined fragment; uitvoer : verzameling van bericht $\rightarrow$ verzameling van \{bericht $\rightarrow$ string\}} \\
+	De verwachting is dat \textit{uitvoer} leeg is bij de initi\"ele oproep}
+	\KwOut{\textit{Verzameling van bericht $\rightarrow$ \{bericht $\rightarrow$ string\}} \\
+	Dit is een mapping van verlaatpunten naar een mapping van berichten waarnaar gesprongen wordt vanaf het verlaatpunt naar een string die specificeert onder welke voorwaarde naar dat bericht wordt gesprongen.}
+	\textit{laatsteBericht $\leftarrow$ laatste bericht van fragment}; \\
+	\If{laatsteBericht is rechtstreeks deel van fragment}{
+	\textit{mapPaar $\leftarrow$ (laatsteBericht $\rightarrow \emptyset$)}; \tcc{laatsteBericht wordt later gemapt naar een mapping van berichten naar de voorwaarde waaronder naar die berichten wordt gesprongen vanaf laatsteBericht} \\
+	\eIf{fragment heeft geen ouder}{
+	\textit{transitieNaarBuiten(fragment, mapPaar)}; zie algoritme \ref{alg:exitToOutside} \\
+	\textit{uitvoer $\leftarrow$ uitvoer + (laatsteBericht $\rightarrow$ mapPaar)};}{
+	\If{er is een bericht meteen na fragment}{
+	\textit{berichtNa $\leftarrow$ bericht meteen na fragment}; \\
+	\textit{kind $\leftarrow$ voorouder van fragment waar berichtNa deel van is dat fragment als ouder heeft}; \\
+	\textit{kinderenNa $\leftarrow$ alle kinderen van fragment die na kind komen}; \\
+	\textit{als het eerste lid van kinderenNa geen lusfragment is, hou enkel dat eerste lid over; anders, hou eerste lid over en alle lusfragmenten die meteen volgen op het eerste lid} \\
+	\textit{transitiesIn $\leftarrow \emptyset$}; \\
+	\ForEach{kindFragment $\in$ kinderenNa}{
+	\textit{transitiesIn $\leftarrow$ transitiesIn $\cup$ bepaalTransitiesIn(kindFragment, ``'')};}
+	\textit{als fragment een lusfragment is, concateneer alle sprongvoorwaarden in transitiesIn met de voorwaarde voor fragment} \\
+	\textit{voeg alle elementen van transitiesIn toe aan mapPaar} \\
+	\textit{uitvoer $\leftarrow$ uitvoer + (laatsteBericht $\rightarrow$ mapPaar);} \\
+	\textit{ga naar stap 26}}
+	\eIf{fragment heeft een ouder}{
+	\textit{begin terug vanaf stap 4 met de ouder van fragment}}{
+	\textit{transitieNaarBuiten(fragment, mapPaar, transitieVoorwaarde)}; \tcc{als fragment een alt-fragment is, is transitieVoorwaarde leeg; anders is transitieVoorwaarde de voorwaarde voor de lus}
+	\textit{uitvoer $\leftarrow$ uitvoer + (laatsteBericht $\rightarrow$ mapPaar)}; \\
+	\textit{ga naar stap 26}}
+	}
+	}
+	\ForEach{kind $\in$ kinderen van fragment}{
+	\textit{bepaalTransitieUit(kind, uitvoer)}}
+	\textbf{return};
+	\caption{bepaalTransitieUit}
+	\label{alg:calcExitForMessages}
+\end{algorithm}
+
+\begin{algorithm}
+	\KwIn{\textit{fragment : combined fragment; mapPaar : bericht $\rightarrow$ verzameling van \{bericht $\rightarrow$ string\}; transitieVoorwaarde : string}}
+	\If{bericht meteen na dit fragment is deel van een lusfragment zonder ouder}{
+	\textit{lussen $\leftarrow$ alle lussen die meteen volgen op fragment}; \\
+	\textit{aggregateVoorwaarde $\leftarrow \epsilon$}; \\
+	\ForEach{lus $\in$ lussen}{
+	\textit{transitiesIn $\leftarrow$ bepaalTransitieIn(fragment, aggregateVoorwaarde)}; \\
+	\textit{concateneer alle sprongvoorwaarden in transitiesIn met transitieVoorwaarde}; \\
+	\textit{mapPaar $\leftarrow$ mapPaar $\cup$ transitiesIn}; \\
+	\textit{aggregateVoorwaarde $\leftarrow$ aggregateVoorwaarde + ``$\land \lnot$('' + voorwaarde voor lus + ``)''}}
+	\textbf{return};}
+	\textit{volgend $\leftarrow$ bericht dat meteen volgt op fragment}; \\
+	\If{volgend is deel van combined fragment}{
+	\textit{topFragment $\leftarrow$ voorouder van fragment waar volgend deel van is die zelf geen ouder heeft}; \\
+	\textit{transitiesIn $\leftarrow$ bepaalTransitieIn(topFragment, ``'')}; \\
+	\textit{concateneer alle sprongvoorwaarden in transitiesIn met transitieVoorwaarde}; \\
+	\textit{mapPaar $\leftarrow$ mapPaar $\cup$ transitiesIn}; \\
+	\textbf{return};}
+	\textit{mapPaar $\leftarrow$ mapPaar + \{volgend $\rightarrow$ transitieVoorwaarde\}}; \\
+	\textbf{return};
+	\caption{transitieNaarBuiten}
+	\label{alg:exitToOutside}
+\end{algorithm}
 
 \section{Interactie tussen meerdere sequentiediagrammen}\label{sec:interaction}
 In een project stelt men doorgaans meerdere sequentiediagrammen op die elkaar ook kunnen oproepen. Men gebruikt soms ook recursie in deze diagrammen. In deze sectie beschrijven we hoe we het oproepen van andere sequentiediagrammen en een recursiemechanisme ondersteunen.
