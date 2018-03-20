@@ -195,17 +195,17 @@ We geven een overzicht van de procedure in algoritme \ref{alg:transition-to-frag
 	\textit{uitvoer $\leftarrow$ uitvoer $\cup$ vouwLussen(gezien, kinderen, $\epsilon$, \textbf{false}, \textbf{true})}; zie algoritme \ref{alg:wrap-loops} \\
 	\ForEach{kind $\in$ kinderen}{
 		\If{kind $\notin$ gezien}{
-		\textit{uitvoer $\leftarrow$ uitvoer $\cup$ bepaalTransitieIn(kind, ``'')}};}
+		\textit{uitvoer $\leftarrow$ uitvoer $\cup$ bepaalTransitieIn(kind, ``'')};}}
 	 }{
 	 \textit{eersteFragment $\leftarrow$ fragment waar eerste bericht rechtstreeks deel van is}; \\
 	 \eIf{eersteFragment is lusfragment}{
-	 	\textit{voorwaarde $\leftarrow$ aggregateVoorwaarde + ``$\land$'' voorwaarde voor fragment}; \\
-	 	\textit{uitvoer $\leftarrow$ uitvoer $\cup$ bepaalTransitieIn(gezien, voorwaarde)}; \\
-	 	\textit{voorwaarde $\leftarrow$ voorwaarde + ``$\land \lnot$\('' + voorwaarde voor eersteFragment + ``\)''}; \\
+	 	\textit{voorwaarde $\leftarrow$ aggregateVoorwaarde + ``$\land$'' + voorwaarde voor fragment}; \\
+	 	\textit{uitvoer $\leftarrow$ uitvoer $\cup$ bepaalTransitieIn(eersteFragment, voorwaarde)}; \\
+	 	\textit{voorwaarde $\leftarrow$ voorwaarde + ``$\land \lnot$('' + voorwaarde voor eersteFragment + ``)''}; \\
 	 	\textit{kinderen $\leftarrow$ kinderen van fragment}; \\
 	 	\textit{uitvoer $\leftarrow$ uitvoer $\cup$ vouwLussen(gezien, kinderen, voorwaarde, \textbf{true}, \textbf{true})};
 	 }{
-	 \textit{voorwaarde $\leftarrow$ aggregateVoorwaarde + ``$\land$'' voorwaarde voor fragment}; \\
+	 \textit{voorwaarde $\leftarrow$ aggregateVoorwaarde + ``$\land$'' + voorwaarde voor fragment}; \\
 	 \textit{uitvoer $\leftarrow$ uitvoer $\cup$ bepaalTransitie(eersteFragment, voorwaarde)};
  	}
  	\ForEach{kind $\in$ kinderen}{
@@ -247,40 +247,43 @@ Merk op dat voor alt-fragmenten algoritme \ref{alg:transition-to-frag} wordt uit
 
 De kern van algoritme \ref{alg:transition-to-frag} is dat in de uitvoertheorie in \'e\'en stap bepaald moet worden welk bericht eerst zal worden uitgevoerd wanneer het uitvoerpad een combined fragment binnengaat. Daarom bouwen we doorheen de recursie een aggregate voorwaarde op die bestaat uit een conjunctie van voorwaarden voor fragmenten. Enkel wanneer een fragment bereikt wordt waarvoor geldt dat het eerste bericht rechtstreeks deel is van dat fragment wordt er een mapping van dat bericht naar die aggregate voorwaarde toegevoegd. Hierna maken we de aggregate voorwaarde terug leeg om dan het proces voort te zetten voor de kinderen.
 
-Algoritme \ref{alg:wrap-loops} is nodig omdat lusfragmenten die elkaar opvolgen een speciaal geval vormen. Voor een lusfragment geldt immers dat het wordt uitgevoerd indien de voorwaarde voor dat lusfragment vervuld is en de voorwaarden voor alle voorgaande lusfragmenten niet vervuld zijn. Er moet ook voor gezorgd worden dat alle lusfragmenten in een opvolging van lusfragmenten overgeslagen worden indien voor geen enkele ervan de voorwaarde is vervuld. Algoritme \ref{alg:wrap-loops} vult ook een verzameling met alle fragmenten die het voor zijn rekening neemt zodat ze niet opnieuw worden behandeld in algoritme \ref{alg:transition-to-frag}.
+Algoritme \ref{alg:wrap-loops} is nodig omdat lusfragmenten die elkaar opvolgen een speciaal geval vormen. Voor een lusfragment geldt immers dat het wordt uitgevoerd indien de voorwaarde voor dat lusfragment vervuld is en de voorwaarden voor alle voorgaande lusfragmenten niet vervuld zijn. \todo{visueel voorbeeld hiervan} Er moet ook voor gezorgd worden dat alle lusfragmenten in een opvolging van lusfragmenten overgeslagen worden indien voor geen enkele ervan de voorwaarde is vervuld. Algoritme \ref{alg:wrap-loops} markeert alle fragmenten die het voor zijn rekening neemt zodat ze niet opnieuw worden behandeld in algoritme \ref{alg:transition-to-frag}.
 
 \subsection{Transitie uit een fragment}
 
-Het doel is om te bepalen welke berichten dienen als punten waar het uitvoerpad een combined fragment verlaat (verder een 'verlaatpunt'), en naar welke berichten de uitvoer springt onder welke voorwaarden. Daarom is het resultaat van deze procedure een mapping van verlaatpunt naar een mapping van berichten en onder welke voorwaarde naar die berichten wordt gesprongen. We geven een overzicht van de procedure in algoritme \ref{alg:calcExitForMessages}.
+Het doel is om te bepalen welke berichten dienen als punten waar het uitvoerpad een combined fragment verlaat (verder een `verlaatpunt'), en naar welke berichten de uitvoer springt onder welke voorwaarden. Daarom is het resultaat van deze procedure een mapping van verlaatpunt naar een mapping van berichten en onder welke voorwaarde naar die berichten wordt gesprongen vanuit het verlaatpunt. We geven een overzicht van de procedure in algoritme \ref{alg:calcExitForMessages}.
 
 \begin{algorithm}
 	\KwIn{\textit{fragment : combined fragment; uitvoer : verzameling van bericht $\rightarrow$ verzameling van \{bericht $\rightarrow$ string\}} \\
 	De verwachting is dat \textit{uitvoer} leeg is bij de initi\"ele oproep}
-	\KwOut{\textit{Verzameling van bericht $\rightarrow$ \{bericht $\rightarrow$ string\}} \\
-	Dit is een mapping van verlaatpunten naar een mapping van berichten waarnaar gesprongen wordt vanaf het verlaatpunt naar een string die specificeert onder welke voorwaarde naar dat bericht wordt gesprongen.}
+	\KwOut{\textit{Verzameling van bericht $\rightarrow$ \{bericht $\rightarrow$ string\}}}
+	\textit{aggregateVoorwaarde $\leftarrow \epsilon$} \\
 	\textit{laatsteBericht $\leftarrow$ laatste bericht van fragment}; \\
 	\If{laatsteBericht is rechtstreeks deel van fragment}{
-	\textit{mapPaar $\leftarrow$ (laatsteBericht $\rightarrow \emptyset$)}; \tcc{laatsteBericht wordt later gemapt naar een mapping van berichten naar de voorwaarde waaronder naar die berichten wordt gesprongen vanaf laatsteBericht} \\
+	\textit{mapPaar $\leftarrow$ (laatsteBericht $\rightarrow \emptyset$)}; \tcc{laatsteBericht wordt later gemapt naar een mapping van berichten naar de voorwaarde waaronder naar die berichten wordt gesprongen vanaf laatsteBericht} 
 	\eIf{fragment heeft geen ouder}{
-	\textit{transitieNaarBuiten(fragment, mapPaar)}; zie algoritme \ref{alg:exitToOutside} \\
+	\textit{transitieNaarBuiten(fragment, mapPaar, (negatie van lusvoorwaarde als lusfragment, anders $\epsilon$))}; zie algoritme \ref{alg:exitToOutside} \\
 	\textit{uitvoer $\leftarrow$ uitvoer + (laatsteBericht $\rightarrow$ mapPaar)};}{
-	\If{er is een bericht meteen na fragment}{
-	\textit{berichtNa $\leftarrow$ bericht meteen na fragment}; \\
-	\textit{kind $\leftarrow$ voorouder van fragment waar berichtNa deel van is dat fragment als ouder heeft}; \\
-	\textit{kinderenNa $\leftarrow$ alle kinderen van fragment die na kind komen}; \\
-	\textit{als het eerste lid van kinderenNa geen lusfragment is, hou enkel dat eerste lid over; anders, hou eerste lid over en alle lusfragmenten die meteen volgen op het eerste lid} \\
+	\textit{als fragment een lusfragment is, voeg negatie van lusvoorwaarde toe aan aggregateVoorwaarde}; \\
+	\textit{ouderFragment $\leftarrow$ ouder van fragment}; \\
+	\If{bericht na laatsteBericht is deel van ouderFragment}{
+	\textit{berichtNa $\leftarrow$ na laatsteBericht}; \\
+	\textit{kind $\leftarrow$ voorouder van fragment waar berichtNa rechtstreeks deel van is dat ouderFragment als ouder heeft}; \\
+	\textit{kinderenNa $\leftarrow$ \{kind\} $\cup$ alle kinderen van ouderFragment die na kind komen}; \\
+	\textit{als het eerste lid van kinderenNa geen lusfragment is, hou enkel dat eerste lid over; anders, hou eerste lid, alle lusfragmenten die meteen volgen op het eerste lid, en het meteen daaropvolgende fragment, als er \'e\'en is, over} \\
 	\textit{transitiesIn $\leftarrow \emptyset$}; \\
 	\ForEach{kindFragment $\in$ kinderenNa}{
 	\textit{transitiesIn $\leftarrow$ transitiesIn $\cup$ bepaalTransitiesIn(kindFragment, ``'')};}
-	\textit{als fragment een lusfragment is, concateneer alle sprongvoorwaarden in transitiesIn met de voorwaarde voor fragment} \\
+	\textit{concateneer alle sprongvoorwaarden in transitiesIn met aggregateVoorwaarde} \\
 	\textit{voeg alle elementen van transitiesIn toe aan mapPaar} \\
 	\textit{uitvoer $\leftarrow$ uitvoer + (laatsteBericht $\rightarrow$ mapPaar);} \\
-	\textit{ga naar stap 26}}
-	\eIf{fragment heeft een ouder}{
-	\textit{begin terug vanaf stap 4 met de ouder van fragment}}{
-	\textit{transitieNaarBuiten(fragment, mapPaar, transitieVoorwaarde)}; \tcc{als fragment een alt-fragment is, is transitieVoorwaarde leeg; anders is transitieVoorwaarde de voorwaarde voor de lus}
+	\textit{ga naar stap 30 als het laatste lid van kinderenNa geen lus is, anders naar stap 23}}
+	\eIf{ouderFragment heeft een ouder}{
+	\textit{fragment $\leftarrow$ ouderFragment;} \\
+	\textit{ga naar stap 5}}{
+	\textit{transitieNaarBuiten(ouderFragment, mapPaar, aggregateVoorwaarde)}; \\
 	\textit{uitvoer $\leftarrow$ uitvoer + (laatsteBericht $\rightarrow$ mapPaar)}; \\
-	\textit{ga naar stap 26}}
+	\textit{ga naar stap 30}}
 	}
 	}
 	\ForEach{kind $\in$ kinderen van fragment}{
@@ -293,14 +296,16 @@ Het doel is om te bepalen welke berichten dienen als punten waar het uitvoerpad 
 \begin{algorithm}
 	\KwIn{\textit{fragment : combined fragment; mapPaar : bericht $\rightarrow$ verzameling van \{bericht $\rightarrow$ string\}; transitieVoorwaarde : string}}
 	\If{bericht meteen na dit fragment is deel van een lusfragment zonder ouder}{
-	\textit{lussen $\leftarrow$ alle lussen die meteen volgen op fragment}; \\
+	\textit{volgenden $\leftarrow$ alle lussen die meteen volgen op fragment en het meteen daaropvolgende fragment, als er \'e\'en is}; \\
 	\textit{aggregateVoorwaarde $\leftarrow \epsilon$}; \\
-	\ForEach{lus $\in$ lussen}{
-	\textit{transitiesIn $\leftarrow$ bepaalTransitieIn(fragment, aggregateVoorwaarde)}; \\
+	\ForEach{volgendFragment $\in$ volgenden}{
+	\textit{transitiesIn $\leftarrow$ bepaalTransitieIn(volgendFragment, aggregateVoorwaarde)}; \\
 	\textit{concateneer alle sprongvoorwaarden in transitiesIn met transitieVoorwaarde}; \\
 	\textit{mapPaar $\leftarrow$ mapPaar $\cup$ transitiesIn}; \\
-	\textit{aggregateVoorwaarde $\leftarrow$ aggregateVoorwaarde + ``$\land \lnot$('' + voorwaarde voor lus + ``)''}}
+	\If{volgend is een lusfragment}{\textit{aggregateVoorwaarde $\leftarrow$ aggregateVoorwaarde + ``$\land \lnot$('' + voorwaarde voor lus + ``)''};}}
+	\If{laatste lid van volgenden is geen lus}{
 	\textbf{return};}
+	}
 	\textit{volgend $\leftarrow$ bericht dat meteen volgt op fragment}; \\
 	\If{volgend is deel van combined fragment}{
 	\textit{topFragment $\leftarrow$ voorouder van fragment waar volgend deel van is die zelf geen ouder heeft}; \\
@@ -313,6 +318,74 @@ Het doel is om te bepalen welke berichten dienen als punten waar het uitvoerpad 
 	\caption{transitieNaarBuiten}
 	\label{alg:exitToOutside}
 \end{algorithm}
+
+Algoritme \ref{alg:calcExitForMessages} kijkt eerst of het laatste bericht van het fragment rechtstreeks deel is ervan. Zoniet, gaat het algoritme voort met de kinderen van het fragment. Zoja, controleren we of het fragment een ouder heeft. Als dat zo is, dan kan het zijn dat die ouder een bericht heeft dat in het diagram meteen na het laatste bericht van het fragment komt en dat het uitvoerpad dus mogelijk naar dat bericht springt. Als dat bericht rechtstreeks deel is van de ouder, dan wordt genoteerd dat de uitvoering vanaf het laatste bericht springt naar dat bericht en gaat het algoritme verder vanaf stap 30 (door ruimtegebrek is deze mogelijkheid niet neergeschreven in deze weergave van algoritme \ref{alg:calcExitForMessages}). Als het bericht in de plaats deel is van een kind van de ouder, haalt het algoritme het fragment op waarvan dat bericht rechtstreeks deel van is, klimt het naar boven in de boom tot het een kind van de ouders tegenkomt, bundelt opeenvolgende lussen als dat kind een lusfragment is (en ook het fragment na die lussen, als er \'e\'en bestaat) en roept dan algoritme \ref{alg:transition-to-frag} op op alle gebundelde fragmenten. In de uitvoer wordt dan genoteerd dat het uitvoerpad kan springen naar de berichten die deel zijn van de uitvoer van algoritme \ref{alg:transition-to-frag} en het algoritme gaat verder met de kinderen van het oorspronkelijk fragment.
+
+Als het bericht na het laatste bericht geen deel is van de ouder, controleren we of de ouder zelf een ouder heeft. Zoja, neemt het algoritme een stap naar boven in de fragmentenboom. Zonee, betekent dit dat de top van de fragmentenboom is bereikt en dat het uitvoerpad de boom moet verlaten. Algoritme \ref{alg:exitToOutside} zorgt voor deze stap uit de boom. We controleren of de fragmentenboom wordt opgevolgd door een lusfragment en bundelen alle volgende lusfragmenten (en het meteen daaropvolgend fragment, als er \'e\'en bestaat) als dat zo is. We roepen algoritme \ref{alg:transition-to-frag} op op die fragmenten en registreren de uitvoer als berichten waarnaar gesprongen kan worden. Als er geen lus volgt op de boom, roepen we algoritme \ref{alg:transition-to-frag} op als er een fragment volgt, en anders noteren we het bericht dat meteen volgt op de boom als een bericht waarnaar gesprongen kan worden.
+
+Merk op dat voor alt-fragmenten algoritme \ref{alg:calcExitForMessages} afzonderlijk wordt uitgevoerd voor het \textit{if}-gedeelte en het \textit{else}-gedeelte afzonderlijk.
+
+\subsection{Het herhaaldelijk uitvoeren van een lus}
+Een laatste aspect is dat we ervoor moeten zorgen dat een lus terug wordt uitgevoerd als de laatste instructie bereikt is en de lusvoorwaarde nog geldt. We gebruiken algoritme \ref{alg:calculateLoopReentry} om te bepalen vanaf welke berichten terug wordt gesprongen naar de mogelijke beginpunten van een lusfragment.
+
+\begin{algorithm}
+	\KwIn{fragment : combined fragment}
+	\KwOut{Verzameling van bericht $\rightarrow$ \{bericht $\rightarrow$ string\}}
+	\textit{uitvoer $\leftarrow \emptyset$}; \\
+	\textit{aggregateVoorwaarde $\leftarrow \epsilon$}; \\
+	\ForEach{laatsteBericht $\in$ mogelijke laatste berichten van fragment}{
+	\Do{fragment heeft een ouder}{
+	\If{fragment is een lusfragment en laatsteBericht is een mogelijk laatst bericht van fragment}{
+	\textit{transities $\leftarrow$ bepaalTransitieInOnvolledig(fragment, $epsilon$)}; \\
+	\textit{concateneer alle sprongvoorwaarden in transities met aggregateVoorwaarde}; \\
+	\ForEach{bericht---voorwaarde-paar $\in$ transities}{
+	\textit{uitvoer $\leftarrow$ uitvoer + \{bericht $\rightarrow$ \{laatsteBericht $\rightarrow$ voorwaarde\}\}};}}
+	\If{fragment heeft een ouder}{
+	\If{fragment is een lusfragment}{\textit{aggregateVoorwaarde $\leftarrow$ aggregateVoorwaarde + ``$\land \lnot$('' + voorwaarde voor lusfragment + ``)''};}
+	\textit{fragment $\leftarrow$ ouder van fragment};
+	}
+	}}
+	\caption{bepaalLusHeruitvoering}
+	\label{alg:calculateLoopReentry}
+\end{algorithm}
+
+De mogelijke laatste berichten van een fragment zijn deze na ze uitgevoerd zijn ervoor zorgen dat het uitvoerpad het fragment verlaat, bijvoorbeeld de laatste berichten van de \textit{if}- en \textit{else}-gedeeltes van een alt-fragment of een bericht dat voorafgaat aan een lusfragment.
+
+Vanaf zulk een laatst bericht stappen we naar boven in de boom en berekenen we elke keer als we een lusfragment tegenkomen de ingangspunten van dat fragment. Naar die ingangspunten wordt dan gesprongen indien de voorwaarde voor de lus niet meer geldt.
+
+\subsection{De vertaling van transities}
+
+Nu volgt een beschrijving van hoe we de voorgaande algoritmes gebruiken om een verzameling van mappings van berichten waarnaar gesprongen wordt naar een mapping van berichten waarvan gesprongen wordt en onder welke voorwaarde vanaf die berichten wordt gesprongen bij te houden. We geven een beschrijving op hoog niveau in algoritme \ref{alg:processCombinedFragment}. Bij de uitvoering ervan werken we vanuit de veronderstelling dat alle berichten en fragmenten van een diagram toegankelijk zijn.
+
+\begin{algorithm}
+	\KwIn{fragment : combined fragment; uitvoer : verzameling van bericht $\rightarrow$ verzameling van \{bericht $\rightarrow$ string\}}
+	\eIf{er is een fragment dat vlak v\'o\'or fragment komt}{
+	\textit{vorig $\leftarrow$ fragment dat vlak v\'o\'or fragment komt}; \\
+	\textit{verwerkFragment(vorig, uitvoer)}; \\
+	\textit{bepaalVerlaatpunten(fragment, uitvoer)}; \\
+	\textit{verzekerLusHeruitvoering(fragment, uitvoer)};
+	}{
+	\textit{transitieIn $\leftarrow$ bepaalTransitieIn(fragment, $\epsilon$)}; \\
+	\textit{berichtVoor $\leftarrow$ het bericht dat vlak v\'o\'or fragment komt}; \\
+	\ForEach{bericht---string-paar $\in$ transitieIn}{
+	\textit{uitvoer $\leftarrow$ uitvoer + \{bericht $\rightarrow$ \{berichtVoor $\rightarrow$ string\}\}}}
+	\textit{bepaalVerlaatpunten(fragment, uitvoer)}; \\
+	\textit{verzekerLusHeruitvoering(fragment, uitvoer)};}
+	\caption{verwerkFragment}
+	\label{alg:processCombinedFragment}
+\end{algorithm}
+
+\textit{bepaalVerlaatPunten} gebruikt algoritme \ref{alg:calcExitForMessages} om te bepalen naar welke berichten wordt gesprongen onder welke voorwaarde vanuit het fragment. \textit{verzekerLusHeruitvoering} bouwt een fragmentenboom op met het gegeven fragment als wortel en roept algoritme \ref{alg:calculateLoopReentry} op op elke knoop in de boom om te verzekeren dat lussen worden heruitgevoerd wanneer de lusvoorwaarde nog geldt.
+
+Bij het vertalen van sequentiediagrammen roepen we algoritme \ref{alg:processCombinedFragment} op op alle fragmenten. De resulterende informatie geeft ons:
+
+\begin{enumerate}
+	\item De berichten naar waar gesprongen wordt
+	\item De berichten vanwaar gesprongen wordt
+	\item Onder welke voorwaarde zulk een sprong gebeurt
+\end{enumerate}
+
+We gebruiken dit om de eigenlijke vertaling van combined fragments naar FO(.) te bepalen.
 
 \section{Interactie tussen meerdere sequentiediagrammen}\label{sec:interaction}
 In een project stelt men doorgaans meerdere sequentiediagrammen op die elkaar ook kunnen oproepen. Men gebruikt soms ook recursie in deze diagrammen. In deze sectie beschrijven we hoe we het oproepen van andere sequentiediagrammen en een recursiemechanisme ondersteunen.
