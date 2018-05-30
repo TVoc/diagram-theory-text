@@ -111,7 +111,8 @@ structure S:V {
     Time = { 0..20 }
     Start = 0
 //    Next = { 0->1;1->2;2->3;3->4 }
-    Next = { 0->1;1->2;2->3;3->4;4->5;5->6;6->7;7->8;8->9;9->10;10->11;11->12;12->13;13->14;14->15;15->16;16->17;17->18;18->19;19->20 }
+    Next = { 0->1;1->2;2->3;3->4;4->5;5->6;6->7;7->8;8->9;9->10;10->11;11->12;
+	12->13;13->14;14->15;15->16;16->17;17->18;18->19;19->20 }
     NextSD = { methodOne_1->methodOne_2; methodOne_2->methodOne_3; methodOne_3->methodOne_3post; methodOne_3post->methodOne_4; methodOne_4->methodOne_5; methodTwo_1->methodTwo_2; methodTwo_2->methodTwo_3; methodTwo_3->methodTwo_3post; methodTwo_3post->methodTwo_4; methodTwo_4->methodTwo_5 }
     A = { objA }
     I_SDPointAt = {methodOne_1}

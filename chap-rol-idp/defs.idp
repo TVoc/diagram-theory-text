@@ -22,18 +22,22 @@ theory T:V {
     ! x [ClassObject] y [ClassObject] : ManyToMany(x, y) <=> (BiAssoc(x, y) & ~ (? z [LimitedInt] : BiAssocHigh(x, y, x, z)) & ~ (? z [LimitedInt] : BiAssocHigh(x, y, y, z))).
     
     // classes that are not associated with any other class
-    ! x [ClassObject] : LooseClass(x) <=> ~ ((? y [ClassObject] : BiAssoc(x, y)) | (? s [ClassObject] y [ClassObject] : IsSupertypeOf(s, x) & (BiAssoc(s, y)))).
+    ! x [ClassObject] : LooseClass(x) <=> ~((? y [ClassObject] : ~(x = y) & (BiAssoc(x, y))) | (? s [ClassObject] y [ClassObject] : IsSupertypeOf(s, x) & (BiAssoc(s, y)))).
     
+	// subclass associations that are more permissive than their respective superclass associations
     ! x [ClassObject] y [ClassObject] : SubclassMorePermissiveMult(x, y, x) <=> ((? sx [ClassObject] : IsSupertypeOf(sx, x) 
-                                                                                    &  ((BiAssoc(sx, y) & ((? z1 [LimitedInt] z2 [LimitedInt] : BiAssocLow(x, y, x, z1) & BiAssocLow(sx, y, sx, z2) & z1 < z2)
-                                                                                                            | (? z1 [LimitedInt] z2 [LimitedInt] : BiAssocHigh(x, y, x, z1) & BiAssocHigh(sx, y, sx, z2) & z1 > z2)))
-                                                                                      |
-                                                                                        (? sy [ClassObject] : IsSupertypeOf(sy, y)
-                                                                                            & (BiAssoc(sx, sy) & ((? z1 [LimitedInt] z2 [LimitedInt] : BiAssocLow(x, y, x, z1) & BiAssocLow(sx, sy, sx, z2) & z1 < z2)
-                                                                                                            | (? z1 [LimitedInt] z2 [LimitedInt] : BiAssocHigh(x, y, x, z1) & BiAssocHigh(sx, sy, sx, z2) & z1 > z2))))))
-                                                                                | (? sy [ClassObject] : IsSupertypeOf(sy, y)
-                                                                                        & BiAssoc(x, sy) & ((? z1 [LimitedInt] z2 [LimitedInt] : BiAssocLow(x, y, x, z1) & BiAssocLow(x, sy, x, z2) & z1 < z2)
-                                                                                                            | (? z1 [LimitedInt] z2 [LimitedInt] : BiAssocHigh(x, y, x, z1) & BiAssocHigh(x, sy, x, z2) & z1 > z2)))).
+        &  ((BiAssoc(sx, y) & ((? z1 [LimitedInt] z2 [LimitedInt] : BiAssocLow(x, y, x, z1) & BiAssocLow(sx, y, sx, z2) & z1 < z2)
+           | 
+		   (? z1 [LimitedInt] z2 [LimitedInt] : BiAssocHigh(x, y, x, z1) & BiAssocHigh(sx, y, sx, z2) & z1 > z2)))
+           |
+		   (? sy [ClassObject] : IsSupertypeOf(sy, y)
+		   & (BiAssoc(sx, sy) & ((? z1 [LimitedInt] z2 [LimitedInt] : BiAssocLow(x, y, x, z1) & BiAssocLow(sx, sy, sx, z2) & z1 < z2)
+           | 
+		   (? z1 [LimitedInt] z2 [LimitedInt] : BiAssocHigh(x, y, x, z1) & BiAssocHigh(sx, sy, sx, z2) & z1 > z2))))))
+           |
+		   (? sy [ClassObject] : IsSupertypeOf(sy, y)
+           & BiAssoc(x, sy) & ((? z1 [LimitedInt] z2 [LimitedInt] : BiAssocLow(x, y, x, z1) & BiAssocLow(x, sy, x, z2) & z1 < z2)
+                            | (? z1 [LimitedInt] z2 [LimitedInt] : BiAssocHigh(x, y, x, z1) & BiAssocHigh(x, sy, x, z2) & z1 > z2)))).
     // ------- INFORMATION FROM DIAGRAM -------
     
     // class hierarchy
@@ -43,8 +47,6 @@ theory T:V {
         IsSupertypeOf(Statistic, DerivedStatistic) <- .
         IsSupertypeOf(A,B) <- .
         IsSupertypeOf(C,D) <- .
-        IsSupertypeOf(A,E) <- .
-        IsSupertypeOf(C,F) <- .
     }
     
     // associations between classes

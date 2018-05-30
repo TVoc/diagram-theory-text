@@ -198,13 +198,14 @@ structure S:V {
 }
 
 procedure main() {
-    simulate_custom(T,S)
+    simulate_custom(T,S, "SDPointAt", S[V::finished]())
 }
 
 procedure simulate_custom(theory,structure,finishedsym,finishedvalue) {
     local backup = stdoptions.nbmodels
     stdoptions.nbmodels = 0
     local S_v = initialise(theory,structure)
+    local steps = 1
     
     if #S_v ~= 0 then
         local stop = false
@@ -212,6 +213,7 @@ procedure simulate_custom(theory,structure,finishedsym,finishedvalue) {
         do
             if #S_v > 1 then
                 print("---------------------------------------------")
+                print("Step " .. steps)
                 print("0: stop")
                 for i, v in ipairs(S_v)
                 do
@@ -240,9 +242,10 @@ procedure simulate_custom(theory,structure,finishedsym,finishedvalue) {
                     S_v = progress(theory, S_v[answer])
                 end
             elseif #S_v == 1 then
-                if finishedsym ~= nil then
-                   local voc = getvocabulary(S_v[1])
-                   if S_v[1][voc::finishedsym].ct(finishedvalue) then
+                if finishedsym ~= nil and finishedvalue ~= nil then
+                   local fin = S_v[1][getvocabulary(S_v[1])[finishedsym]].ct(finishedvalue)
+                   if fin then
+                        print("Step " .. steps)
                         print("End condition has been reached-the final state is: ")
                         print(S_v[1])
                         stop = true
@@ -256,6 +259,7 @@ procedure simulate_custom(theory,structure,finishedsym,finishedvalue) {
                 print("There are no valid states-stopping simulation")
                 stop = true
             end
+            steps = steps + 1
         end
     else
         print("No valid initial state-stopping")

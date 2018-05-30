@@ -1,5 +1,5 @@
 \chapter{Simuleren van gedrag op basis van een sequentiediagram}\label{sec:gedrag}
-Een ander populair type van UML-diagram is het sequentiediagram. Waar klassediagrammen de informatie bevat in klasses en de verbanden tussen klasses benoemen, beschrijven sequentiediagrammen het gedrag van instanties van de klasses. Deze instanties communiceren via berichten. Doorgaans zijn deze berichten ofwel een oproep van een methode gedefinieerd voor de klasse van een instantie ofwel een instantiatie van een nieuwe instantie. De berichten zijn genummerd volgens een bepaalde volgorde en samen modelleren ze het gedrag van een stuk van de software.
+Een ander populair type van UML-diagram is het sequentiediagram. Waar klassediagrammen de informatie bevat in klasses en de verbanden tussen klasses benoemen, beschrijven sequentiediagrammen het gedrag van instanties van de klasses. Deze instanties communiceren via berichten. Doorgaans zijn deze berichten een oproep van een methode gedefinieerd voor de klasse van een instantie, of een toekenning aan een variabele intern aan het diagram of een instantiatie van een nieuwe instantie. De berichten zijn genummerd volgens een bepaalde volgorde en samen modelleren ze het gedrag van een stuk van de software.
 
 \parbreak
 
@@ -10,12 +10,13 @@ Verder zijn er ook kaders die berichten omsluiten. Deze kaders duiden \textbf{ge
 
 \begin{enumerate}
 	\item Het \textbf{altfragment}: Deze soort duidt een \textit{if-else}-constructie aan. Het bestaat uit twee delen, namelijk het \text{if}-deel en het \textit{else}-deel, en er staat aangeduid onder welke voorwaarden welk deel wordt uitgevoerd. Figuur \ref{fig:seq-diagram-game} bevat een voorbeeld van een altfragment.
-	\item Het \textbf{lusfragment}: Deze soort duidt een lusconstructie aan. Er staat aangeduid onder welke voorwaarden er een iteratie wordt uitgevoerd. Deze voorwaarde wordt gecontroleerd zowel v\'o\'or de eerste keer dat er mogelijks een iteratie wordt uitgevoerd als elke keer dat een iteratie ten einde komt. Indien de voorwaarde niet geldt, wordt de lus overgeslagen. \todo{referentie naar figuur met loop fragment}
+	\item Het \textbf{lusfragment}: Deze soort duidt een lusconstructie aan. Er staat aangeduid onder welke voorwaarden er een iteratie wordt uitgevoerd. Deze voorwaarde wordt gecontroleerd zowel v\'o\'or de eerste keer dat er mogelijks een iteratie wordt uitgevoerd als elke keer dat een iteratie ten einde komt. Indien de voorwaarde niet geldt, wordt de lus overgeslagen. Figuur \ref{fig:seq-diagram-frag-ex} bevat een voorbeeld van een diagram met lusfragmenten.
 \end{enumerate}
 
 In dit hoofdstuk beschouwen we hoe we het vocabularium en de logische theorie die we hebben opgebouwd eerder in de tekst kunnen uitbreiden om het gedrag voorgesteld in een sequentiediagram te modelleren.
 
 \begin{landscape}
+	\thispagestyle{empty}
 \begin{figure}
 	\includegraphics[width=1.5\textwidth]{chap-gedrag/seq-diagram-game.png}
 	\caption{Sequentiediagram gebaseerd op het klassediagram van figuur \ref{fig:diagram-voorbeeld}}
@@ -24,7 +25,7 @@ In dit hoofdstuk beschouwen we hoe we het vocabularium en de logische theorie di
 \end{landscape}
 
 \section{De keuze voor lineaire tijdscalculus}
-UML-diagrammen schrijven mogelijke toestanden van, en acties, op softwaresystemen voor. Die systemen kunnen van toestand veranderen tussen tijdstappen. Sequentiediagrammen zijn een manier om te beschrijven hoe zulke veranderingen teweeg kunnen gebracht worden. Tijdens de uitvoering van een sequentiediagram mag het systeem enkel veranderen zoals beschreven door de huidige actie. Daarom hebben we een mechanisme nodig binnen FO(.) dat dynamische systemen en acties op deze kan beschrijven. Tegelijk moet dat mechanisme garanderen dat eigenschappen van het systeem die niet worden be\"invloed door de huidige beschouwde actie van het sequentiediagram niet veranderen. Lineaire tijdscalculus\cite{BogaertsBart2014Sdsu}, oftewel LTC, voldoet aan deze voorwaarden. Daarom zullen we om sequentiediagrammen uitvoerbaar te maken binnen FO(.) het generatieproces voor het vocabularium en de theorie dat we bekomen zijn in hoofdstuk \ref{sec:consistentie} uitbreiden volgens de principes van LTC.
+UML-diagrammen schrijven mogelijke toestanden van, en acties, op softwaresystemen voor. Die systemen kunnen van toestand veranderen tussen tijdstappen. Sequentiediagrammen zijn een manier om te beschrijven hoe zulke veranderingen teweeggebracht kunnen worden. Tijdens de uitvoering van een sequentiediagram mag het systeem enkel veranderen zoals beschreven door de huidige actie. Daarom hebben we een mechanisme nodig binnen FO($\cdot$) dat dynamische systemen en acties op deze kan beschrijven. Tegelijk moet dat mechanisme garanderen dat eigenschappen van het systeem die niet worden be\"invloed door de huidige beschouwde actie van het sequentiediagram niet veranderen. Lineaire tijdscalculus\cite{BogaertsBart2014Sdsu}, oftewel LTC, voldoet aan deze voorwaarden. Daarom zullen we om sequentiediagrammen uitvoerbaar te maken binnen FO($\cdot$) het generatieproces voor het vocabularium en de theorie dat we bekomen zijn in hoofdstuk \ref{sec:consistentie} uitbreiden volgens de principes van LTC.
 
 In de volgende secties werken we deze uitbreiding uit voor het sequentiediagram in figuur \ref{fig:seq-diagram-game}.
 
@@ -42,7 +43,7 @@ Om te garanderen dat de instructievolgorde opgelegd door het sequentiediagram ge
 	\item Het causatiepredicaat: \textit{C\_SDPointAt(Time, SDPoint)}
 \end{itemize}
 
-We moeten ook de instanties waarop gehandeld wordt in het sequentiediagram kunnen benoemen. Om te garanderen dat de instanties die vernoemd worden altijd verwijzen naar hetzelfde object, maken we ook de instanties inertieel. Voor \textit{attacker} verkrijgen we dan bijvoorbeeld:
+We moeten ook de instanties waarop gehandeld wordt in het sequentiediagram kunnen benoemen. Om te garanderen dat de instanties die vernoemd worden altijd verwijzen naar hetzelfde object tenzij een instructie een toekenning doet aan de overeenkomstige variabele, maken we ook de instanties inertieel. Voor \textit{attacker} verkrijgen we dan bijvoorbeeld:
 
 \begin{itemize}
 	\item \textit{AttackerT(Time, Character)}
@@ -144,7 +145,7 @@ Voor deze sequentiediagram krijgen we:
 
 Zin \ref{eq:sdprog} verzekert het juiste gedrag van de instructieteller, namelijk dat hij doorgaans met \'e\'en wordt verhoogd tussen tijdstappen. De uitzonderingen worden hier ook opgelijst; in dit geval verspringt de teller wanneer men het begin van de \textit{if-else}-constructie tegenkomt en wanneer het einde van het \textit{if}-deel is bereikt. Zinnen \ref{eq:sdif} en \ref{eq:sdthen} controleren de voorwaarde voor de uitvoering van het \textit{if}- en \textit{else}-deel en selecteren wat correct is. Zin \ref{eq:sdexit} zegt dat zowel het \textit{if}-deel als het \textit{else}-deel uitkomen op de instructie die direct volgt op de \textit{if-else}-constructie.
 
-Voor dit diagram is het eenvoudig om deze zinnen op te stellen aangezien er geen geneste combined fragments aanwezig zijn. We beschrijven de algemene methode om het uitvoeringspad doorheen combined fragments te bepalen in sectie \ref{sec:combined-fragment}.
+Voor dit diagram is het eenvoudig om deze zinnen op te stellen aangezien er geen geneste gecombineerde fragmenten aanwezig zijn. We beschrijven de algemene methode om het uitvoeringspad doorheen gecombineerde fragmenten te bepalen in sectie \ref{sec:combined-fragment}.
 
 \parbreak
 
@@ -153,7 +154,7 @@ Als laatste zijn er de causatiezinnen voor de verscheidene variabelen die worden
 Voor de andere variabelen wordt er een causatiezin toegevoegd voor elke instructie die een waarde toekent aan die variabele. Als voorbeeld bekijken we instructie 3:
 
 \begin{align*}
-	&\forall{t}[Time]\forall{d}[Statistic](C\_DefenceT(t, d) \leftarrow SDPointAt(t, 3) \land \exists{c}[Character](TargetT(t, c) \\ &\land CharacterandStatistic(c, d) \land Statisticname(t, d, "defence"))).
+	&\forall{t}[Time]\forall{d}[Statistic](C\_DefenceT(t, d) \leftarrow SDPointAt(t, 3) \land \\ &\exists{c}[Character](TargetT(t, c) \land CharacterandStatistic(c, d) \\ &\land Statisticname(t, d, "defence"))).
 \end{align*}
 
 
@@ -162,12 +163,12 @@ De zin drukt uit dat de getter wordt opgeroepen op \textit{target} en dat er wor
 Zie appendix \ref{app:seq-diagram-game} voor het volledig model voor het gedrag van het sequentiediagram in figuur \ref{fig:seq-diagram-game}.
 
 
-\section{Het uivoeren van combined fragments}\label{sec:combined-fragment}
-Het opstellen van causatiezinnen voor \textit{SDPointAt} ten gevolge van combined fragments is niet vanzelfsprekend. In deze sectie beschrijven we onze methode om dit te bewerkstelligen.
-Bij de vertaling van sequentiediagrammen houden we in de interne voorstelling van een combined fragment volgende zaken bij:
+\section{Het uivoeren van gecombineerde fragmenten}\label{sec:combined-fragment}
+Het opstellen van causatiezinnen voor \textit{SDPointAt} ten gevolge van gecombineerde fragmenten is niet vanzelfsprekend. In deze sectie beschrijven we onze methode om dit te bewerkstelligen.
+Bij de vertaling van sequentiediagrammen houden we in de interne voorstelling van een gecombineerd fragment volgende zaken bij:
 
 \begin{itemize}
-	\item Alle combined fragments die kinderen zijn van het fragment.
+	\item Alle gecombineerde fragmenten die kinderen zijn van het fragment.
 	\item Het fragment dat de ouder is van het fragment in kwestie, als die bestaat.
 	\item Alle berichten die rechtstreeks deel zijn van het fragment. Een bericht is rechtstreeks deel van een fragment als het bericht een deel is van het fragment, maar geen rechtstreeks deel is van een kind of afstammeling van het fragment.
 	\item De voorwaarde waaraan voldaan moet zijn om het fragment uit te voeren. 
@@ -175,7 +176,7 @@ Bij de vertaling van sequentiediagrammen houden we in de interne voorstelling va
 
 Voor alt-fragmenten maken we het onderscheid tussen kinderen en berichten van het \textit{if}-gedeelte enerzijds en tussen kinderen en berichten van het \textit{else}-gedeelte anderzijds. Ook geldt dat er een voorwaarde is voor de uitvoering van het \textit{if}-gedeelte en voor de uitvoering van het \textit{else}-gedeelte.
 
-In de methode om in de uitvoertheorie het uitvoeringspad doorheen combined fragments correct te vertalen gebruiken we twee procedures: E\'en die bepaalt naar welke berichten wordt gesprongen onder welke voorwaarde bij het binnengaan van een fragment, en \'e\'en die bepaalt naar welke berichten wordt gesprongen onder welke voorwaarde bij het buitengaan van een fragment. We bespreken deze procedures afzonderlijk.
+In de methode om in de uitvoertheorie het uitvoeringspad doorheen gecombineerde fragmenten correct te vertalen gebruiken we twee procedures: E\'en die bepaalt naar welke berichten wordt gesprongen onder welke voorwaarde bij het binnengaan van een fragment, en \'e\'en die bepaalt naar welke berichten wordt gesprongen onder welke voorwaarde bij het buitengaan van een fragment. We bespreken deze procedures afzonderlijk.
 
 \subsection{Transitie naar een fragment}\label{sec:transition-to}
 
@@ -185,7 +186,7 @@ We geven een overzicht van de procedure in algoritme \ref{alg:transition-to-frag
 \parbreak
 
 \begin{algorithm}
-	\KwIn{\textit{fragment : combined fragment}; \textit{aggregateVoorwaarde : string}}
+	\KwIn{\textit{fragment : gecombineerd fragment}; \textit{aggregateVoorwaarde : string}}
 	\KwOut{Een mapping van bericht naar string. De string stelt de voorwaarde voor waaronder naar een bericht wordt gesprongen bij de transitie naar een fragment.}
 	$uitvoer \leftarrow \emptyset$; \\
 	\textit{gezien $\leftarrow \emptyset$}; \\
@@ -219,7 +220,7 @@ We geven een overzicht van de procedure in algoritme \ref{alg:transition-to-frag
 \end{algorithm}
 
 \begin{algorithm}
-	\KwIn{\textit{gezien : verzameling van combined fragments}; \textit{kinderen : lijst van combined fragments}; \textit{aggregateVoorwaarde : string}; \textit{slaEersteOver : boolean}; \textit{allemaal : boolean}}
+	\KwIn{\textit{gezien : verzameling van gecombineerde fragmenten}; \textit{kinderen : lijst van gecombineerde fragmenten}; \textit{aggregateVoorwaarde : string}; \textit{slaEersteOver : boolean}; \textit{allemaal : boolean}}
 	\KwOut{Een mapping van bericht naar string, zoals in algoritme \ref{alg:transition-to-frag}}
 	\textit{uitvoer $\leftarrow \emptyset$}; \\
 	\ForEach{\textit{kind} $\in$ \textit{kinderen}}{
@@ -245,16 +246,16 @@ In algoritme \ref{alg:wrap-loops} is \textit{bepaalTransitieInOnvolledig} een va
 
 Merk op dat voor alt-fragmenten algoritme \ref{alg:transition-to-frag} wordt uitgevoerd voor het \textit{if}-gedeelte en het \textit{else}-gedeelte afzonderlijk.
 
-De kern van algoritme \ref{alg:transition-to-frag} is dat in de uitvoertheorie in \'e\'en stap bepaald moet worden welk bericht eerst zal worden uitgevoerd wanneer het uitvoerpad een combined fragment binnengaat. Daarom bouwen we doorheen de recursie een aggregate voorwaarde op die bestaat uit een conjunctie van voorwaarden voor fragmenten. Enkel wanneer een fragment bereikt wordt waarvoor geldt dat het eerste bericht rechtstreeks deel is van dat fragment wordt er een mapping van dat bericht naar die aggregate voorwaarde toegevoegd. Hierna maken we de aggregate voorwaarde terug leeg om dan het proces voort te zetten voor de kinderen.
+De kern van algoritme \ref{alg:transition-to-frag} is dat in de uitvoertheorie in \'e\'en stap bepaald moet worden welk bericht eerst zal worden uitgevoerd wanneer het uitvoerpad een gecombineerd fragment binnengaat. Daarom bouwen we doorheen de recursie een aggregate voorwaarde op die bestaat uit een conjunctie van voorwaarden voor fragmenten. Enkel wanneer een fragment bereikt wordt waarvoor geldt dat het eerste bericht rechtstreeks deel is van dat fragment wordt er een mapping van dat bericht naar die aggregate voorwaarde toegevoegd. Hierna maken we de aggregate voorwaarde terug leeg om dan het proces voort te zetten voor de kinderen.
 
 Algoritme \ref{alg:wrap-loops} is nodig omdat lusfragmenten die elkaar opvolgen een speciaal geval vormen. Voor een lusfragment geldt immers dat het wordt uitgevoerd indien de voorwaarde voor dat lusfragment vervuld is en de voorwaarden voor alle voorgaande lusfragmenten niet vervuld zijn. Figuur \ref{fig:seq-diagram-frag-ex} stelt bijvoorbeeld dat de uitvoering springt naar de lus aangeduid met \fragname{loop4} als aan de voorwaarde voor de lus aangeduid met \fragname{loop3} niet voldaan is. Algoritme \ref{alg:wrap-loops} markeert alle fragmenten die het voor zijn rekening neemt zodat ze niet opnieuw worden behandeld in algoritme \ref{alg:transition-to-frag}.
 
 \subsection{Transitie uit een fragment}\label{sec:transitions-out}
 
-Het doel is om te bepalen welke berichten dienen als punten waar het uitvoerpad een combined fragment verlaat (verder een `verlaatpunt'), en naar welke berichten de uitvoer springt onder welke voorwaarden. Daarom is het resultaat van deze procedure een mapping van verlaatpunt naar een verzameling van paren van bericht en voorwaarde die moet gelden om naar dat bericht te springen. We geven een overzicht van de procedure in algoritme \ref{alg:calcExitForMessages}.
+Het doel is om te bepalen welke berichten dienen als punten waar het uitvoerpad een gecombineerd fragment verlaat (verder een `verlaatpunt'), en naar welke berichten de uitvoer springt onder welke voorwaarden. Daarom is het resultaat van deze procedure een mapping van verlaatpunt naar een verzameling van paren van bericht en voorwaarde die moet gelden om naar dat bericht te springen. We geven een overzicht van de procedure in algoritme \ref{alg:calcExitForMessages}.
 
 \begin{algorithm}
-	\KwIn{\textit{fragment : combined fragment; uitvoer : lege verzameling van bericht $\rightarrow$ verzameling van \{bericht $\rightarrow$ string\}}}
+	\KwIn{\textit{fragment : gecombineerd fragment; uitvoer : lege verzameling van bericht $\rightarrow$ verzameling van \{bericht $\rightarrow$ string\}}}
 	\KwOut{\textit{Verzameling van bericht $\rightarrow$ \{bericht $\rightarrow$ string\}}}
 	\textit{\{laatsteBericht, aggregateVoorwaarde\} $\leftarrow$ bepaalLaatsteBericht(fragment)}; zie algoritme \ref{alg:determineFinalMessage} \\
 	\If{laatsteBericht is niet leeg}{
@@ -294,10 +295,10 @@ Het doel is om te bepalen welke berichten dienen als punten waar het uitvoerpad 
 \end{algorithm}
 
 \begin{algorithm}
-	\KwIn{fragment : combined fragment}
+	\KwIn{fragment : gecombineerd fragment}
 	\KwOut{Paar van bericht en string}
 	\textit{aggregateVoorwaarde $\leftarrow \epsilon$}; \\
-	\textit{containers $\leftarrow$ gesorteerde lijst van berichtcontainers van fragment}; \tcc{een berichtcontainer is ofwel \'e\'en enkel bericht of een combined fragment---op deze manier kunnen we een combined fragment beschouwen als een verzameling van berichtcontainers die bestaat uit de berichten die rechtstreeks deel zijn van het fragment en de kinderen van het fragment}
+	\textit{containers $\leftarrow$ gesorteerde lijst van berichtcontainers van fragment}; \tcc{een berichtcontainer is ofwel \'e\'en enkel bericht of een gecombineerd fragment---op deze manier kunnen we een gecombineerd fragment beschouwen als een verzameling van berichtcontainers die bestaat uit de berichten die rechtstreeks deel zijn van het fragment en de kinderen van het fragment}
 	\ForEach{container $\in$ containers, beginnend vanaf de laatste}{
 	\If{container is een bericht}{
 	\textbf{return} \textit{\{container, aggregateVoorwaarde\}};
@@ -313,7 +314,7 @@ Het doel is om te bepalen welke berichten dienen als punten waar het uitvoerpad 
 \end{algorithm}
 
 \begin{algorithm}
-	\KwIn{\textit{fragment : combined fragment; mapPaar : bericht $\rightarrow$ verzameling van \{bericht $\rightarrow$ string\}; transitieVoorwaarde : string}}
+	\KwIn{\textit{fragment : gecombineerd fragment; mapPaar : bericht $\rightarrow$ verzameling van \{bericht $\rightarrow$ string\}; transitieVoorwaarde : string}}
 	\If{bericht meteen na dit fragment is deel van een lusfragment zonder ouder}{
 	\textit{volgenden $\leftarrow$ alle lussen die meteen volgen op fragment en het meteen daaropvolgende fragment, als er \'e\'en is}; \\
 	\textit{aggregateVoorwaarde $\leftarrow \epsilon$}; \\
@@ -326,7 +327,7 @@ Het doel is om te bepalen welke berichten dienen als punten waar het uitvoerpad 
 	\textbf{return};}
 	}
 	\textit{volgend $\leftarrow$ bericht dat meteen volgt op fragment}; \\
-	\If{volgend is deel van combined fragment}{
+	\If{volgend is deel van gecombineerd fragment}{
 	\textit{topFragment $\leftarrow$ voorouder van fragment waar volgend deel van is die zelf geen ouder heeft}; \\
 	\textit{transitiesIn $\leftarrow$ bepaalTransitieIn(topFragment, ``'')}; \\
 	\textit{concateneer alle sprongvoorwaarden in transitiesIn met transitieVoorwaarde}; \\
@@ -349,7 +350,7 @@ Merk op dat voor alt-fragmenten algoritme \ref{alg:calcExitForMessages} afzonder
 Een laatste aspect is dat we ervoor moeten zorgen dat een lus terug wordt uitgevoerd als de laatste instructie bereikt is en de lusvoorwaarde nog geldt. We gebruiken algoritme \ref{alg:calculateLoopReentry} om te bepalen vanaf welke berichten terug wordt gesprongen naar de mogelijke beginpunten van een lusfragment.
 
 \begin{algorithm}
-	\KwIn{fragment : combined fragment}
+	\KwIn{fragment : gecombineerd fragment}
 	\KwOut{Verzameling van bericht $\rightarrow$ \{bericht $\rightarrow$ string\}}
 	\textit{uitvoer $\leftarrow \emptyset$}; \\
 	\textit{uitgesloten $\leftarrow \emptyset$}; \\
@@ -405,8 +406,8 @@ Als de eerste container geen lus is, bepalen we de transitiepunten van het fragm
 Nu volgt een beschrijving van hoe we de voorgaande algoritmes gebruiken om een verzameling van mappings van berichten waarnaar gesprongen wordt naar een mapping van berichten waarvan gesprongen wordt en onder welke voorwaarde vanaf die berichten wordt gesprongen bij te houden. We geven een beschrijving op hoog niveau in algoritme \ref{alg:processCombinedFragment}. Bij de uitvoering ervan werken we vanuit de veronderstelling dat alle berichten en fragmenten van een diagram toegankelijk zijn.
 
 \begin{algorithm}
-	\KwIn{fragment : combined fragment; uitvoer : verzameling van bericht $\rightarrow$ verzameling van \{bericht $\rightarrow$ string\}}
-	\If{fragment is een lusfragment, heeft geen ouder en wordt voorgegaan door een bericht dat geen deel is van een combined fragment}{
+	\KwIn{fragment : gecombineerd fragment; uitvoer : verzameling van bericht $\rightarrow$ verzameling van \{bericht $\rightarrow$ string\}}
+	\If{fragment is een lusfragment, heeft geen ouder en wordt voorgegaan door een bericht dat geen deel is van een gecombineerd fragment}{
 	\textit{noteer in uitvoer dat dit fragment en de lussen die er direct op volgen worden overgeslagen als de lusvoorwaarde voor geen enkele ervan geldt}
 	}
 	\eIf{er is een fragment dat vlak v\'o\'or fragment komt}{
@@ -444,9 +445,9 @@ Bij het vertalen van sequentiediagrammen roepen we algoritme \ref{alg:processCom
 	\item Onder welke voorwaarde zulk een sprong gebeurt
 \end{enumerate}
 
-We gebruiken dit om de eigenlijke vertaling van combined fragments naar FO(.) te bepalen.
+We gebruiken dit om de eigenlijke vertaling van gecombineerde fragmenten naar FO($\cdot$) te bepalen.
 
-\subsection{Voorbeeld van combined fragment vertaling}
+\subsection{Voorbeeld van gecombineerd fragment vertaling}
 
 We defini\"eren eerst notatie die we verder gebruiken bij het uitwerken van een voorbeeld:
 
@@ -464,15 +465,15 @@ Dit betekent dat de uitvoering vanaf \fragmessage{$bericht_b$} springt naar \fra
 
 \subsubsection{De uitvoering van de voorgestelde algoritmes}
 
-In deze sectie gebruiken we figuur \ref{fig:seq-diagram-frag-ex} om een voorbeeld te geven van de vertaling van combined fragments volgens de algoritmes beschreven in secties \ref{sec:transition-to}, \ref{sec:transitions-out}, \ref{sec:loop-reentry} en \ref{sec:process-frag}.
+In deze sectie gebruiken we figuur \ref{fig:seq-diagram-frag-ex} om een voorbeeld te geven van de vertaling van gecombineerde fragmenten volgens de algoritmes beschreven in secties \ref{sec:transition-to}, \ref{sec:transitions-out}, \ref{sec:loop-reentry} en \ref{sec:process-frag}.
 
 \begin{figure}
 	\includegraphics[width=1\textwidth]{chap-gedrag/seq-diagram-frag-ex.png}
-	\caption{Sequentiediagram voor een voorbeeldvertaling van combined fragments}
+	\caption{Sequentiediagram voor een voorbeeldvertaling van gecombineerde fragmenten}
 	\label{fig:seq-diagram-frag-ex}
 \end{figure}
 
-Hoewel we de voorwaarde(s) van een fragment gebruiken om zowel te verwijzen naar het fragment als geheel als naar de voorwaarde zelf, schrijven we \fragname{loop1} om te verwijzen naar het fragment en \fragcond{loop1} om te verwijzen naar de voorwaarde. \fragname{alt1} verwijst naar het gehele alt-fragment en \fragname{alt1a} en \fragname{alt1b} verwijzen respectievelijk naar het \textit{if}-deel en het \textit{else}-deel.
+In wat volgt gebruiken we de voorwaarde voor een fragment als naam voor het fragment zelf. Om het onderscheid te maken tussen deze twee manieren waarop we de voorwaarde gebruiken, schrijven we \fragname{loop1} om aan te duiden dat de voorwaarde als naam wordt gebruikt en \fragcond{loop1} wanneer we het effectief als voorwaarde voor de uitvoering van een fragment gebruiken. \fragname{alt1} verwijst naar het gehele alt-fragment en \fragname{alt1a} en \fragname{alt1b} verwijzen respectievelijk naar het \textit{if}-deel en het \textit{else}-deel.
 
 We roepen algoritme \ref{alg:processCombinedFragment} eerst op op met \fragname{loop1} als argument. Aangezien het geen ouder heeft en \fragmessage{message1}, wat geen fragment heeft, eraan voorafgaat, noteren we in de uitvoer:
 
@@ -490,8 +491,8 @@ Hierna gaan we verder naar algoritme \ref{alg:wrap-loops} met \fragname{alt1} en
 \fragmessage{message6} is niet rechtstreeks deel van \fragname{loop2}, dus zetten we \textit{voorwaarde} naar \fragcondt{loop2} en roepen eerst algoritme \ref{alg:transition-to-frag} op met \fragname{loop3} als argument. Op dit niveau wordt \textit{voorwaarde} gezet naar ``\fragcond{loop2} $\land$ \fragcond{loop3}'' en roepen we algoritme \ref{alg:transition-to-frag} op met \fragname{alt2} als argument. \fragmessage{message6} en \fragmessage{message7} zijn rechtstreeks deel van \fragname{alt2}, dus hebben we:
 
 \begin{align*}
-	&\transitionentry{\fragcond{loop2} \land \fragcond{loop3} \land \fragcond{alt2}}{\fragmessage{message6}} \\
-	&\transitionentry{\fragcond{loop2} \land \fragcond{loop3} \land \fragcond{alt2}}{\fragmessage{message7}}
+	&\transitionentry{\fragcond{loop2} \land \fragcond{loop3} \land \fragcond{alt2a}}{\fragmessage{message6}} \\
+	&\transitionentry{\fragcond{loop2} \land \fragcond{loop3} \land \fragcond{alt2b}}{\fragmessage{message7}}
 \end{align*}
 
 We keren terug naar het niveau van \fragname{loop2}. \fragname{loop3} was een lus, dus zetten we \textit{voorwaarde} naar ``\fragcond{loop2} $\land \lnot$ \fragcond{loop3}'' en roepen we algoritme \ref{alg:wrap-loops} op met als argument de verzameling met enkel \fragname{loop4} als lid. Het resultaat van die oproep is dat we neerschrijven:
@@ -500,7 +501,7 @@ We keren terug naar het niveau van \fragname{loop2}. \fragname{loop3} was een lu
 	\transitionentry{\fragcond{loop2} \land \lnot \fragcond{loop3} \land \fragcond{loop4}}{\fragmessage{message8}}
 \end{align*}
 
-We keren terug naar het niveau van \fragname{loop1loop1}. Dit fragment heeft verder geen kinderen, dus eindigt deze oproep van algoritme \ref{alg:wrap-loops} hier.
+We keren terug naar het niveau van \fragname{loop2}. Dit fragment heeft verder geen kinderen, dus eindigt deze oproep van algoritme \ref{alg:wrap-loops} hier.
 
 We keren terug naar stap 7 in algoritme \ref{alg:transition-to-frag} voor \fragname{loop1}. \fragname{alt1} is niet eerder gemarkeerd door algoritme \ref{alg:wrap-loops}, dus gebruiken we het als argument voor een oproep van algoritme \ref{alg:transition-to-frag}. Het resultaat van die oproep is:
 
@@ -630,25 +631,25 @@ Dit vertalen we naar:
 De uitvoer van algoritme \ref{alg:processCombinedFragment} voor alle fragmenten in figuur \ref{fig:seq-diagram-frag-ex} vertalen we op die manier als volgt naar logica:
 
 \begin{align*}
-	&\forall{t}[Time](C\_SDPointAt(Next(t), message2) \leftarrow (SDPointAt(t, message1) \\ &\lor SDPointAt(t, message9)) \land \fragcond{loop1}). \\
-	&\forall{t}[Time](C\_SDPointAt(Next(t), message3) \leftarrow SDPointAt(t, message2) \\ &\land \fragcond{alt1a}). \\
-	&\forall{t}[Time](C\_SDPointAt(Next(t), message5) \leftarrow SDPointAt(t, message2) \\ &\land \fragcond{alt1b}). \\
-	&\forall{t}[Time](C\_SDPointAt(Next(t), message6) \leftarrow (SDPointAt(t, message6) \\ &\lor SDPointAt(t, message7) \land \fragcond{loop3} \land \fragcond{alt2a})). \\
-	&\forall{t}[Time](C\_SDPointAt(Next(t), message6) \leftarrow SDPointAt(t, message8) \\ &\land \lnot \fragcond{loop4} \land \fragcond{loop2} \land \fragcond{loop3} \land \fragcond{alt2a}). \\
-	&\forall{t}[Time](C\_SDPointAt(Next(t), message6) \leftarrow (SDPointAt(t, message4) \\ &\lor SDPointAt(t, message5)) \land \fragcond{loop2} \land \fragcond{loop3} \land \fragcond{alt2a}). \\
-	&\forall{t}[Time](C\_SDPointAt(Next(t), message7) \leftarrow (SDPointAt(t, message6) \\ &\lor SDPointAt(t, message7) \land \fragcond{loop3} \land \fragcond{alt2b})). \\
-	&\forall{t}[Time](C\_SDPointAt(Next(t), message7) \leftarrow SDPointAt(t, message8) \\ &\land \lnot \fragcond{loop4} \land \fragcond{loop2} \land \fragcond{loop3} \land \fragcond{alt2b}). \\
-	&\forall{t}[Time](C\_SDPointAt(Next(t), message7) \leftarrow (SDPointAt(t, message4) \\ &\lor SDPointAt(t, message5)) \land \fragcond{loop2} \land \fragcond{loop3} \land \fragcond{alt2b}).
+	&\forall{t}[Time](C\_SDPointAt(Next(t), 2) \leftarrow (SDPointAt(t, 1) \\ &\lor SDPointAt(t, 9)) \land \fragcond{loop1}). \\
+	&\forall{t}[Time](C\_SDPointAt(Next(t), 3) \leftarrow SDPointAt(t, 2) \\ &\land \fragcond{alt1a}). \\
+	&\forall{t}[Time](C\_SDPointAt(Next(t), 5) \leftarrow SDPointAt(t, 2) \\ &\land \fragcond{alt1b}). \\
+	&\forall{t}[Time](C\_SDPointAt(Next(t), 6) \leftarrow (SDPointAt(t, 6) \\ &\lor SDPointAt(t, 7)) \land \fragcond{loop3} \land \fragcond{alt2a})). \\
+	&\forall{t}[Time](C\_SDPointAt(Next(t), 6) \leftarrow SDPointAt(t, 8) \\ &\land \lnot \fragcond{loop4} \land \fragcond{loop2} \land \fragcond{loop3} \land \fragcond{alt2a}). \\
+	&\forall{t}[Time](C\_SDPointAt(Next(t), 6) \leftarrow (SDPointAt(t, 4) \\ &\lor SDPointAt(t, 5)) \land \fragcond{loop2} \land \fragcond{loop3} \land \fragcond{alt2a}). \\
+	&\forall{t}[Time](C\_SDPointAt(Next(t), 7) \leftarrow (SDPointAt(t, 6) \\ &\lor SDPointAt(t, 7)) \land \fragcond{loop3} \land \fragcond{alt2b})). \\
+	&\forall{t}[Time](C\_SDPointAt(Next(t), 7) \leftarrow SDPointAt(t, 8) \\ &\land \lnot \fragcond{loop4} \land \fragcond{loop2} \land \fragcond{loop3} \land \fragcond{alt2b}). \\
+	&\forall{t}[Time](C\_SDPointAt(Next(t), 7) \leftarrow (SDPointAt(t, 4) \\ &\lor SDPointAt(t, 5)) \land \fragcond{loop2} \land \fragcond{loop3} \land \fragcond{alt2b}).
 \end{align*}
 
 \begin{align*}
-	&\forall{t}[Time](C\_SDPointAt(Next(t), message8) \leftarrow (SDPointAt(t, message6) \\ &\lor SDPointAt(t, message7)) \land \lnot \fragcond{loop3} \land \fragcond{loop4}). \\
-	&\forall{t}[Time](C\_SDPointAt(Next(t), message8) \leftarrow (SDPointAt(t, message4) \\ &\lor SDPointAt(t, message5)) \land \fragcond{loop2} \land \lnot \fragcond{loop3} \\ &\land \fragcond{loop4}). \\
-	&\forall{t}[Time](C\_SDPointAt(Next(t), message8) \leftarrow SDPointAt(t, message8) \\ &\land \fragcond{loop4}). \\
-	&\forall{t}[Time](C\_SDPointAt(Next(t), message9) \leftarrow (SDPointAt(t, message6) \\ &\lor SDPointAt(t, message7)) \land \lnot \fragcond{loop3} \land \lnot \fragcond{loop4} \\ &\land \lnot \fragcond{loop2}). \\
-	&\forall{t}[Time](C\_SDPointAt(Next(t), message9) \leftarrow SDPointAt(t, message8) \\ &\land \lnot \fragcond{loop4} \land \lnot \fragcond{loop2}). \\
-	&\forall{t}[Time](C\_SDPointAt(Next(t), message9) \leftarrow (SDPointAt(t, message4) \\ &\lor SDPointAt(t, message5)) \land \lnot \fragcond{loop2}). \\
-	&\forall{t}[Time](C\_SDPointAt(Next(t), message10) \leftarrow (SDPointAt(t, message1) \\ &\lor SDPointAt(t, message9)) \land \lnot \fragcond{loop1}).
+	&\forall{t}[Time](C\_SDPointAt(Next(t), 8) \leftarrow (SDPointAt(t, 6) \\ &\lor SDPointAt(t, 7)) \land \lnot \fragcond{loop3} \land \fragcond{loop4}). \\
+	&\forall{t}[Time](C\_SDPointAt(Next(t), 8) \leftarrow (SDPointAt(t, 4) \\ &\lor SDPointAt(t, 5)) \land \fragcond{loop2} \land \lnot \fragcond{loop3} \\ &\land \fragcond{loop4}). \\
+	&\forall{t}[Time](C\_SDPointAt(Next(t), 8) \leftarrow SDPointAt(t, 8) \\ &\land \fragcond{loop4}). \\
+	&\forall{t}[Time](C\_SDPointAt(Next(t), 9) \leftarrow (SDPointAt(t, 6) \\ &\lor SDPointAt(t, 7)) \land \lnot \fragcond{loop3} \land \lnot \fragcond{loop4} \\ &\land \lnot \fragcond{loop2}). \\
+	&\forall{t}[Time](C\_SDPointAt(Next(t), 9) \leftarrow SDPointAt(t, 8) \\ &\land \lnot \fragcond{loop4} \land \lnot \fragcond{loop2}). \\
+	&\forall{t}[Time](C\_SDPointAt(Next(t), 9) \leftarrow (SDPointAt(t, 4) \\ &\lor SDPointAt(t, 5)) \land \lnot \fragcond{loop2}). \\
+	&\forall{t}[Time](C\_SDPointAt(Next(t), 10) \leftarrow (SDPointAt(t, 1) \\ &\lor SDPointAt(t, 9)) \land \lnot \fragcond{loop1}).
 \end{align*}
 
 \section{Interactie tussen meerdere sequentiediagrammen}\label{sec:interaction}
@@ -662,7 +663,7 @@ In een project stelt men doorgaans meerdere sequentiediagrammen op die elkaar oo
 		\label{fig:recursion-class}
 	\end{figure}
 \begin{landscape}
-\thispagestyle{plain}
+\thispagestyle{empty}
 	\begin{figure}
 		\centering
 		\begin{subfigure}{\textwidth}
@@ -685,7 +686,7 @@ In de volgende subsecties gebruiken we het voorbeeld uitgebeeld in figuren \ref{
 \subsection{Aanpassingen aan \textit{SDPoint}}
 Het is niet meer voldoende om \textit{SDPoint}s te modelleren als natuurlijke getallen aangezien elk diagram zijn eigen \textit{SDPoint}s heeft. Om de \textit{SDPoint}s horende bij elk diagram van elkaar te kunnen onderscheiden, maken we van het logisch type \textit{SDPoint} nu een constructed type in IDP. We gebruiken als patroon voor de naamgeving van elk logisch object $<diagramnaam>\_<instructienummer>$. Voor het voorbeeld krijgen we o.a. $methodOne\_2$ en $methodTwo\_3$. We voegen ook een nieuwe functie toe aan het vocabularium dat gegeven een \textit{SDPoint} het volgende \textit{SDPoint} teruggeeft, namelijk $NextSD(SDPoint) : SDPoint$.
 
-Een andere aanpassing is dat we een virtuele \textit{SDPoint} inpassen na elke instructie voor een oproep. Het naamgevingspatroon hiervoor is $<diagramnaam>\_<instructienummer>post$. Aangezien de derde instructie in figuur \ref{fig:methodOne} een oproep is, krijgen we $methodOne\_3post$. Met deze toevoeging ontkoppelen we twee zaken die bij een oproep komen kijken: enerzijds dat het mogelijk is dat het resultaat van een oproep wordt toegekend aan een variabele; en anderzijds dat na een oproep er mogelijks een alt-fragment of lusfragment volgt, en dat het dus v\'o\'or de oproep niet duidelijk is welke de volgende instructie is na de uitvoering van de oproep. Het zou niet mogelijk zijn om deze twee zaken op een correcte manier af te handelen zonder een oproepinstructie op deze manier op te splitsen.
+Een andere aanpassing is dat we een virtuele \textit{SDPoint} inpassen na elke instructie voor een oproep. Het naamgevingspatroon hiervoor is $<diagramnaam>\_<instructienummer>post$. Aangezien de derde instructie in figuur \ref{fig:methodOne} een oproep is, krijgen we $methodOne\_3post$. Met deze toevoeging ontkoppelen we twee zaken die bij een oproep komen kijken: Enerzijds dat het mogelijk is dat het resultaat van een oproep wordt toegekend aan een variabele; en anderzijds dat na een oproep er mogelijks een alt-fragment of lusfragment volgt, en dat het dus v\'o\'or de oproep niet noodzakelijk duidelijk is welke de volgende instructie is na de uitvoering van de oproep. Het zou niet mogelijk zijn om voor deze twee zaken het correcte gedrag te verkrijgen zonder een oproepinstructie op deze manier op te splitsen.
 
 \subsection{Het stapelmechanisme}
 Om oproepen van andere sequentiediagrammen correct uit te voeren, moet de theorie bijhouden welke variabelen er bestaan tijdens een bepaalde oproep. Bovendien moet de theorie voor recursieve oproepen ook de waardes van een set variabelen kunnen bewaren v\'o\'or een oproep en die waardes herstellen na een oproep. Hiertoe ontwerpen we een stapelmechanisme. Er gebeuren volgende aanpassingen aan het vocabularium:
@@ -693,7 +694,7 @@ Om oproepen van andere sequentiediagrammen correct uit te voeren, moet de theori
 \begin{itemize}
 	\item Toevoeging van het logisch type $StackLevel \subset \mathbb{N}$: Dit stelt de oproepdiepte van oproep voor.
 	\item Toevoeging van een inerti\"ele functie $CurrentStackLevel(Time) : StackLevel$: De oproepdiepte op een bepaald tijdstip.
-	\item Toevoeging van een intertieel predicaaat $ReturnPoint(Time, StackLevel, SDPoint)$: Op een bepaald tijdstip, de \textit{SDPoint} naar waar de uitvoering moet terugkeren wanneer de laatste instructie voor de gegeven \textit{StackLevel} bereikt is.
+	\item Toevoeging van een intertieel predicaaat \\ $ReturnPoint(Time, StackLevel, SDPoint)$: Op een bepaald tijdstip, de \textit{SDPoint} waarnaar de uitvoering moet terugkeren wanneer de laatste instructie voor de gegeven \textit{StackLevel} bereikt is.
 	\item Alle diagramvariabelen worden nu gemodelleerd door een ternair predicaat dat nu ook de oproepdiepte in rekening neemt. Voor het voorbeeld krijgen we dus bijvoorbeeld $FinishedT(Time, StackLevel, bool)$.
 \end{itemize}
 
@@ -710,7 +711,7 @@ De uitzonderingen als resultaat van een oproep worden als volgt gemodelleerd:
 
 \begin{align}
 	 \forall{t}[Time](C\_SDPointAt(Next(t), methodTwo\_1) \leftarrow SDPointAt(t, methodOne\_3).\label{eq:callOne} \\
-	 \forall{t}[Time](C\_SDPointAt(Next(t), methodTwo\_1) \leftarrow SDPointAt(t, methodOne\_3).\label{eq:callTwo}
+	 \forall{t}[Time](C\_SDPointAt(Next(t), methodTwo\_1) \leftarrow SDPointAt(t, methodTwo\_3).\label{eq:callTwo}
 \end{align}
 
 Zin \ref{eq:callOne} resulteert uit instructie 3 van het diagram voor \textit{methodOne} en zin \ref{eq:callTwo} resulteert uit instructie 3 van het diagram voor \textit{methodTwo}.
@@ -768,23 +769,24 @@ Er komen twee nieuwe soorten variabelen bij: Objecten waarvan een methode wordt 
 
 Zin \ref{eq:mtwoarg-inc} demonstreert dat ook buiten oproepinstructies of een terugkeer uit een diagram wordt gekeken naar het oproepniveau. Er wordt immers enkel gekeken of geschreven naar de waarde van de 'versie' van de variabele die overeenkomt met het huidige oproepniveau. Dit komt ook terug bij de variabelen die niet het oproepobject of een parameter van een methode voorstellen.
 
-\subsubsection{Extra veronderstellingen over het ontwerp van sequentiediagrammen}
+\subsubsection{Uitkomst van de beschreven procedure}
+Er zijn geen noemenswaardige veranderingen aan hoe we de toestandszinnen opstellen. Bijlage \ref{app:seq-recursion} bevat de uitkomst van de procedure die we hebben beschreven in deze sectie. 
+
+\section{Extra veronderstellingen over het ontwerp van sequentiediagrammen}\label{sec:beperkingen}
 Om de implementatie van theoriegeneratie zoals beschreven in dit hoofdstuk te vergemakkelijken, zijn er een aantal veronderstellingen ten aanzien van sequentiediagrammen die de gebruiker als invoer geeft. In deze subsectie sommen we deze op:
 
 \begin{itemize}
 	\item Er wordt een logisch symbool voorzien voor elke variabele in een sequentiediagram. De naam van dat logisch symbool is gebaseerd op de naam van de variabele, en daarom moeten alle variabelen over alle diagrammen heen een unieke naam hebben. De naam van het diagram waarin de variabele voorkomt kan dienen als prefix om de naam van de variabele toch uniek te maken zonder dat tussenkomst van de ontwerper nodig is, maar door tijdsgebrek is dit niet ge\"implementeerd.
-	\item Het type van een variabele kan niet veranderen over instructies heen. Ofwel komt een variabele overeen met een lifeline en wordt het type dus bepaald door de lifeline, ofwel wordt het type bepaald door de instructie die de variabele instantieert.
+	\item Het type van een variabele kan niet veranderen over instructies heen. Ofwel komt een variabele overeen met een levenslijn en wordt het type dus bepaald door de levenslijn, ofwel wordt het type bepaald door de instructie die de variabele instantieert.
 	\item Een variabele kan geen verzameling voorstellen
 	\item Per instructie kan maar \'e\'en associatielink tegelijkertijd genavigeerd worden. Beschouw het voorbeelddiagram van figuur \ref{fig:diagram-voorbeeld}. Als variabele \textit{x} een object van klasse \textit{Item} is, dan zal een oproep van \textit{getInventory()} op \textit{x} een object van klasse \textit{Inventory} opleveren (mocht die associatie zijn ingevuld voor \textit{x}), maar is \textit{getInventory().getCharacter} geen geldige instructie.
 	\item Er mogen geen aanpassingen worden aangebracht aan de associatiestructuur voor een model van een klassediagram. Voor een \textit{Character}---\textit{Inventory}-paar geldt bijvoorbeeld dat die verbinding niet verbroken kan worden en dat geen van beide kanten vervangen mag worden door een andere instantie van de respectievelijke klasse. Aangezien associaties van meervoudige multipliciteit als lijsten worden ge\"implementeerd, betekent dit ook dat men geen elementen kan toevoegen aan of verwijderen uit een lijst.
 	\item Men kan geen nieuwe objecten instanti\"eren.
 	\item Er zijn geen bewerkingen op booleaanse waarden behalve de NOT-functie, die men kan oproepen als \textit{flipBool(boolean)}.
-	\item UML legt op dat men voor beide takken van een alt combined fragment de voorwaarde voor de uitvoering die tak moet specificeren. Ook hier wordt verwacht dat de ontwerper dit telkens doet.
-	\item Als een diagram een uitvoer heeft, dan mag de instructie die bepaalt welke variabele als uitvoer wordt gebruikt geen onderdeel zijn van een combined fragment.
+	\item UML legt op dat men voor beide takken van een alt-fragment de voorwaarde voor de uitvoering die tak moet specificeren. Ook hier wordt verwacht dat de ontwerper dit telkens doet.
+	\item Als een diagram een uitvoer heeft, dan mag de instructie die bepaalt welke variabele als uitvoer wordt gebruikt geen onderdeel zijn van een gecombineerd fragment.
+	\item In een fragmentvoorwaarde of een oproep gebeuren er voor de gebruikte waardes geen evaluatie tenzij om de waarde van een variabele op te halen. \textit{call(1 + 2)} en \textit{call(var1 + var2)} worden bijvoorbeeld niet correct vertaald, maar \textit{call(3)} en \textit{call(var1)} wel.
 \end{itemize}
-
-\subsubsection{Uitkomst van de beschreven procedure}
-Er zijn geen noemenswaardige veranderingen aan hoe we de toestandszinnen opstellen. Bijlage \ref{app:seq-recursion} bevat de uitkomst van de procedure die we hebben beschreven in deze sectie. 
 
 \section{Extra soorten instructies voor sequentiediagrammen}\label{sec:newlang}
 UML is een modelleertaal die wordt gebruikt ter ondersteuning van softwareontwerp in imperatieve programmeertalen. In sequentiediagrammen vertaalt zich dat tot een veelvoud van instructies voor eenvoudige taken zoals het selecteren van het eerste getal verschillend van 0 in een lijst van getallen. Aangezien elke nieuwe instructie in een sequentiediagram leidt tot minstens \'e\'en zin in de gegenereerde theorie, impliceert dit een grote kost in zowel rekentijd als geheugengebruik voor modelexpansie en progressie\"inferentie. Daarom geven we in deze sectie een aanzet tot het integreren van logica in het ontwerp van sequentiediagrammen met het zicht op twee doelen:
@@ -811,7 +813,7 @@ We laten op variabelen die een verzameling voorstellen enkele nieuwe instructies
 
 \begin{itemize}
 	\item Voor alle leden van een verzameling tegelijkertijd kan een associatie genavigeerd worden. Als op een verzameling S van objecten van klasse X \textit{getY()} wordt uitgevoerd waar Y de naam is van een klasse geassocieerd met X, dan is het resultaat een verzameling van objecten van klasse Y. Die verzameling bestaat uit alle objecten die in verband staan met minstens \'e\'en object uit S.
-	\item $getNumX()$ waar X de naam is van een klasse die in verband staat met de klasse van de verzameling
+	\item $getNumX()$ waar X de naam is van een klasse die in verband staat met de klasse van de verzameling. Het resultaat is de som van het aantal instanties van klasse X waarmee elk lid van de verzameling in verband staat.
 	\item $EXISTS\ ONE\ WHERE\ [query]$: Geeft \textbf{true} als en slechts als \textit{query} geldt voor minstens \'e\'en lid van de verzameling. \textit{query} betekent hier een instructie die bestaat uit getters van klassevariabelen verbonden met booleaanse connectieven (klassevariabelen kunnen hierbij rechtstreeks vergeleken worden met een getal of string, waar toepasselijk).
 	\item $EXISTS\ n\ TO\ m\ WHERE\ [query]$ waar $n \leq m$: Geeft \textbf{true} als en slechts als voor minstens $n$ en ten hoogste $m$ leden van de verzameling geldt dat \textit{query} waar is.
 	\item $FOR\ ALL\ APPLIES\ [query]$: Geeft \textbf{true} als en slechts als voor alle leden van de verzameling \textit{query} geldt.
@@ -838,7 +840,7 @@ De lusvoorwaarde wordt als volgt gebruikt:
 	\nonumber &\forall{t}[Time]\forall{st}[StackLevel](C\_SDPointAt(Next(t), play\_7) \leftarrow \\ \nonumber &(CurrentStackLevel(t) = st) \land SDPointAt(t, play\_6) \land \exists{g}[Game](GameT(t, st, g) \land \\ \nonumber &\forall{h}[Heap](GameandHeap(g, h) \\ &\Rightarrow \exists{n}[LimitedInt](HeapamountObjects(t, h, n) \land n = 0)))).
 \end{align}
 
-In instructie 3 wordt de $CHOOSE\ ONE\ WHERE\ APPLIES\ [query]$ instructie gebruikt. We introduceren hier een open predikaat, $ChosenHeap(Time, Heap)$, om ons te helpen deze instructie te vertalen. We voegen de volgende zin toe aan het definitieblok voor diagramvariabelen:
+In instructie 3 wordt de $CHOOSE\ ONE\ WHERE\ APPLIES\ [query]$ instructie gebruikt. We introduceren hier een open predicaat, $ChosenHeap(Time, Heap)$, om ons te helpen deze instructie te vertalen. We voegen de volgende zin toe aan het definitieblok voor diagramvariabelen:
 
 \begin{align}
 	\nonumber &\forall{t}[Time]\forall{st}[StackLevel]\forall{h}[Heap](C\_HeapT(Next(t), st, h) \\ &\leftarrow (CurrentStackLevel(t) = st) \land SDPointAt(t, play\_3) \land ChosenHeap(t, h)).
@@ -847,12 +849,14 @@ In instructie 3 wordt de $CHOOSE\ ONE\ WHERE\ APPLIES\ [query]$ instructie gebru
 Om ervoor te zorgen dat exact \'e\'en Heap-object wordt gekozen, moeten we voorwaardes leggen op $ChosenHeap/2$. Dit doen we als volgt:
 
 \begin{align}
-	&\forall{t}[Time](SDPointAt(t, play\_3) \Rightarrow \exists_{=1}{h}[Heap](ChosenHeap(t, h))). \\
-	\nonumber &\forall{t}[Time]\forall{h}[Heap](ChosenHeap(t, h) \Rightarrow (SDPointAt(t, play\_3) \\ \nonumber &\land \exists{g}[Game]\exists{st}[StackLevel]\exists{n}[LimitedInt]((CurrentStackLevel(t) = st) \\ &\land GameT(t, st, g) \land GameandHeap(g, h) \land HeapamountObjects(t, h, n) \land \lnot(n = 0)))).
+	&\forall{t}[Time](SDPointAt(t, play\_3) \Rightarrow \exists_{=1}{h}[Heap](ChosenHeap(t, h))).\label{form:uniqueheap} \\
+	\nonumber &\forall{t}[Time]\forall{h}[Heap](ChosenHeap(t, h) \Rightarrow (SDPointAt(t, play\_3) \\ \nonumber &\land \exists{g}[Game]\exists{st}[StackLevel]\exists{n}[LimitedInt]((CurrentStackLevel(t) = st) \\ &\land GameT(t, st, g) \land GameandHeap(g, h) \land HeapamountObjects(t, h, n) \land \lnot(n = 0)))).\label{form:correctsd}
 \end{align}
 
-\todo{meer uitleg bij formules}
+Zin \ref{form:uniqueheap} garandeert dat er maar \'e\'en \textit{Heap}-object mag gekozen worden.
 
-Voor instructie 4 introduceren we op een soortgelijke manier een open predikaat $ChosenTake/2$. De zin die we toevoegen aan het definitieblok voor variabelen en de voorwaarden die we opleggen op $ChosenTake/2$ zien er gelijkaardig uit.
+Zin \ref{form:correctsd} garandeert dat er enkel een keuze mag gemaakt worden als de uitvoering instructie 3 bereikt en dat er enkel een \textit{Heap}-object wordt gekozen waarvoor geldt dat \textit{amountObjects} groter is dan 0.
+
+Voor instructie 4 introduceren we op een soortgelijke manier een open predicaat $ChosenTake/2$. De zin die we toevoegen aan het definitieblok voor variabelen en de voorwaarden die we opleggen op $ChosenTake/2$ zien er gelijkaardig uit.
 
 Bijlage \ref{code:new-nim} bevat de vertaling van het diagram in figuur \ref{fig:new-nim}.

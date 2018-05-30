@@ -1,0 +1,204 @@
+\chapter{Evaluatie}\label{sec:evaluatie}
+
+In dit hoofdstuk ontwerpen we een klassediagram en sequentiediagrammen waarmee we het spel Nim modelleren zonder gebruik te maken van de nieuwe instructies uit sectie \ref{sec:newlang}. We beoordelen de volgende zaken:
+
+\begin{itemize}
+	\item Hoe gemakkelijk het is om tot een ontwerp te komen.
+	\item Of we het spel kunnen spelen met de uitvoertheorie.
+	\item Of we bepaalde gewenste eigenschappen kunnen verifi\"eren.
+	\item Performantie: tijd- en geheugengebruik, deze laatste in de vorm van de grootte van de \textit{grounding}\cite{DeCatBroes2014PLaa}.
+\end{itemize}
+
+\section{Ontwerp}
+
+Figuur \ref{fig:nim-cd} bevat het klassediagram voor ons ontwerp van Nim.
+
+De klasse \textit{Game} stelt het concept van een spel voor. \textit{p1Win} geeft aan of speler 1 heeft gewonnen en \textit{gameFinished} geeft aan of het spel volledig gespeeld is. \textit{allHeapsEmpty} vraagt op of alle \textit{Heap}s leeg zijn. \textit{takeTurn} doet een speler zijn beurt spelen. \textit{play(boolean)} is de methode die het verloop van het spel regelt.
+
+De klasse \textit{Heap} stelt stapels van objecten voor. \textit{numObjects} is het aantal objecten dat een stapel bevat. \textit{isEmpty} geeft aan of de stapel leeg is en \textit{take(int)} neemt een aantal objecten weg van een stapel.
+
+Figuren \ref{fig:nim-play}, \ref{fig:nim-allHeapsEmpty}, \ref{fig:nim-isEmpty}, \ref{fig:nim-takeTurn} en \ref{fig:nim-take} bevatten de sequentiediagrammen die het gedrag van hun bijhorende methodes modelleren.
+
+Diagram \ref{fig:nim-play} bepaalt eerst of alle stapels leeg zijn. Zo ja, is het spel voorbij en is de speler die nu aan beurt is de winnaar. Zo nee, speelt de huidige speler een ronde en geeft de beurt door aan de andere speler.
+
+Diagram \ref{fig:nim-allHeapsEmpty} vraagt aan alle stapels om de beurt of ze leeg zijn. Als het een stapel tegenkomt die niet leeg is, is het antwoord meteen nee. Als het enkel stapels tegenkomt die leeg zijn, is het antwoord ja.
+
+Diagram \ref{fig:nim-isEmpty} antwoordt ja als de stapel leeg is en nee als de stapel niet leeg is.
+
+Diagram \ref{fig:nim-takeTurn} vraagt aan de speler van welke stapel hij objecten wil nemen. Er wordt vanaf nul geteld, dus moet hij nul antwoorden als hij de eerste stapel wil selecteren. Als de geselecteerde stapel leeg is, wordt er opnieuw gevraagd om een stapel te selecteren. Als de speler een stapel heeft gekozen die niet leeg is, moet hij kiezen om minstens \'e\'en en maximaal het aantal objecten dat nog overblijft op de stapel weg te nemen.
+
+Diagram \ref{fig:nim-take} berekent hoeveel objecten er nog overblijven op een stapel gegeven het aantal objecten. Als het verschil kleiner is dan nul, wordt de teller op nul gezet.
+
+Appendix \ref{code:nim-eval} bevat het IDP-bestand met de automatisch gegenereerde uitvoertheorie voor deze diagrammen.
+
+\begin{figure}[h]
+	\centering
+	\includegraphics[width=0.25\textwidth]{chap-evaluatie/ClassDiagram1.png}
+	\caption{Klassediagram voor Nim}
+	\label{fig:nim-cd}
+\end{figure}
+
+%\begin{landscape}
+%	\newpage
+%	\thispagestyle{plain}
+%	\begin{figure}-
+%		\centering
+%		\includegraphics[width=0.4\textwidth]{chap-evaluatie/play.png}
+%		\caption{Sequentiediagram voor play()}
+%		\label{fig:nim-play}
+%	\end{figure}
+%	\begin{figure}
+%		\includegraphics[width=0.75\textwidth]{chap-evaluatie/allHeapsEmpty.png}
+%		\caption{Sequentiediagram voor allHeapsEmpty()}
+%		\label{fig:nim-allHeapsEMpty}
+%	\end{figure}
+%\end{landscape}
+\begin{landscape}
+	\newpage
+	\thispagestyle{empty}
+	\begin{figure}
+		\vspace*{-2cm}
+		\begin{subfigure}{\textwidth}
+			\includegraphics[width=0.9\textwidth]{chap-evaluatie/play.png}
+			\caption{Sequentiediagram voor \textit{play(boolean)}}
+			\label{fig:nim-play}
+		\end{subfigure}%
+		\begin{subfigure}{\textwidth}
+			\includegraphics[width=0.8\textwidth]{chap-evaluatie/allHeapsEmpty.png}
+			\caption{Sequentiediagram voor \textit{allHeapsEmpty()}}
+			\label{fig:nim-allHeapsEmpty}
+		\end{subfigure}
+		\caption{Sequentiediagrammen voor \textit{play(boolean)} en \textit{allHeapsEmpty()}}
+		\label{fig:nim-play-ahe}
+	\end{figure}
+\end{landscape}
+\begin{landscape}
+	\newpage
+	\thispagestyle{empty}
+	
+	\begin{figure}
+		\begin{subfigure}{\textwidth}
+			\includegraphics[width=0.75\textwidth]{chap-evaluatie/isEmpty.png}
+			\caption{Sequentiediagram voor \textit{isEmpty()}}
+			\label{fig:nim-isEmpty}
+		\end{subfigure}%
+		\begin{subfigure}{\textwidth}
+			\includegraphics[width=0.8\textwidth]{chap-evaluatie/takeTurn.png}
+			\caption{Sequentiediagram voor \textit{takeTurn()}}
+			\label{fig:nim-takeTurn}
+		\end{subfigure}
+		\caption{Sequentiediagrammen voor \textit{isEmpty()} en \textit{takeTurn()}}
+		\label{fig:nim-isempty-tt}
+	\end{figure}
+\end{landscape}
+
+\begin{figure}[h]
+	\includegraphics[width=0.8\textwidth]{chap-evaluatie/take.png}
+	\caption{Sequentiediagram voor \textit{take(int)}}
+	\label{fig:nim-take}
+\end{figure}
+
+\subsection{Evaluatie van het ontwerpproces}
+
+Door de beperkingen opgesomd in sectie \ref{sec:beperkingen} zijn er een aantal onintu\"itieve elementen. Als het mogelijk was geweest om de associaties van een object aan te passen tijdens de uitvoering, zou er een klasse \textit{Player} zijn geweest en een associatie \textit{Game}---\textit{Player} die de winnaar aanduidt. Aangezien er maar twee spelers zijn, is het echter voldoende om de winnaar voor te stellen met een booleaanse waarde. Als \textit{gameFinished} waar is, kan toch de winnaar ondubbelzinnig aangeduid worden.
+
+Nim is een simpel spel, dus waren er geen noemenswaardige moeilijkheden bij het ontwerp van de diagrammen. Omdat men maar relatief simpele taken kan doen met \'e\'en enkele instructie, leidt dit er wel toe dat er een veelvoud aan instructies nodig zijn, wat de tijd die nodig is om het ontwerp te maken verhoogt.
+
+\section{Evaluatie van de uitvoertheorie}
+
+Alle testen worden uitgevoerd op een machine die Ubuntu 16.04.3 LTS draait. Deze machine heeft als CPU de Intel(R) Core(TM)2 CPU 6600 en heeft 3969 MB aan geheugen beschikbaar. We gebruiken versie 3.7.0 van IDP.
+
+De volgende testen worden uitgevoerd:
+
+\begin{enumerate}
+	\item Simulatie van het verloop van een spel met twee stapels, waarvan \'e\'en twee objecten heeft en de andere drie, door middel van progressie\"inferentie.
+	\item Verificatie van de correctheid van het diagram voor \textit{isEmpty}
+	\item Verificatie van de correctheid van het diagram voor \textit{allHeapsEmpty} 
+\end{enumerate}
+
+\subsection{Evaluatie van de simulatie}
+
+In deze simulatie neemt de eerste speler tijdens zijn beurt alle drie de objecten van de stapel met drie objecten. Vervolgens neemt de tweede speler \'e\'en object van de andere stapel. Nu heeft de eerste speler geen keuze en moet hij het overblijvend object nemen, waardoor hij het spel verliest.
+
+Figuur \ref{fig:ms} bevat een grafiek van de cumulatieve rekentijd per simulatiestap. We zien dat de rekentijd een lineair verloop kent. Het duurt echter ongeveer achttien minuten om het spel volledig uit te spelen. Stap 23, 67 en 111 waren de stappen wanneer de speler een stapel kon kiezen. Het duurde ongeveer twee en een halve minuut om stap 23 te bereiken. Tussen stap 23 en 67 en tussen stap 67 en 111 was er telkens een tijdspanne van ongeveer vijf minuten.
+
+\begin{figure}
+	\includegraphics[width=1.05\textwidth]{chap-evaluatie/ms.png}
+	\caption{Cumulatieve rekentijd per stap}
+	\label{fig:ms}
+\end{figure}
+
+Figuur \ref{fig:groundingsize} bevat een grafiek van de grootte van de \textit{grounding} per simulatiestap. De grootte is voor de meeste stappen gelijk aan \'e\'en of drie, met zes gevallen die daarvan afwijken.
+
+\begin{figure}
+	\includegraphics[width=1.05\textwidth]{chap-evaluatie/groundingsize.png}
+	\caption{Grootte van de \textit{grounding} per stap}
+	\label{fig:groundingsize}
+\end{figure}
+
+Uit deze resultaten blijkt dat we met de uitvoertheorie het spel kunnen spelen, maar het tijdsinterval tussen beurten lang is. De grootte van de \textit{grounding} blijft beperkt.
+
+\section{Verificatie van de correctheid van \textit{isEmpty}}
+
+We willen controleren of het diagram in figuur \ref{fig:nim-isEmpty} een positief antwoord geeft als en slechts als de gegeven stapel leeg is. We werken met een invoerstructuur die stelt dat de uitvoering begint met de eerste instructie van \textit{isEmpty} en eindigt na de laatste instructie van hetzelfde diagram. Om de correctheid te controleren we vier zinnen op:
+
+\begin{align}
+	\nonumber&\exists{t}[Time]\exists{st}[StackLevel]\exists{h}[Heap]\exists[n][LimitedInt](SDPointAt(t, finished) \\ &\land IeToReturnT(t, st, F) \land HeapamountObjects(t, h, n) \land n \leq 0).\label{form:ie_fnonempty} \\
+	\nonumber&\exists{t}[Time]\exists{st}[StackLevel]\exists{h}[Heap]\exists[n][LimitedInt](SDPointAt(t, finished) \\ &\land IeToReturnT(t, st, T) \land HeapamountObjects(t, h, n) \land n > 0).\label{form:ie_fempty} \\
+	\nonumber&\exists{t}[Time]\exists{st}[StackLevel]\exists{h}[Heap]\exists[n][LimitedInt](SDPointAt(t, finished) \\ &\land IeToReturnT(t, st, T) \land HeapamountObjects(t, h, n) \land n \leq 0).\label{form:ie_cempty} \\
+	\nonumber&\exists{t}[Time]\exists{st}[StackLevel]\exists{h}[Heap]\exists[n][LimitedInt](SDPointAt(t, finished) \\ &\land IeToReturnT(t, st, F) \land HeapamountObjects(t, h, n) \land n > 0).\label{form:ie_cnonempty}
+\end{align}
+
+Zin \ref{form:ie_fnonempty} schrijft voor dat het antwoord negatief is, maar dat de stapel nul of minder objecten heeft.
+
+Zin \ref{form:ie_fempty} is gelijkaardig, maar controleert op een positief antwoord met een stapel met meer dan nul objecten.
+
+Beide zinnen moeten leiden tot een onvervulbare theorie.
+
+Zin \ref{form:ie_cempty} schrijft voor dat het antwoord positief is en dat de stapel nul of minder objecten heeft.
+
+Zin \ref{form:ie_cnonempty} controleert op een negatief antwoord met een stapel met meer dan nul objecten.
+
+Beide zinnen moeten leiden tot een vervulbare theorie.
+
+We voeren IDP viermaal uit met de voorgaande zinnen om de beurt toegevoegd aan de invoertheorie. Voor de twee eerste zinnen krijgen we inderdaad als antwoord dat de theorie onvervulbaar is. Voor zin \ref{form:ie_cempty} krijgen we een uniek model dat overeenkomt met een lege stapel. Voor zin \ref{form:ie_cnonempty} krijgen we alle modellen met een stapel die niet leeg is.
+
+Er is een gelijkaardig tijdsverloop en \textit{grounding}-grootte voor alle vier de uitvoeringen. Het duurt ongeveer 21,5 seconden en de \textit{grounding}-grootte is 578 306.
+
+We merken op dat het relatief lang duurt om modelexpansie uit te voeren voor dit diagram. De \textit{grounding} is ook omvangrijk.
+
+\section{Verificatie van de correctheid van \textit{allHeapsEmpty}}
+
+We willen controleren of het diagram in figuur \ref{fig:nim-allHeapsEmpty} een positief antwoord geeft als alle stapels leeg zijn en een negatief antwoord als minstens \'e\'en stapel niet leeg is. We werken met een invoerstructuur die aangeeft dat de uitvoering begint met de eerste instructie van \textit{allHeapsEmpty} en eindigt na de laatste instructie van dat diagram. We stellen vier zinnen op:
+
+\begin{align}
+	\nonumber&\exists{t}[Time]\exists{st}[StackLevel](SDPointAt(22, allHeapsEmpty\_8) \\ &\land \lnot\exists{h}[Heap]\exists{n}[LimitedInt](HeapamountObjects(t, h, n) \land n > 0)).\label{form:ahe_fnonempty} \\
+	\nonumber&\exists{t}[Time]\exists{st}[StackLevel]\exists{h}[Heap]\exists[n][LimitedInt] \\ &(SDPointAt(22, allHeapsEmpty\_7) \land HeapamountObjects(t, h, n) \land n > 0).\label{form:ahe_fempty} \\
+	\nonumber&\exists{t}[Time]\exists{st}[StackLevel](SDPointAt(22, allHeapsEmpty\_7) \\ &\land \forall{h}[Heap]\forall{n}[LimitedInt](HeapamountObjects(t, h, n) \Rightarrow n \leq 0)).\label{form:ahe_cempty} \\
+	\nonumber&\exists{t}[Time]\exists{st}[StackLevel]\exists{h}[Heap]\exists[n][LimitedInt] \\ &(SDPointAt(22, allHeapsEmpty\_8) \land HeapamountObjects(t, h, n) \land n > 0).\label{form:ahe_cnonempty}
+\end{align}
+
+We benoemen expliciet tijdstap 22 omdat de machine net voldoende geheugen heeft om modelexpansie uit te voeren met dat aantal tijdstappen. 22 tijdstappen zijn voldoende om gegeven twee stapels een punt te bereiken in het diagram waarop het antwoord eigenlijk al bekend is. Instructie 7 komt overeen met het geval waar het antwoord positief is; instructie 8 komt overeen met het geval waar het antwoord negatief is.
+
+Zin \ref{form:ahe_fnonempty} stelt voor dat het antwoord negatief is, maar dat er geen stapel bestaat met meer dan nul objecten.
+
+Zin \ref{form:ahe_fempty} stelt voor dat het antwoord positief is, maar dat er een stapel bestaat met meer dan nul objecten.
+
+Deze twee zinnen moeten leiden tot de conclusie dat de theorie onvervulbaar is.
+
+Zin \ref{form:ahe_cempty} stelt voor dat het antwoord positief is en dat alle stapels leeg zijn.
+
+Zin \ref{form:ahe_cnonempty} stelt voor dat het antwoord negatief is en dat er een stapel bestaat met meer dan nul objecten.
+
+De conclusie moet hier zijn dat de theorie vervulbaar is.
+
+Wanneer we IDP viermaal runnen met deze vier zinnen om de beurt toegevoegd aan de uitvoertheorie, is de theorie inderdaad onvervulbaar voor de eerste twee zinnen. Zin \ref{form:ahe_cempty} leidt tot een uniek model dat overeenkomt met het geval dat alle stapels leeg zijn. Zin \ref{form:ahe_cnonempty} geeft alle modellen waar minstens \'e\'en stapel meer dan nul objecten heeft.
+
+De uitvoeringstijd en \textit{grounding}-grootte zijn gelijkaardig voor alle vier uitvoeringen. De uitvoering duurt ongeveer 24 seconden en de \textit{grounding}-grootte is 2 249 098.
+
+\subsection{Samenvatting van de bevindingen}
+Men kan Nim spelen met de theorie die automatisch werd gegenereerd uit de gegeven diagrammen. Tussen elke beurt is er wel een wachttijd van ongeveer vijf minuten, met twee en een halve minuut voordat de eerste beurt gespeeld kan worden.
+
+Het is mogelijk om voor een diagram bepaalde gewenste eigenschappen te controleren. Dit gaat echter gepaard met grote \textit{groundings}.
+
+Met de machine die ons ter beschikking stond konden we niet controleren op welke manieren het spel kan verlopen die ertoe leiden dat een bepaalde speler wint beginnend van een bepaald scenario omwille van een tekort aan geheugen.

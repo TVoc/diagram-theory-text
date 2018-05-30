@@ -1,8 +1,10 @@
 \chapter{Controleren op kwaliteitsgebreken}\label{sec:kwaliteitsgebrek}
-Waar in hoofdstuk \ref{sec:consistentie} \textit{Object}s centraal stonden, doen we daar hier afstand van: we abstraheren \textit{Object}s weg en concentreren ons in de plaats op \textit{ClassObject}s. We gebruiken het diagram in figuur \ref{fig:diagram-voorbeeld} weer als begeleidend voorbeeld. In de volgende subsecties overlopen we hoe we de theorie die we gebruiken voor dit probleem opbouwen.
+Waar in hoofdstuk \ref{sec:consistentie} objecten centraal stonden, doen we daar hier afstand van: we abstraheren de logische types voor klasses weg en concentreren ons in de plaats op \textit{ClassObject}, een logisch type dat een overeenkomstig object heeft voor alle klasses in het diagram. We gebruiken het diagram in figuur \ref{fig:diagram-voorbeeld} weer als begeleidend voorbeeld. In de volgende subsecties overlopen we hoe we de theorie die we gebruiken voor dit probleem opbouwen.
 
-\subsection{Gebruikte logische types en predikaten}
-We bewaren het logisch type \textit{ClassObject} en het predikaat \textit{IsSupertypeOf(ClassObject,\\ClassObject)} exact zoals ze zijn in hoofdstuk \ref{sec:consistentie} (en berekenen de transitieve sluiting horende bij \textit{IsSupertypeOf$\backslash2$} op dezelfde manier) en gebruiken daar bijkomend volgende predikaten:
+\subsection{Gebruikte logische types en predicaten}
+Waar we in sectie \ref{sec:hierarchies} het logisch type \textit{ClassObject} en het predicaat \textit{IsSupertypeOf/2} afwezen, behouden we ze hier en berekenen we de transitieve sluiting van \textit{IsSupertypeOf/2} zoals beschreven in diezelfde sectie.
+
+We gebruiken daar bijkomend de volgende nieuwe predicaten:
 
 \begin{itemize}
 	\item \textbf{\textit{BiAssoc(ClassObject,ClassObject)}}: drukt uit dat er een binaire associatie bestaat tussen de twee klasses.
@@ -10,7 +12,7 @@ We bewaren het logisch type \textit{ClassObject} en het predikaat \textit{IsSupe
 	\item \textbf{\textit{BiAssocHigh(ClassObject,ClassObject,ClassObject,nat)}}: gelijkaardig aan \textit{BiAssocLow$\backslash4$}, maar dan voor de bovengrens van de multipliciteit.
 \end{itemize}
 
-Deze predikaten worden ingevuld met een lijst van feiten die af te lezen zijn van het diagram. In hoofdstuk \ref{sec:rol-idp} wordt de logische theorie die het resultaat is van dit proces weergegeven.
+Deze predicaten worden ingevuld met een lijst van feiten die af te lezen zijn van het diagram. In hoofdstuk \ref{sec:rol-idp} wordt de logische theorie die het resultaat is van dit proces weergegeven.
 
 \subsection{Kwaliteitsgebreken detecteren}
 Er zijn drie kwaliteitsgebreken waarnaar wordt gezocht in de resulterende theorie:
@@ -25,15 +27,13 @@ Er zijn drie kwaliteitsgebreken waarnaar wordt gezocht in de resulterende theori
 
 We defini\"eren deze respectievelijke gebreken in de logische theorie door middel van de volgende logische zinnen:
 
-\begin{align*}
-	\forall{x}[ClassObject]\forall{y}[ClassObject](ManyToMany(x,y) \Leftrightarrow BiAssoc(x,y) \land \\ \lnot\exists{z}[nat](BiAssocHigh(x,y,x,z)) \land \lnot\exists{z}[nat](BiAssocHigh(x,y,y,z)))
-\end{align*}
+\begin{align}
+	\nonumber \forall{x}[ClassObject]\forall{y}[ClassObject](ManyToMany(x,y) \Leftrightarrow BiAssoc(x,y) \land \\ \lnot\exists{z}[nat](BiAssocHigh(x,y,x,z)) \land \lnot\exists{z}[nat](BiAssocHigh(x,y,y,z)))\label{form:manytomany}
+\end{align}
 
-\begin{align*}
-	\forall{x}[ClassObject](LooseClass(x) \Leftrightarrow \lnot(\exists{y}[ClassObject](BiAssoc(x,y)) \\ \lor \exists{s}[ClassObject]\exists{y}[ClassObject](IsSupertypeOf(s,y) \land BiAssoc(s,x)))
-\end{align*}
-
-\todo{oplossing vinden voor de derde: gewoon verwijzen naar IDP-bestand?}
+\begin{align}
+	\nonumber \forall{x}[ClassObject](LooseClass(x) \Leftrightarrow \lnot(\exists{y}[ClassObject](\lnot(x = y) \land (BiAssoc(x,y) \\ \lor \exists{s}[ClassObject]\exists{y}[ClassObject](IsSupertypeOf(s,y) \land BiAssoc(s,y))))))\label{form:loose}
+\end{align}
 
 \begin{figure}
 	\includegraphics{chap-kwaliteitsgebrek/hierarchy.png}
@@ -41,4 +41,15 @@ We defini\"eren deze respectievelijke gebreken in de logische theorie door midde
 	\label{fig:hierarchie}
 \end{figure}
 
-Deze regels worden meteen toegevoegd aan de theorie die wordt gegenereerd zoals uitgelijnd eerder in dit hoofdstuk. In hoofdstuk \ref{sec:rol-idp} wordt uitgelegd hoe deze theorie wordt gebruik om kwaliteitsgebreken te vinden.
+Zin \ref{form:manytomany} controleert of voor beide rollen van een associatie geldt dat bovengrens * is. Zin \ref{form:loose} controleert of klasse \textit{x} rechtstreeks geassocieerd is met een andere klasse, en zoniet, of klasse \textit{x} een subklasse is van een andere klasse en of die superklasse geassocieerd is met nog een andere klasse.
+
+De zin die overbodige associaties opspoort is te uitgebreid om op een duidelijke manier in deze tekst neer te zetten. Hij is terug te vinden in appendix \ref{app:kwaliteitsgebrek}.
+Deze zin onderscheidt drie gevallen:
+
+\begin{itemize}
+	\item Klasse \textit{x} en klasse \textit{y} zijn geassocieerd. Er bestaat een klasse \textit{Sx} die een superklasse is van \textit{x} en ook geassocieerd is met \textit{y}. De associatie \textit{x}---\textit{y} heeft aan het uiteinde \textit{x} ofwel een lagere ondergrens dan de associatie \textit{Sx}---\textit{y} aan uiteinde \textit{Sx} of een grotere bovengrens.
+	\item Klasse \textit{x} en klasse \textit{y} zijn geassocieerd. Er bestaat een klasse \textit{Sy} die een superklasse is van \textit{y} en ook geassocieerd is met \textit{x}. De associatie \textit{x}---\textit{y} heeft aan het uiteinde \textit{x} ofwel een lagere ondergrens dan de associatie \textit{x}---\textit{Sy} aan uiteinde \textit{x} of een grotere bovengrens.
+	\item Klasse \textit{x} en klasse \textit{y} zijn geassocieerd. Er bestaat de klasse \textit{Sx} die een superklasse is van \textit{x} en een klasse \textit{Sy} die een superklasse is van \textit{y}. De associatie \textit{x}---\textit{y} heeft aan het uiteinde \textit{x} ofwel een lagere ondergrens dan de associatie \textit{Sx}---\textit{Sy} aan uiteinde \textit{Sx} of een grotere bovengrens.
+\end{itemize}
+
+In hoofdstuk \ref{sec:rol-idp} wordt uitgelegd hoe deze theorie wordt gebruik om kwaliteitsgebreken te vinden.
