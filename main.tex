@@ -19,10 +19,10 @@
 %DIF END PREAMBLE EXTENSION ADDED BY LATEXDIFF
 
 \documentclass[master=cws,masteroption=gs,dutch]{kulemt}
-\setup{title={Automatische verificatie en kwaliteitscontrole van UML-diagrammen met FO(.)},
+\setup{title={Vertaling van UML-klassediagrammen en sequentiediagrammen naar FO($\cdot$)-theorie\"en voor simulatie en verificatie},
 	author={Thomas Vochten},
 	promotor={Prof. dr. Marc Denecker},
-	assessor={TBD},
+	assessor={Dr. Bart Bogaerts, Dr. Dominique Devriese},
 	assistant={Matthias van der Hallen}}
 
 %\setup{coverpageonly}
@@ -31,7 +31,7 @@
 \setup{filingcard,
 	translatedtitle={TBD},
 	udc=681.3,
-	shortabstract={\lipsum[2]}}
+	shortabstract={	UML is een grafische taal die een aantal soorten diagrammen aanbiedt om een mogelijk ontwerp voor een gewenst softwaresysteem op te stellen. Als de ontwerper echter een groot aantal diagrammen opstelt en de diagrammen een zekere omvang bereiken, is het makkelijk om het overzicht te verliezen. Wij richten ons op klassediagrammen en sequentiediagrammen. We bekijken voorstellen in de literatuur om deze soorten diagrammen voor te stellen in logica en om die voorstellingen te gebruiken om verificatie van consistentie en de aanwezigheid van gewenste eigenschappen te controleren. Daarna beschrijven we ons proces om klassediagrammen en bijhorende sequentiediagrammen te vertalen naar FO($\cdot$), een uitbreiding van eerste-orde-predicatenlogica. We tonen hoe we de resulterende theorie kunnen gebruiken om consistentie van het klassediagram te controleren en om bepaalde kwaliteitsgebreken op te sporen. Verder tonen we ook hoe we de vertaling van een stel sequentiediagrammen in een FO($\cdot$)-theorie gebruiken om simulaties van het voorgestelde systeem uit te voeren en om te verifi\"eren of diagrammen voldoen aan specifieke vooropgestelde vereisten. We geven ook een aanzet om declaratieve elementen te integreren in de ontwerptaal voor sequentiediagrammen om zo breder toepasbare verificaties toe te laten. }}
 
 \usepackage[pdfusetitle,colorlinks,plainpages=false]{hyperref}
 \usepackage{float}
@@ -97,14 +97,24 @@
 \begin{document}
 	
 \begin{preface}
-	\lipsum[1]
+	Ik gebruik deze gelegenheid met plezier om die personen die ik oprechte dankbaarheid ben verschuldigd te eren.
+	
+	Allereerst dank ik mijn gezin voor hun werkelijk bodemloos geduld en hun steun waar ik altijd op kon rekenen, zij het stil of in de vorm van aanmoedigingen en advies. In het bijzonder dank in mijn ouders die altijd perfect wisten hoe te reageren tijdens momenten waar het niet zo gemakkelijk ging.
+	
+	Ik dank ook Tante Els voor de interesse die ze toonde in mijn vooruitgang en voor de verscheidene keren dat ze duidelijk maakte dat ze aan me dacht. Weten dat je te allen tijde ondersteund wordt door je familie is een groot comfort in je leven.
+	
+	Ik dank mijn vrienden omdat ze altijd klaarstonden voor een gesprek als ik dat nodig had en steeds een luisterend oor boden als het er even uit moest dat het minder goed ging. Jullie zijn stuk voor stuk goede gasten.
+	
+	\textit{Last but not least} dank ik mijn begeleider, Matthias van der Hallen. Hij vervulde die rol altijd met bekwaamheid en empathie, zelfs al duurde het wat langer om dit punt te bereiken.
+	
+	Deze masterproef is opgedragen aan u allen.
 \end{preface}
 
 \tableofcontents*
 \listoffigures
 
 \begin{abstract}
-	\lipsum[1]
+	UML is een grafische taal die een aantal soorten diagrammen aanbiedt om een mogelijk ontwerp voor een gewenst softwaresysteem op te stellen. Als de ontwerper echter een groot aantal diagrammen opstelt en de diagrammen een zekere omvang bereiken, is het makkelijk om het overzicht te verliezen. Wij richten ons op klassediagrammen en sequentiediagrammen. We bekijken voorstellen in de literatuur om deze soorten diagrammen voor te stellen in logica en om die voorstellingen te gebruiken om verificatie van consistentie en de aanwezigheid van gewenste eigenschappen te controleren. Daarna beschrijven we ons proces om klassediagrammen en bijhorende sequentiediagrammen te vertalen naar FO($\cdot$), een uitbreiding van eerste-orde-predicatenlogica. We tonen hoe we de resulterende theorie kunnen gebruiken om consistentie van het klassediagram te controleren en om bepaalde kwaliteitsgebreken op te sporen. Verder tonen we ook hoe we de vertaling van een stel sequentiediagrammen in een FO($\cdot$)-theorie gebruiken om simulaties van het voorgestelde systeem uit te voeren en om te verifi\"eren of diagrammen voldoen aan specifieke vooropgestelde vereisten. We geven ook een aanzet om declaratieve elementen te integreren in de ontwerptaal voor sequentiediagrammen om zo breder toepasbare verificaties toe te laten. 
 \end{abstract}
 
 \mainmatter
@@ -116,6 +126,7 @@
 \include{chap-rol-idp/chap-rol-idp}
 \include{chap-gedrag/chap-gedrag}
 \include{chap-evaluatie/chap-evaluatie}
+\include{chap-conclusie/chap-conclusie}
 
 \appendixpage*
 \appendix
