@@ -25,7 +25,7 @@ In dit hoofdstuk beschouwen we hoe we het vocabularium en de logische theorie di
 \end{landscape}
 
 \section{De keuze voor lineaire tijdscalculus}
-UML-diagrammen schrijven mogelijke toestanden van, en acties, op softwaresystemen voor. Die systemen kunnen van toestand veranderen tussen tijdstappen. Sequentiediagrammen zijn een manier om te beschrijven hoe zulke veranderingen teweeggebracht kunnen worden. Tijdens de uitvoering van een sequentiediagram mag het systeem enkel veranderen zoals beschreven door de huidige actie. Daarom hebben we een mechanisme nodig binnen FO($\cdot$) dat dynamische systemen en acties op deze kan beschrijven. Tegelijk moet dat mechanisme garanderen dat eigenschappen van het systeem die niet worden be\"invloed door de huidige beschouwde actie van het sequentiediagram niet veranderen. Lineaire tijdscalculus\cite{BogaertsBart2014Sdsu}, oftewel LTC, voldoet aan deze voorwaarden. Daarom zullen we om sequentiediagrammen uitvoerbaar te maken binnen FO($\cdot$) het generatieproces voor het vocabularium en de theorie dat we bekomen zijn in hoofdstuk \ref{sec:consistentie} uitbreiden volgens de principes van LTC.
+UML-diagrammen schrijven mogelijke toestanden van, en acties, op softwaresystemen voor. Die systemen kunnen van toestand veranderen tussen tijdstappen. Sequentiediagrammen zijn een manier om te beschrijven hoe zulke veranderingen teweeggebracht kunnen worden. Tijdens de uitvoering van een sequentiediagram mag het systeem enkel veranderen zoals beschreven door de huidige actie. Daarom hebben we een mechanisme nodig binnen FO($\cdot$) dat dynamische systemen en acties op deze kan beschrijven. Tegelijk moet dat mechanisme garanderen dat eigenschappen van het systeem die niet worden be\"invloed door de huidige beschouwde actie van het sequentiediagram niet veranderen. Lineaire tijdscalculus\cite{BogaertsBart2014Sdsu}, oftewel LTC, voldoet aan deze voorwaarden. Daarom zullen we om sequentiediagrammen uitvoerbaar te maken binnen FO($\cdot$) het generatieproces voor het vocabularium en de theorie dat we bekomen zijn in hoofdstuk \ref{sec:consistentie} uitbreiden volgens de principes van LTC. Dit betekent dat we de predicaten voor operaties die voorheen gegenereerd werden in hoofdstuk \ref{sec:consistentie} achterwege laten.
 
 In de volgende secties werken we deze uitbreiding uit voor het sequentiediagram in figuur \ref{fig:seq-diagram-game}.
 
@@ -160,10 +160,10 @@ Voor de andere variabelen wordt er een causatiezin toegevoegd voor elke instruct
 
 De zin drukt uit dat de getter wordt opgeroepen op \textit{target} en dat er wordt gevraagd naar een instantie van \textit{Statistic} dat in verband staat met \textit{target} en als naam "defence" heeft. Die instantie wordt dan als waarde toegekend aan de variabele \textit{defence}.
 
-Zie appendix \ref{app:seq-diagram-game} voor het volledig model voor het gedrag van het sequentiediagram in figuur \ref{fig:seq-diagram-game}.
+Zie bijlage \ref{app:seq-diagram-game} voor het volledig model voor het gedrag van het sequentiediagram in figuur \ref{fig:seq-diagram-game}.
 
 
-\section{Het uivoeren van gecombineerde fragmenten}\label{sec:combined-fragment}
+\section{Het uitvoeren van gecombineerde fragmenten}\label{sec:combined-fragment}
 Het opstellen van causatiezinnen voor \textit{SDPointAt} ten gevolge van gecombineerde fragmenten is niet vanzelfsprekend. In deze sectie beschrijven we onze methode om dit te bewerkstelligen.
 Bij de vertaling van sequentiediagrammen houden we in de interne voorstelling van een gecombineerd fragment volgende zaken bij:
 
@@ -397,7 +397,7 @@ Een laatste aspect is dat we ervoor moeten zorgen dat een lus terug wordt uitgev
 We gebruiken hier een variant van \textit{bepaalTransitieInOnvolledig} waarbij de fragmenten doorgegeven in \textit{uitgesloten} worden overgeslagen.
 De mogelijke laatste berichten van een fragment zijn deze waarbij het uitvoerpad het fragment verlaat nadat ze zijn uitgevoerd, bijvoorbeeld de laatste berichten van de \textit{if}- en \textit{else}-gedeeltes van een alt-fragment of een bericht dat voorafgaat aan een lusfragment.
 
-Vanaf zulk een laatst bericht gaan we van onderaf naar boven in de boom, beginnend bij het fragment dat als argument wordt gegeven van de oproep. Telkens we een lusfragment tegenkomen waarvan dat bericht een laatste bericht is, moeten we voor dat fragment alle mogelijke beginpunten vinden. We beschouwen de containers voor het fragment. Indien de eerste container een lus is, controleren we of de laatste container een lus is en of \textit{laatsteBericht} een laatst bericht ervan is. In dat geval moeten we verzekeren dat er rekening wordt gehouden met de lusvoorwaarde van de lus op dit niveau wanneer we \textit{bepaalTransitieInOnvolledig} gebruiken. Verder gaan we de containers af: We bundelen de negaties van de voorwaardes van voorafgaande lusfragmenten samen, bepalen we de transitiepunten ervan en gaan we naar boven in de boom nadat we een container zijn tegengekomen die geen lus is of als we alle containers hebben beschouwd.
+Vanaf zulk een laatste bericht gaan we van onderaf naar boven in de boom, beginnend bij het fragment dat als argument wordt gegeven van de oproep. Telkens we een lusfragment tegenkomen waarvan dat bericht een laatste bericht is, moeten we voor dat fragment alle mogelijke beginpunten vinden. We beschouwen de containers voor het fragment. Indien de eerste container een lus is, controleren we of de laatste container een lus is en of \textit{laatsteBericht} een laatst bericht ervan is. In dat geval moeten we verzekeren dat er rekening wordt gehouden met de lusvoorwaarde van de lus op dit niveau wanneer we \textit{bepaalTransitieInOnvolledig} gebruiken. Verder gaan we de containers af: We bundelen de negaties van de voorwaardes van voorafgaande lusfragmenten samen, bepalen we de transitiepunten ervan en gaan we naar boven in de boom nadat we een container zijn tegengekomen die geen lus is of als we alle containers hebben beschouwd.
 
 Als de eerste container geen lus is, bepalen we de transitiepunten van het fragment en gaan dan naar boven in de boom.
 
@@ -452,13 +452,13 @@ We gebruiken dit om de eigenlijke vertaling van gecombineerde fragmenten naar FO
 We defini\"eren eerst notatie die we verder gebruiken bij het uitwerken van een voorbeeld:
 
 \begin{align*}
-	\transitionentry{\fragcond{voorwaarde}}{\fragmessage{$bericht\_a$}}
+	\transitionentry{\fragcond{voorwaarde}}{\fragmessage{$bericht_a$}}
 \end{align*}
 
 Dit betekent dat de uitvoering kan springen naar $bericht_a$ onder \textit{\fragcond{voorwaarde}}.
 
 \begin{align*}
-	\transitionentry[\fragmessage{$bericht\_b$}]{\fragcond{voorwaarde}}{\fragmessage{$bericht\_a$}}
+	\transitionentry[\fragmessage{$bericht_b$}]{\fragcond{voorwaarde}}{\fragmessage{$bericht_a$}}
 \end{align*}
 
 Dit betekent dat de uitvoering vanaf \fragmessage{$bericht_b$} springt naar \fragmessage{$bericht_a$} onder \textit{\fragcond{voorwaarde}}.

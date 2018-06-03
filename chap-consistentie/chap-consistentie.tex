@@ -1,5 +1,10 @@
 \chapter{Controleren van consistentie}\label{sec:consistentie}
-In dit hoofdstuk treden we meer in detail over hoe we klassediagrammen voorstellen in FO($\cdot$). Daarvoor willen we een specifieke vorm van logische theorie automatisch laten genereren. In deze theorie\"en staan \textbf{objecten} centraal. Deze objecten zijn instanties van een klasse die voorkomt in het beschouwde diagram, hebben exact de attributen en operaties van die klasse en maken deel uit van exact die relaties die het diagram voorschrijft voor die klasse. Aan de hand van volgend voorbeeld zullen we illustreren welke regels we gebruiken om zulk een theorie op te bouwen:
+\todo{wat is precies mijn eigen werk}
+In dit hoofdstuk treden we meer in detail over hoe we klassediagrammen voorstellen in FO($\cdot$). Daarvoor willen we een specifieke vorm van logische theorie automatisch laten genereren. In deze theorie\"en staan \textbf{objecten} centraal. Deze objecten zijn instanties van een klasse die voorkomt in het beschouwde diagram, hebben exact de attributen en operaties van die klasse en maken deel uit van exact die relaties die het diagram voorschrijft voor die klasse.
+
+Het merendeel van het werk in dit hoofdstuk bestaat erin om de methode om klassediagrammen te vertalen naar eerste-orde-predicatenlogica ge\"introduceerd in \cite{BerardiDaniela2005RoUc} aan te passen om gebruik te maken van logische types zoals gedefinieerd in FO($\cdot$).
+
+Aan de hand van volgend voorbeeld zullen we illustreren welke regels we gebruiken om een theorie op te bouwen:
 
 \begin{figure}[H]
 	\includegraphics[width=0.95\textwidth]{chap-consistentie/diagram-voorbeeld.png}
@@ -18,19 +23,19 @@ De signatuur van \textit{Charactername$\backslash2$} is daarom \textit{Character
 Voor elk attribuut wordt ook een regel omtrent multipliciteit afgeleid. Zij \textit{lowerBound} de ondergrens en \textit{upperBound} de bovengrens. Dan is de meest algemene vorm van deze regel als volgt:
 	
 \begin{align*}
-	\forall{o1}[KlasseType](lowerBound \geq \#\{o2 [AttribuutType] : \\ Klasseattribuutnaam(o1,o2)\} \geq upperBound)
+	\forall{o1}[KlasseType](lowerBound \geq \#\{o2 [AttribuutType] : \\ Klasseattribuutnaam(o1,o2)\} \geq upperBound).
 \end{align*}
 	
 waarbij \textit{lowerBound} wordt weggelaten als deze $0$ is en \textit{upperBound} wordt weggelaten als deze $*$ is. Indien beide van deze voorwaarden gelden, wordt er geen regel afgeleid betreffende de multipliciteit van het attribuut. Als $lowerBound = upperBound$, wordt deze regel in de plaats:
 	
 \begin{align*}
-	\forall{o1}[KlasseType] \exists_{=upperBound}{o2}[AttribuutType](Klassenaamattribuutnaam(o1,o2))
+	\forall{o1}[KlasseType] \exists_{=upperBound}{o2}[AttribuutType](Klassenaamattribuutnaam(o1,o2)).
 \end{align*}
 	
 Voor \textit{Charactername$\backslash2$} wordt daarom afgeleid:
 	
 \begin{align*}
-	\forall{o1}[Character]\exists_{=1}{x}[string](Charactername(o,x))
+	\forall{o1}[Character]\exists!{x}[string](Charactername(o,x)).
 \end{align*}
 
 \section{Voorstellen van operaties}
@@ -41,17 +46,17 @@ We moeten ervoor zorgen dat elke combinatie van object waarop de operatie wordt 
 \begin{align*}
 	&\forall{o}[KlasseType]\forall{p_1}[ParameterType_1]\ldots\forall{p_m}[ParameterType_m]
 	\\
-	&\exists!{r}[ResultaatType](Klassenaamoperatienaam(o,p_1,\ldots,p_m,r)))
+	&\exists!{r}[ResultaatType](Klassenaamoperatienaam(o,p_1,\ldots,p_m,r)).
 \end{align*}
 	
 De invulling voor \textit{CharacterdetermineDamageFrom(Character,Weapon,int)} wordt:
 	
 \begin{align*}
-	&\forall{o}[Character\forall{p_1}[Weapon]\exists!{r}[int](CharacterdetermineDamageFrom(o,p1,r))
+	&\forall{o}[Character\forall{p_1}[Weapon]\exists!{r}[int](CharacterdetermineDamageFrom(o,p1,r)).
 \end{align*}
 
-\subsection{Voorstellen van associaties}
-Voor elke associatie voegen we een predicaat toe dat beantwoordt aan volgend patroon: \textit{$ClassOneand\ldots{}andClassM\backslash{m}$}, waarbij \textit{m} de ariteit van de associatie. Voor de associatie tussen \textit{Inventory} en \textit{Item} wordt dit dus \textit{InventoryandItem(Inventory,Item)}.
+\section{Voorstellen van associaties}
+\todo{forward slash voor ariteit ipv backslash}Voor elke associatie voegen we een predicaat toe dat beantwoordt aan volgend patroon: \textit{$ClassOneand\ldots{}andClassM\backslash{m}$}, waarbij \textit{m} de ariteit van de associatie. Voor de associatie tussen \textit{Inventory} en \textit{Item} wordt dit dus \textit{InventoryandItem(Inventory,Item)}.
 
 De multipliciteit voor elke rol moet worden uitgedrukt. Voor alle $o_l$ waarvoor $1 \leq l \leq m$ wordt een regel toegevoegd van de volgende vorm:\\
 
@@ -59,29 +64,29 @@ Zij $lowerBound_l$ de ondergrens en $upperBound_l$ de bovengrens:
 \begin{align*}
 	&\forall{c_1}[Klasse_1]\ldots\forall{c_m}[Klasse_m](lowerBound_l \leq
 	\\
-	&\#\{o_l: ClassOneand\ldots{}ClassM(c_1,\ldots,o_l,\ldots,c_m)\} \leq upperBound_l)
+	&\#\{o_l[Klasse_l] : ClassOneand\ldots{}ClassM(c_1,\ldots,o_l,\ldots,c_m)\} \leq upperBound_l).
 \end{align*}
 	
 waarbij de \textit{c} met index \textit{l} overgeslagen wordt. Indien de ondergrens gelijk is aan $0$ of de bovengrens gelijk is aan $*$ worden dezen weggelaten. Als beide voorwaarden gelden, wordt voor deze \textit{l} geen regel afgeleid. Indien $lowerBound_l = upperBound_l$ wordt in de plaats afgeleid:
 	
 	\begin{align*}
-	&\forall{c_1}[Klasse_1]\ldots\forall{c_m}[Klasse_m] \exists_{=upperbound_l}o_l(ClassOneand\ldots{}andClassM\\&(c_1,\ldots,o_l,\ldots,c_m))
+	&\forall{c_1}[Klasse_1]\ldots\forall{c_m}[Klasse_m] \exists_{=upperbound_l}o_l[Klasse_l](ClassOneand\ldots{}andClassM\\&(c_1,\ldots,o_l,\ldots,c_m)).
 	\end{align*}
 	
-	Voor \textit{InventoryandItem$\backslash{}m$} worden de volgende regels afgeleid:
+	Voor \textit{InventoryandItem$\backslash{}2$} worden de volgende regels afgeleid:
 	
 \begin{align*}
-		\forall{o_2}[Item](\#{o_1: InventoryandItem(o_1,o_2)} \leq 1)
+		\forall{o_2}[Item](\#{o_1[Inventory]: InventoryandItem(o_1,o_2)} \leq 1).
 \end{align*} 
 		
 \begin{align*}
-		\forall{o_1}[Inventory](\#{o_2: InventoryandItem(o_1,o_2)} \leq 5)
+		\forall{o_1}[Inventory](\#{o_2[Item]: InventoryandItem(o_1,o_2)} \leq 5).
 \end{align*}
 
 \section{Voorstellen van klassehi\"erarchi\"een}\label{sec:hierarchies}
 Aangezien FO($\cdot$) een getypeerde logica is, is het eenvoudig om klassehi\"erarchie\"een voor te stellen. Als volgens het diagram klasse \textit{X} een subklasse is van klasse \textit{Y}, dan is het voldoende om in het uitvoervocabularium te noteren dat logisch type \textit{Y} een supertype is van logisch type \textit{X}. Het is mogelijk om op die manier een ketting van overervingsrelaties te modelleren en zo een hi\"erarchie te verkrijgen. In IDP in het bijzonder is het mogelijk dat een logisch type een subtype is van meer dan \'e\'en type, dus kan men ook meervoudige overerving modelleren.
 
-Dit heeft echter een gevolg voor interpretaties van het logisch type overeenkomstig met een superklasse in een mogelijke structuur volgens het uitvoervocabularium. Indien klasse \textit{Z} een subklasse is van klasse \textit{Y}, dan moeten alle objecten die behoren tot klasse \textit{Z} ook behoren tot klasse \textit{Y}, en zo ook moeten alle objecten die behoren tot klasses \textit{Z} en \textit{Y} behoren tot klasse \textit{X}.
+Dit heeft echter een gevolg voor interpretaties van het logisch type overeenkomstig met een superklasse in een mogelijke structuur volgens het uitvoervocabularium. Indien klasse \textit{Z} een subklasse is van klasse \textit{Y}, dan moeten alle objecten die behoren tot klasse \textit{Z} ook behoren tot klasse \textit{X}, en zo ook moeten alle objecten die behoren tot klasses \textit{Z} en \textit{X} behoren tot klasse \textit{Y}.
 
 Het is mogelijk om de eindgebruiker dit werk te besparen en automatisch de geschikte interpretaties te laten berekenen door af te stappen van een logisch type voor elke klasse en in de plaats twee nieuwe logische types te introduceren: Een algemeen logisch type voor objecten, \textit{Object}; en een \textit{constructed type}\cite{DeCatBroes2014PLaa} dat voor elke klasse in het diagram een overeenkomstig object heeft, \textit{ClassObject}.
 
@@ -91,9 +96,9 @@ Er zijn ook twee predicaten nodig om overervingsrelaties tussen klasses te model
 
 \begin{align}
 \{
-\nonumber &\forall{x}[ClassObject]\forall{y}[ClassObject](IsSupertypeOf(x,y) \leftarrow \\ &IsDirectSupertypeOf(x,y))\label{def:tc1} \\
+\nonumber &\forall{x}[ClassObject]\forall{y}[ClassObject](IsSupertypeOf(x,y) \leftarrow \\ &IsDirectSupertypeOf(x,y)).\label{def:tc1} \\
 \nonumber &\forall{x}[ClassObject]\forall{y}[ClassObject](IsSupertypeOf(y,x) \leftarrow \\
-&\exists{z}(IsSupertypeOf(y,z) \land IsSupertypeOf(z,x)))\label{def:tc2}
+&\exists{z}(IsSupertypeOf(y,z) \land IsSupertypeOf(z,x))).\label{def:tc2}
 \}
 \end{align}
 
@@ -103,8 +108,8 @@ We maken in een tweede definitie gebruik van \textit{IsSupertypeOf/2} om \textit
 
 \begin{align*}
 \{
-&\forall{x}[ClassObject]\forall{o}[Object](StaticClass(x,o) \leftarrow RuntimeClass(x,o)) \\
-&\forall{x}[ClassObject]\forall{y}[ClassObject]\forall{o}[Object](StaticClass(y,o) \leftarrow \\ &RuntimeClass(x,o) \land IsSupertypeOf(y,x))
+&\forall{x}[ClassObject]\forall{o}[Object](StaticClass(x,o) \leftarrow RuntimeClass(x,o)). \\
+&\forall{x}[ClassObject]\forall{y}[ClassObject]\forall{o}[Object](StaticClass(y,o) \leftarrow \\ &RuntimeClass(x,o) \land IsSupertypeOf(y,x)).
 \}
 \end{align*}
 
@@ -112,9 +117,9 @@ In een aparte definitie lijsten we de invulling voor \textit{IsDirectSupertype/2
 
 \begin{align*}
 \{
-IsDirectSupertypeOf(Statistic,Weaponlevel) \leftarrow \\
-IsDirectSupertypeOf(Statistic,DerivedStatistic) \leftarrow \\
-IsDirectSupertypeOf(Item,Weapon) \leftarrow \\
+IsDirectSupertypeOf(Statistic,Weaponlevel) \leftarrow .\\
+IsDirectSupertypeOf(Statistic,DerivedStatistic) \leftarrow .\\
+IsDirectSupertypeOf(Item,Weapon) \leftarrow .\\
 \}
 \end{align*}
 

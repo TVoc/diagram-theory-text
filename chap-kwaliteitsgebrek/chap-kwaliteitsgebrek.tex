@@ -1,7 +1,7 @@
 \chapter{Controleren op kwaliteitsgebreken}\label{sec:kwaliteitsgebrek}
 Waar in hoofdstuk \ref{sec:consistentie} objecten centraal stonden, doen we daar hier afstand van: we abstraheren de logische types voor klasses weg en concentreren ons in de plaats op \textit{ClassObject}, een logisch type dat een overeenkomstig object heeft voor alle klasses in het diagram. We gebruiken het diagram in figuur \ref{fig:diagram-voorbeeld} weer als begeleidend voorbeeld. In de volgende subsecties overlopen we hoe we de theorie die we gebruiken voor dit probleem opbouwen.
 
-\subsection{Gebruikte logische types en predicaten}
+\section{Gebruikte logische types en predicaten}
 Waar we in sectie \ref{sec:hierarchies} het logisch type \textit{ClassObject} en het predicaat \textit{IsSupertypeOf/2} afwezen, behouden we ze hier en berekenen we de transitieve sluiting van \textit{IsSupertypeOf/2} zoals beschreven in diezelfde sectie.
 
 We gebruiken daar bijkomend de volgende nieuwe predicaten:
@@ -14,11 +14,11 @@ We gebruiken daar bijkomend de volgende nieuwe predicaten:
 
 Deze predicaten worden ingevuld met een lijst van feiten die af te lezen zijn van het diagram. In hoofdstuk \ref{sec:rol-idp} wordt de logische theorie die het resultaat is van dit proces weergegeven.
 
-\subsection{Kwaliteitsgebreken detecteren}
+\section{Kwaliteitsgebreken detecteren}
 Er zijn drie kwaliteitsgebreken waarnaar wordt gezocht in de resulterende theorie:
 
 \begin{itemize}
-	\item \textbf{Many-to-many associaties}: Dit zijn associaties waar dat de bovengrens van de multipliciteiten aan beide kanten gelijk is aan $*$. Het voorkomen van een many-to-many associatie is doorgaans een teken dat er een klasse ontbreekt in het ontwerp. Het is dus van groot belang dat dit wordt opgespoord en opgelost.
+	\item \textbf{Many-to-many associaties}: Dit zijn associaties waar de bovengrens van de multipliciteiten aan beide kanten gelijk is aan $*$. Het voorkomen van een many-to-many associatie is doorgaans een teken dat er een klasse ontbreekt in het ontwerp. Het is dus van groot belang dat dit wordt opgespoord en opgelost.
 	
 	\item \textbf{Losstaande klasse}: Concreet is een losstaande klasse een klasse die geen associatie heeft met een andere klasse in het ontwerp. Zulk een klasse is nutteloos en moet ofwel verbonden worden met een andere klasse of verwijderd worden.
 	
@@ -28,11 +28,11 @@ Er zijn drie kwaliteitsgebreken waarnaar wordt gezocht in de resulterende theori
 We defini\"eren deze respectievelijke gebreken in de logische theorie door middel van de volgende logische zinnen:
 
 \begin{align}
-	\nonumber \forall{x}[ClassObject]\forall{y}[ClassObject](ManyToMany(x,y) \Leftrightarrow BiAssoc(x,y) \land \\ \lnot\exists{z}[nat](BiAssocHigh(x,y,x,z)) \land \lnot\exists{z}[nat](BiAssocHigh(x,y,y,z)))\label{form:manytomany}
+	\nonumber \forall{x}[ClassObject]\forall{y}[ClassObject](ManyToMany(x,y) \Leftrightarrow BiAssoc(x,y) \land \\ \lnot\exists{z}[nat](BiAssocHigh(x,y,x,z)) \land \lnot\exists{z}[nat](BiAssocHigh(x,y,y,z))).\label{form:manytomany}
 \end{align}
 
 \begin{align}
-	\nonumber \forall{x}[ClassObject](LooseClass(x) \Leftrightarrow \lnot(\exists{y}[ClassObject](\lnot(x = y) \land (BiAssoc(x,y) \\ \lor \exists{s}[ClassObject]\exists{y}[ClassObject](IsSupertypeOf(s,y) \land BiAssoc(s,y))))))\label{form:loose}
+	\nonumber \forall{x}[ClassObject](LooseClass(x) \Leftrightarrow \lnot(\exists{y}[ClassObject](\lnot(x = y) \land (BiAssoc(x,y) \\ \lor \exists{s}[ClassObject]\exists{y}[ClassObject](IsSupertypeOf(s,x) \land BiAssoc(s,y)))))).\label{form:loose}
 \end{align}
 
 \begin{figure}
@@ -43,7 +43,7 @@ We defini\"eren deze respectievelijke gebreken in de logische theorie door midde
 
 Zin \ref{form:manytomany} controleert of voor beide rollen van een associatie geldt dat bovengrens * is. Zin \ref{form:loose} controleert of klasse \textit{x} rechtstreeks geassocieerd is met een andere klasse, en zoniet, of klasse \textit{x} een subklasse is van een andere klasse en of die superklasse geassocieerd is met nog een andere klasse.
 
-De zin die overbodige associaties opspoort is te uitgebreid om op een duidelijke manier in deze tekst neer te zetten. Hij is terug te vinden in appendix \ref{app:kwaliteitsgebrek}.
+De zin die overbodige associaties opspoort is te uitgebreid om op een duidelijke manier in deze tekst neer te zetten. Hij is terug te vinden in bijlage \ref{app:kwaliteitsgebrek}.
 Deze zin onderscheidt drie gevallen:
 
 \begin{itemize}
