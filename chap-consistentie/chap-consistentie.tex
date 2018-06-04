@@ -1,5 +1,4 @@
 \chapter{Controleren van consistentie}\label{sec:consistentie}
-\todo{wat is precies mijn eigen werk}
 In dit hoofdstuk treden we meer in detail over hoe we klassediagrammen voorstellen in FO($\cdot$). Daarvoor willen we een specifieke vorm van logische theorie automatisch laten genereren. In deze theorie\"en staan \textbf{objecten} centraal. Deze objecten zijn instanties van een klasse die voorkomt in het beschouwde diagram, hebben exact de attributen en operaties van die klasse en maken deel uit van exact die relaties die het diagram voorschrijft voor die klasse.
 
 Het merendeel van het werk in dit hoofdstuk bestaat erin om de methode om klassediagrammen te vertalen naar eerste-orde-predicatenlogica ge\"introduceerd in \cite{BerardiDaniela2005RoUc} aan te passen om gebruik te maken van logische types zoals gedefinieerd in FO($\cdot$).
@@ -18,8 +17,8 @@ Meer bepaald willen we uitdrukken welke \textbf{klasses} er bestaan in het diagr
 We moeten een manier hebben om objecten te benoemen in een theorie en te specificeren tot welke klasse die objecten behoren. Voor beide van deze noden zijn logische types geschikt. We voegen voor elke klasse een logisch type toe aan het vocabularium. Er is een logisch type \textit{Character}, een logisch type \textit{Position}, etc.
 
 \section{Voorstellen van attributen}
-Voor elk attribuut voegen we een binair predicaat toe waarvan de naam beantwoordt aan het patroon: \textit{Klassenaamattribuutnaam}. Voor klasse \textit{Character} en attribuut \textit{name} resulteert dit dus in het predicaat \textit{Charactername$\backslash2$}. Het eerste argument van dit predicaat is een \textit{Character}. Het type van het tweede argument hangt af van wat er in het diagram staat: Als het een primitief type is zoals \textit{string} of \textit{int}, zal dat ook het type zijn van het tweede predicaat; in het andere geval is het type van het tweede argument het overeenkomstig logisch type voor die klasse. Op deze manier wordt afgedwongen dat elk argument van het predicaat van het juiste type is.
-De signatuur van \textit{Charactername$\backslash2$} is daarom \textit{Charactername(Character, string)}.
+Voor elk attribuut voegen we een binair predicaat toe waarvan de naam beantwoordt aan het patroon: \textit{Klassenaamattribuutnaam}. Voor klasse \textit{Character} en attribuut \textit{name} resulteert dit dus in het predicaat \textit{Charactername/2}. Het eerste argument van dit predicaat is een \textit{Character}. Het type van het tweede argument hangt af van wat er in het diagram staat: Als het een primitief type is zoals \textit{string} of \textit{int}, zal dat ook het type zijn van het tweede predicaat; in het andere geval is het type van het tweede argument het overeenkomstig logisch type voor die klasse. Op deze manier wordt afgedwongen dat elk argument van het predicaat van het juiste type is.
+De signatuur van \textit{Charactername/2} is daarom \textit{Charactername(Character, string)}.
 Voor elk attribuut wordt ook een regel omtrent multipliciteit afgeleid. Zij \textit{lowerBound} de ondergrens en \textit{upperBound} de bovengrens. Dan is de meest algemene vorm van deze regel als volgt:
 	
 \begin{align*}
@@ -32,14 +31,14 @@ waarbij \textit{lowerBound} wordt weggelaten als deze $0$ is en \textit{upperBou
 	\forall{o1}[KlasseType] \exists_{=upperBound}{o2}[AttribuutType](Klassenaamattribuutnaam(o1,o2)).
 \end{align*}
 	
-Voor \textit{Charactername$\backslash2$} wordt daarom afgeleid:
+Voor \textit{Charactername/2} wordt daarom afgeleid:
 	
 \begin{align*}
 	\forall{o1}[Character]\exists!{x}[string](Charactername(o,x)).
 \end{align*}
 
 \section{Voorstellen van operaties}
-Voor elke operatie voegen we een predicaat toe dat beantwoordt aan volgend patroon: \textit{Klassenaamoperatienaam$\backslash(m+2)$}, waarbij $m$ het aantal argumenten dat als invoer wordt meegegeven aan de operatie. De signatuur ziet eruit als \\ \textit{$Klasseoperatienaam(o,p_1,\ldots,p_m,r)$}, waarbij \textit{o} het object van het logisch type overeenkomstig de klasse waarvan de operatie deel is, \textit{$p_1$} \ldots \textit{$p_m$} de argumenten en \textit{r} het resultaat van de oproep van de operatie op het object \textit{o} met de gegeven argumenten. Indien er geen argumenten zijn, ziet de signatuur eruit als \textit{Klassenaamoperatienaam(o,r)}. Voor \textit{determineDamageWeaponFrom(Weapon)} van \textit{Character} wordt dit dus \textit{CharacterdetermineDamageFrom(Character,Weapon,int)}.
+Voor elke operatie voegen we een predicaat toe dat beantwoordt aan volgend patroon: \textit{Klassenaamoperatienaam/(m+2)}, waarbij $m$ het aantal argumenten dat als invoer wordt meegegeven aan de operatie. De signatuur ziet eruit als \\ \textit{$Klasseoperatienaam(o,p_1,\ldots,p_m,r)$}, waarbij \textit{o} het object van het logisch type overeenkomstig de klasse waarvan de operatie deel is, \textit{$p_1$} \ldots \textit{$p_m$} de argumenten en \textit{r} het resultaat van de oproep van de operatie op het object \textit{o} met de gegeven argumenten. Indien er geen argumenten zijn, ziet de signatuur eruit als \textit{Klassenaamoperatienaam(o,r)}. Voor \textit{determineDamageWeaponFrom(Weapon)} van \textit{Character} wordt dit dus \textit{CharacterdetermineDamageFrom(Character,Weapon,int)}.
 
 We moeten ervoor zorgen dat elke combinatie van object waarop de operatie wordt opgeroepen en mogelijke invoerparameters \'e\'en enkel resultaat is. Daarom leiden we regels af van de vorm:
 
@@ -56,7 +55,7 @@ De invulling voor \textit{CharacterdetermineDamageFrom(Character,Weapon,int)} wo
 \end{align*}
 
 \section{Voorstellen van associaties}
-\todo{forward slash voor ariteit ipv backslash}Voor elke associatie voegen we een predicaat toe dat beantwoordt aan volgend patroon: \textit{$ClassOneand\ldots{}andClassM\backslash{m}$}, waarbij \textit{m} de ariteit van de associatie. Voor de associatie tussen \textit{Inventory} en \textit{Item} wordt dit dus \textit{InventoryandItem(Inventory,Item)}.
+Voor elke associatie voegen we een predicaat toe dat beantwoordt aan volgend patroon: \textit{$ClassOneand\ldots{}andClassM/m$}, waarbij \textit{m} de ariteit van de associatie. Voor de associatie tussen \textit{Inventory} en \textit{Item} wordt dit dus \textit{InventoryandItem(Inventory,Item)}.
 
 De multipliciteit voor elke rol moet worden uitgedrukt. Voor alle $o_l$ waarvoor $1 \leq l \leq m$ wordt een regel toegevoegd van de volgende vorm:\\
 
@@ -73,7 +72,7 @@ waarbij de \textit{c} met index \textit{l} overgeslagen wordt. Indien de ondergr
 	&\forall{c_1}[Klasse_1]\ldots\forall{c_m}[Klasse_m] \exists_{=upperbound_l}o_l[Klasse_l](ClassOneand\ldots{}andClassM\\&(c_1,\ldots,o_l,\ldots,c_m)).
 	\end{align*}
 	
-	Voor \textit{InventoryandItem$\backslash{}2$} worden de volgende regels afgeleid:
+	Voor \textit{InventoryandItem/2} worden de volgende regels afgeleid:
 	
 \begin{align*}
 		\forall{o_2}[Item](\#{o_1[Inventory]: InventoryandItem(o_1,o_2)} \leq 1).

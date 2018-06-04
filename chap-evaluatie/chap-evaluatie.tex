@@ -6,7 +6,7 @@ In dit hoofdstuk ontwerpen we een klassediagram en sequentiediagrammen waarmee w
 	\item Hoe gemakkelijk het is om tot een ontwerp te komen.
 	\item Of we het spel kunnen spelen met de uitvoertheorie.
 	\item Of we bepaalde gewenste eigenschappen kunnen verifi\"eren.
-	\item Performantie: tijd- en geheugengebruik, deze laatste in de vorm van de grootte van de \textit{grounding}\cite{DeCatBroes2014PLaa}. We zetten in onze IDP-bestanden \textit{stdoptions.verbosity.groundingstats} op 1 om IDP deze statistieken zelf te laten rapporteren.
+	\item Performantie: Tijd- en geheugengebruik, deze laatste in de vorm van de grootte van de \textit{grounding}\cite{DeCatBroes2014PLaa}. We zetten in onze IDP-bestanden \textit{stdoptions.verbosity.groundingstats} op 1 om IDP deze statistieken zelf te laten rapporteren.
 \end{itemize}
 
 \section{Ontwerp}
@@ -57,9 +57,9 @@ Appendix \ref{code:nim-eval} bevat het IDP-bestand met de automatisch gegenereer
 	\newpage
 	\thispagestyle{empty}
 	\begin{figure}
-		\vspace*{-2cm}
+		%\vspace*{-0.5cm}
 		\begin{subfigure}{\textwidth}
-			\includegraphics[width=0.9\textwidth]{chap-evaluatie/play.png}
+			\includegraphics[width=0.8\textwidth]{chap-evaluatie/play.png}
 			\caption{Sequentiediagram voor \textit{play(boolean)}}
 			\label{fig:nim-play}
 		\end{subfigure}%
@@ -112,8 +112,8 @@ De volgende testen worden uitgevoerd:
 
 \begin{enumerate}
 	\item Simulatie van het verloop van een spel met twee stapels, waarvan \'e\'en twee objecten heeft en de andere drie, door middel van progressie\"inferentie.
-	\item Verificatie van de correctheid van het diagram voor \textit{isEmpty}
-	\item Verificatie van de correctheid van het diagram voor \textit{allHeapsEmpty} 
+	\item Verificatie van de correctheid van het diagram voor \textit{isEmpty}.
+	\item Verificatie van de correctheid van het diagram voor \textit{allHeapsEmpty}. 
 \end{enumerate}
 
 \subsection{Evaluatie van de simulatie}
@@ -201,4 +201,4 @@ Men kan Nim spelen met de theorie die automatisch werd gegenereerd uit de gegeve
 
 Het is mogelijk om voor een diagram bepaalde gewenste eigenschappen te controleren. Dit gaat echter gepaard met grote \textit{groundings}.
 
-Met de machine die ons ter beschikking stond konden we niet controleren op welke manieren het spel kan verlopen die ertoe leiden dat een bepaalde speler wint beginnend van een bepaald scenario omwille van een tekort aan geheugen.
+Met de machine die ons ter beschikking stond konden we omwille van een tekort aan geheugen niet controleren welke uitvoerpaden er bestaan die ertoe leiden dat een bepaalde speler wint beginnend van een bepaald scenario.
