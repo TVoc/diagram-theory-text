@@ -83,15 +83,15 @@ waarbij de \textit{c} met index \textit{l} overgeslagen wordt. Indien de ondergr
 \end{align*}
 
 \section{Voorstellen van klassehi\"erarchi\"een}\label{sec:hierarchies}
-Aangezien FO($\cdot$) een getypeerde logica is, is het eenvoudig om klassehi\"erarchie\"een voor te stellen. Als volgens het diagram klasse \textit{X} een subklasse is van klasse \textit{Y}, dan is het voldoende om in het uitvoervocabularium te noteren dat logisch type \textit{Y} een supertype is van logisch type \textit{X}. Het is mogelijk om op die manier een ketting van overervingsrelaties te modelleren en zo een hi\"erarchie te verkrijgen. In IDP in het bijzonder is het mogelijk dat een logisch type een subtype is van meer dan \'e\'en type, dus kan men ook meervoudige overerving modelleren.
+Aangezien FO($\cdot$) een getypeerde logica is, is het eenvoudig om klassehi\"erarchie\"een voor te stellen. Als volgens het diagram klasse \textit{X} een subklasse is van klasse \textit{Y}, dan is het voldoende om in het uitvoervocabularium te noteren dat logisch type \textit{Y} een supertype is van logisch type \textit{X}. Het is mogelijk om op die manier een keten van overervingsrelaties te modelleren en zo een hi\"erarchie te verkrijgen. In IDP in het bijzonder is het mogelijk dat een logisch type een subtype is van meer dan \'e\'en type, dus kan men ook meervoudige overerving modelleren.
 
-Dit heeft echter een gevolg voor interpretaties van het logisch type overeenkomstig met een superklasse in een mogelijke structuur volgens het uitvoervocabularium. Indien klasse \textit{Z} een subklasse is van klasse \textit{Y}, dan moeten alle objecten die behoren tot klasse \textit{Z} ook behoren tot klasse \textit{X}, en zo ook moeten alle objecten die behoren tot klasses \textit{Z} en \textit{X} behoren tot klasse \textit{Y}.
+Dit heeft echter een gevolg voor interpretaties van het logisch type overeenkomstig met een superklasse in een mogelijke structuur volgens het uitvoervocabularium. Indien klasse \textit{Z} een subklasse is van klasse \textit{X} uit de vorige paragraaf, dan moeten alle objecten die behoren tot klasse \textit{Z} ook behoren tot klasse \textit{X}, en zo ook moeten alle objecten die behoren tot klasses \textit{Z} en \textit{X} behoren tot klasse \textit{Y}.
 
 Het is mogelijk om de eindgebruiker dit werk te besparen en automatisch de geschikte interpretaties te laten berekenen door af te stappen van een logisch type voor elke klasse en in de plaats twee nieuwe logische types te introduceren: Een algemeen logisch type voor objecten, \textit{Object}; en een \textit{constructed type}\cite{DeCatBroes2014PLaa} dat voor elke klasse in het diagram een overeenkomstig object heeft, \textit{ClassObject}.
 
 Om lidmaatschap van een klasse uit te drukken, zijn er verder twee nieuwe predicaten nodig: \textit{RuntimeClass(ClassObject, Object)}, wat voor elk object uitdrukt tot welke klasse precies het behoort; en \textit{StaticClass(ClassObject, Object)}, wat uitdrukt tot welke klasses een object behoort als gevolg van de klassehi\"erarchie\"en in het diagram.
 
-Er zijn ook twee predicaten nodig om overervingsrelaties tussen klasses te modelleren: \textit{IsDirectSupertypeOf(ClassObject, ClassObject)} om directe overervingsrelaties te capteren; en \textit{IsSupertypeOf(ClassObject, ClassObject)} dat de transitieve sluiting voor \textit{IsDirectSupertypeOf} voorstelt. Aangezien het in predicatenlogica onmogelijk is om een algemene voorstelling voor transitieve sluitingen uit te drukken, maken we gebruik van inductieve definities\cite{DeCatBroes2014PLaa}:
+Er zijn ook twee predicaten nodig om overervingsrelaties tussen klasses te modelleren: \textit{IsDirectSupertypeOf(ClassObject, ClassObject)} om directe overervingsrelaties voor te stellen; en \textit{IsSupertypeOf(ClassObject, ClassObject)} dat de transitieve sluiting voor \textit{IsDirectSupertypeOf} voorstelt. Aangezien het in predicatenlogica onmogelijk is om een algemene voorstelling voor transitieve sluitingen uit te drukken, maken we gebruik van inductieve definities\cite{DeCatBroes2014PLaa}:
 
 \begin{align}
 \{
@@ -123,7 +123,7 @@ IsDirectSupertypeOf(Item,Weapon) \leftarrow .\\
 \end{align*}
 
 We hebben echter niet voor deze aanpak gekozen voor twee redenen.
-Attribuutpredicaten, operatiepredicaten en associatiepredicaten zouden logisch type \textit{Object} als argumenten moeten hebben. Dit betekent dat er nieuwe regels nodig zijn die afdwingen dat die objecten van het juiste type zijn. Grotere theorie\"en leiden tot meer rekentijd en geheugengebruik.
+Attribuutpredicaten, operatiepredicaten en associatiepredicaten zouden logisch type \textit{Object} als argumenten moeten hebben. Dit betekent dat er nieuwe regels nodig zijn die afdwingen dat die objecten van het juiste type zijn. Grotere theorie\"en leiden tot een grotere rekentijd en geheugengebruik bij de uitvoering van redeneertaken.
 De multipliciteitsregels zouden ook herschreven moeten worden om gebruik te maken van \textit{StaticClass}. Dit maakt zinnen over de hele lijn langer en zorgt ervoor dat ze moeilijker te begrijpen zijn.
 
 \parbreak

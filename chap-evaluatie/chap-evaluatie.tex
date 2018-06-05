@@ -13,9 +13,9 @@ In dit hoofdstuk ontwerpen we een klassediagram en sequentiediagrammen waarmee w
 
 Figuur \ref{fig:nim-cd} bevat het klassediagram voor ons ontwerp van Nim.
 
-De klasse \textit{Game} stelt het concept van een spel voor. \textit{p1Win} geeft aan of speler 1 heeft gewonnen en \textit{gameFinished} geeft aan of het spel volledig gespeeld is. \textit{allHeapsEmpty} vraagt op of alle \textit{Heap}s leeg zijn. \textit{takeTurn} doet een speler zijn beurt spelen. \textit{play(boolean)} is de methode die het verloop van het spel regelt.
+De klasse \textit{Game} stelt het concept van een spel voor. \textit{p1Win} geeft aan of speler 1 heeft gewonnen en \textit{gameFinished} geeft aan of het spel volledig gespeeld is. \textit{allHeapsEmpty()} vraagt op of alle \textit{Heap}s leeg zijn. \textit{takeTurn()} doet een speler zijn beurt spelen. \textit{play(boolean)} is de methode die het verloop van het spel regelt.
 
-De klasse \textit{Heap} stelt stapels van objecten voor. \textit{numObjects} is het aantal objecten dat een stapel bevat. \textit{isEmpty} geeft aan of de stapel leeg is en \textit{take(int)} neemt een aantal objecten weg van een stapel.
+De klasse \textit{Heap} stelt stapels van objecten voor. \textit{numObjects} is het aantal objecten dat een stapel bevat. \textit{isEmpty()} geeft aan of de stapel leeg is en \textit{take(int)} neemt een aantal objecten weg van een stapel.
 
 Figuren \ref{fig:nim-play}, \ref{fig:nim-allHeapsEmpty}, \ref{fig:nim-isEmpty}, \ref{fig:nim-takeTurn} en \ref{fig:nim-take} bevatten de sequentiediagrammen die het gedrag van hun bijhorende methodes modelleren.
 
@@ -136,11 +136,13 @@ Figuur \ref{fig:groundingsize} bevat een grafiek van de grootte van de \textit{g
 	\label{fig:groundingsize}
 \end{figure}
 
-Uit deze resultaten blijkt dat we met de uitvoertheorie het spel kunnen spelen, maar het tijdsinterval tussen beurten lang is. De grootte van de \textit{grounding} blijft beperkt.
+Uit deze resultaten blijkt dat we met de uitvoertheorie het spel kunnen spelen, maar het tijdsinterval tussen beurten groot is. De grootte van de \textit{grounding} blijft beperkt. We merkten echter wel dat IDP na de laatste stap ongeveer 4,84 gigabyte in totaal aan virtueel geheugen in beslag nam, wat ook het grootste meetresultaat voor geheugengebruik over de hele simulatie heen was.
 
-\section{Verificatie van de correctheid van \textit{isEmpty}}
+\section{Verificatie van de correctheid van \textit{isEmpty()}}
 
-We willen controleren of het diagram in figuur \ref{fig:nim-isEmpty} een positief antwoord geeft als en slechts als de gegeven stapel leeg is. We werken met een invoerstructuur die stelt dat de uitvoering begint met de eerste instructie van \textit{isEmpty} en eindigt na de laatste instructie van hetzelfde diagram. Om de correctheid te controleren we vier zinnen op:
+We willen controleren of het diagram in figuur \ref{fig:nim-isEmpty} een positief antwoord geeft als en slechts als de gegeven stapel leeg is. We werken met een invoerstructuur die stelt dat de uitvoering begint met de eerste instructie van \textit{isEmpty} en eindigt na de laatste instructie van hetzelfde diagram. De invoerstructuur specificeert dat er in totaal zeven tijdstappen zijn.
+
+Om de correctheid te controleren we vier zinnen op:
 
 \begin{align}
 	\nonumber&\exists{t}[Time]\exists{st}[StackLevel]\exists{h}[Heap]\exists[n][LimitedInt](SDPointAt(t, finished) \\ &\land IeToReturnT(t, st, F) \land HeapamountObjects(t, h, n) \land n \leq 0).\label{form:ie_fnonempty} \\
@@ -163,13 +165,15 @@ Beide zinnen moeten leiden tot een vervulbare theorie.
 
 We voeren IDP viermaal uit met de voorgaande zinnen om de beurt toegevoegd aan de invoertheorie. Voor de twee eerste zinnen krijgen we inderdaad als antwoord dat de theorie onvervulbaar is. Voor zin \ref{form:ie_cempty} krijgen we een uniek model dat overeenkomt met een lege stapel. Voor zin \ref{form:ie_cnonempty} krijgen we alle modellen met een stapel die niet leeg is.
 
-Er is een gelijkaardig tijdsverloop en \textit{grounding}-grootte voor alle vier de uitvoeringen. Het duurt ongeveer 21,5 seconden en de \textit{grounding}-grootte is 578 306.
+Er is een gelijkaardig tijdsverloop en \textit{grounding}-grootte voor alle vier de uitvoeringen. Het duurt ongeveer 29 seconden en de \textit{grounding}-grootte is 578 306.
 
-We merken op dat het relatief\todo{tegenover?} lang duurt om modelexpansie uit te voeren voor dit diagram. De \textit{grounding} is ook omvangrijk.
+We merken op dat het relatief lang duurt om modelexpansie uit te voeren voor dit diagram. De \textit{grounding} is ook omvangrijk.
 
-\section{Verificatie van de correctheid van \textit{allHeapsEmpty}}
+\section{Verificatie van de correctheid van \textit{allHeapsEmpty()}}
 
-We willen controleren of het diagram in figuur \ref{fig:nim-allHeapsEmpty} een positief antwoord geeft als alle stapels leeg zijn en een negatief antwoord als minstens \'e\'en stapel niet leeg is. We werken met een invoerstructuur die aangeeft dat de uitvoering begint met de eerste instructie van \textit{allHeapsEmpty} en eindigt na de laatste instructie van dat diagram. We stellen vier zinnen op:
+We willen controleren of het diagram in figuur \ref{fig:nim-allHeapsEmpty} een positief antwoord geeft als alle stapels leeg zijn en een negatief antwoord als minstens \'e\'en stapel niet leeg is. We werken met een invoerstructuur die aangeeft dat de uitvoering begint met de eerste instructie van \textit{allHeapsEmpty} en eindigt na de laatste instructie van dat diagram. De invoerstructuur specificeert dat er in totaal 22 tijdstappen zijn.
+
+We stellen vier zinnen op:
 
 \begin{align}
 	\nonumber&\exists{t}[Time]\exists{st}[StackLevel](SDPointAt(22, allHeapsEmpty\_8) \\ &\land \lnot\exists{h}[Heap]\exists{n}[LimitedInt](HeapamountObjects(t, h, n) \land n > 0)).\label{form:ahe_fnonempty} \\
@@ -194,11 +198,13 @@ De conclusie moet hier zijn dat de theorie vervulbaar is.
 
 Wanneer we IDP viermaal runnen met deze vier zinnen om de beurt toegevoegd aan de uitvoertheorie, is de theorie inderdaad onvervulbaar voor de eerste twee zinnen. Zin \ref{form:ahe_cempty} leidt tot een uniek model dat overeenkomt met het geval dat alle stapels leeg zijn. Zin \ref{form:ahe_cnonempty} geeft alle modellen waar minstens \'e\'en stapel meer dan nul objecten heeft.
 
-De uitvoeringstijd en \textit{grounding}-grootte zijn gelijkaardig voor alle vier uitvoeringen. De uitvoering duurt ongeveer 24 seconden en de \textit{grounding}-grootte is 2 249 098.
+De uitvoeringstijd en \textit{grounding}-grootte zijn gelijkaardig voor alle vier uitvoeringen. De uitvoering duurt ongeveer 1 minuut en 28 seconden en de \textit{grounding}-grootte is 2 249 098.
+
+Ter vergelijking duurt het voor de theorie in bijlage \ref{app:new-nim} dat overeenkomt met het diagram in figuur \ref{fig:new-nim} ongeveer 31,6 seconden om alle modellen te vinden voor een volledig spelverloop met twee stapels, waarbij \'e\'en stapel twee objecten heeft en de andere drie. De \textit{grounding}-grootte is daarbij 142 510. De invoerstructuur voor deze uitvoering specifieert dat er in totaal 100 tijdstappen zijn.
 
 \subsection{Samenvatting van de bevindingen}
 Men kan Nim spelen met de theorie die automatisch werd gegenereerd uit de gegeven diagrammen. Tussen elke beurt is er wel een wachttijd van ongeveer vijf minuten, met twee en een halve minuut voordat de eerste beurt gespeeld kan worden.
 
-Het is mogelijk om voor een diagram bepaalde gewenste eigenschappen te controleren. Dit gaat echter gepaard met grote \textit{groundings}.
+Het is mogelijk om voor een diagram bepaalde gewenste eigenschappen te controleren. Dit gaat echter gepaard met grote \textit{groundings} en een lange uitvoeringstijd.
 
 Met de machine die ons ter beschikking stond konden we omwille van een tekort aan geheugen niet controleren welke uitvoerpaden er bestaan die ertoe leiden dat een bepaalde speler wint beginnend van een bepaald scenario.

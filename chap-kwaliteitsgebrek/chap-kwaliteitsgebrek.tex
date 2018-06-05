@@ -1,5 +1,5 @@
 \chapter{Controleren op kwaliteitsgebreken}\label{sec:kwaliteitsgebrek}
-Waar in hoofdstuk \ref{sec:consistentie} objecten centraal stonden, doen we daar hier afstand van: we abstraheren de logische types voor klasses weg en concentreren ons in de plaats op \textit{ClassObject}, een logisch type dat een overeenkomstig object heeft voor alle klasses in het diagram. We gebruiken het diagram in figuur \ref{fig:diagram-voorbeeld} weer als begeleidend voorbeeld. In de volgende subsecties overlopen we hoe we de theorie die we gebruiken voor dit probleem opbouwen.
+In dit hoofdstuk beschrijven we een alternatieve voorstellingsmethode voor klassediagrammen waarmee we bepaalde soorten kwaliteitsgebreken kunnen detecteren. Waar in hoofdstuk \ref{sec:consistentie} objecten centraal stonden, doen we daar hier afstand van: We abstraheren de logische types voor klasses weg en concentreren ons in de plaats op \textit{ClassObject}, een logisch type dat een overeenkomstig object heeft voor alle klasses in het diagram. We gebruiken het diagram in figuur \ref{fig:diagram-voorbeeld} weer als begeleidend voorbeeld. In de volgende subsecties overlopen we hoe we de theorie die we gebruiken voor dit probleem opbouwen.
 
 \section{Gebruikte logische types en predicaten}
 Waar we in sectie \ref{sec:hierarchies} het logisch type \textit{ClassObject} en het predicaat \textit{IsSupertypeOf/2} afwezen, behouden we ze hier en berekenen we de transitieve sluiting van \textit{IsSupertypeOf/2} zoals beschreven in diezelfde sectie.
@@ -18,7 +18,7 @@ Deze predicaten worden ingevuld met een lijst van feiten die af te lezen zijn va
 Er zijn drie kwaliteitsgebreken waarnaar wordt gezocht in de resulterende theorie:
 
 \begin{itemize}
-	\item \textbf{Many-to-many associaties}: Dit zijn associaties waar de bovengrens van de multipliciteiten aan beide kanten gelijk is aan $*$. Het voorkomen van een many-to-many associatie is doorgaans een teken dat er een klasse ontbreekt in het ontwerp. Het is dus van groot belang dat dit wordt opgespoord en opgelost.
+	\item \textbf{\textit{Many-to-many} associaties}: Dit zijn associaties waar de bovengrens van de multipliciteiten aan beide kanten gelijk is aan $*$. Het voorkomen van een \textit{many-to-many} associatie is doorgaans een teken dat er een klasse ontbreekt in het ontwerp. Het is dus van groot belang dat dit wordt opgespoord en opgelost.
 	
 	\item \textbf{Losstaande klasse}: Concreet is een losstaande klasse een klasse die geen associatie heeft met een andere klasse in het ontwerp. Zulk een klasse is nutteloos en moet ofwel verbonden worden met een andere klasse of verwijderd worden.
 	
