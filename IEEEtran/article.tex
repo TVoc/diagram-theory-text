@@ -484,13 +484,13 @@ In this article, we consider three different kinds of design flaws related to as
 \begin{itemize}
 	\item \textbf{Many-to-many associations}: The presence of a many-to-many association is generally an indication that there is a class missing from the design.
 	\item \textbf{Loose class}: If a class cannot be reached by navigating associations, that class is essentially useless and should be eliminated.
-	\item \textbf{Superfluous associations}\cite{Balaban2015}: Consider figure \ref{fig:design-flaw}. In the association \textit{Alice}---\textit{Charlie}, the lower bounds for both roles are greater than the lower bounds in the association \textit{Bob}---\textit{David}. Similarly, the upper bounds for \textit{Alice}---\textit{Charlie} are less than the upper bounds for \textit{Bob}---\textit{David}. This means that the multiplicities for \textit{Bob}---\textit{David} are more permissive than those for \textit{Alice}---\textit{Charlie} and are thus unnecessary. Associations of this kind should be removed in order to improve the readability of the diagram.
+	\item \textbf{Redundant associations}\cite{Balaban2015}: Consider figure \ref{fig:design-flaw}. In the association \textit{Alice}---\textit{Charlie}, the lower bounds for both roles are greater than the lower bounds in the association \textit{Bob}---\textit{David}. Similarly, the upper bounds for \textit{Alice}---\textit{Charlie} are less than the upper bounds for \textit{Bob}---\textit{David}. This means that the multiplicities for \textit{Bob}---\textit{David} are more permissive than those for \textit{Alice}---\textit{Charlie} and are thus unnecessary. Associations of this kind should be removed in order to improve the readability of the diagram.
 \end{itemize}
 
 \begin{figure}[!t]
 	\centering
 	\includegraphics[width=2.5in]{hierarchy}
-	\caption{Example of loose class and superfluous association}
+	\caption{Example of loose class and redundant association}
 	\label{fig:design-flaw}
 \end{figure}
 
@@ -513,15 +513,15 @@ Rule \ref{form:flaw1} designates an association as many-to-many if neither role 
 
 Rule \ref{form:flaw2} designates a class as loose if it is not directly associated with another class or if it does not have a superclass that is directly associated with another class.
 
-The rule that detects superfluous associations is too large to include in this article in a format that is reasonably understandable. It is structured as follows:
+The rule that detects redundant associations is too large to include in this article in a format that is reasonably understandable. It is structured as follows:
 
 \begin{itemize}
-	\item Classes \textit{x} and \textit{y} are associated. There is a class \textit{Sx} which is a superclass of \textit{x} and is associated with \textit{y}. Association \textit{x}---\textit{y} has a greater upper bound or a smaller lower bound at the \textit{x}-end, rendering \textit{Sx}---\textit{y} superfluous.
-	\item Classes \textit{x} and \textit{y} are associated. There is a class \textit{Sy} which is a superclass of \textit{y} and is associated with \textit{x}. Association \textit{x}---\textit{y} has a greater upper bound or a smaller lower bound at the \textit{x}-end, rendering \textit{x}---\textit{Sy} superfluous.
-	\item Classes \textit{x} and \textit{y} are associated. There are classes \textit{Sx}, a superclass of \textit{x}, and \textit{Sy}, a superclass of \textit{y}. Association \textit{x}---\textit{y} has a greater upper bound or a smaller lower bound at the \textit{x}-end, rendering \textit{Sx}---\textit{Sy} superfluous. 
+	\item Classes \textit{x} and \textit{y} are associated. There is a class \textit{Sx} which is a superclass of \textit{x} and is associated with \textit{y}. Association \textit{x}---\textit{y} has a greater upper bound or a smaller lower bound at the \textit{x}-end, rendering \textit{Sx}---\textit{y} redundant.
+	\item Classes \textit{x} and \textit{y} are associated. There is a class \textit{Sy} which is a superclass of \textit{y} and is associated with \textit{x}. Association \textit{x}---\textit{y} has a greater upper bound or a smaller lower bound at the \textit{x}-end, rendering \textit{x}---\textit{Sy} redundant.
+	\item Classes \textit{x} and \textit{y} are associated. There are classes \textit{Sx}, a superclass of \textit{x}, and \textit{Sy}, a superclass of \textit{y}. Association \textit{x}---\textit{y} has a greater upper bound or a smaller lower bound at the \textit{x}-end, rendering \textit{Sx}---\textit{Sy} redundant. 
 \end{itemize}
 
-We combine the information from the diagrams in figures \ref{fig:game-class} and \ref{fig:game-class} into one theory. IDP finds all many-to-many associations and concludes that \textit{Loose} is a loose class and that association \textit{Bob}---\textit{David} is superfluous.
+We combine the information from the diagrams in figures \ref{fig:game-class} and \ref{fig:game-class} into one theory. IDP finds all many-to-many associations and concludes that \textit{Loose} is a loose class and that association \textit{Bob}---\textit{David} is redundant.
 
 \section{Translating sequence diagrams to FO($\cdot$)}\label{sec:seq}
 We will use the framework of linear time calculus\cite{BogaertsBart2014Sdsu} (LTC). LTC can model dynamic systems that change over time. Across each time step, only the inertial predicates that need be changed to the diagram do so, while all other inertial predicates remain the same. If we model diagram variables, an instruction pointer, a stack level counter and a return point stack as inertial predicates, we have exactly the elements we need to translate mutually recursive sequence diagrams to FO($\cdot$) theories.
