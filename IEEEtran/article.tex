@@ -577,7 +577,7 @@ We now have a set of rules that allows us to automatically generate a theory tha
 
 \section{Evaluation of translation from sequence diagrams to FO($\cdot$) theory}\label{sec:evaluation}
 
-In this section, we will design a class diagram and a set of sequence diagrams that model the game of Nim. We will evaluate the difficulty of the design process. We will also evaluate the performance of simulation using the output theory and of verification of certain requirements using model expansion with respect to execution time and memory usage in terms of grounding size. For these metrics, we will use statistics reported by IDP itself.
+In this section, we will design a class diagram and a set of sequence diagrams that model the game of Nim. We will evaluate the difficulty of the design process. We will also evaluate the performance of simulation using the output theory and of verification of certain requirements using model expansion with respect to execution time and memory usage in terms of virtual memory usage for the simulation and grounding size for the verifications.
 
 \subsection{Evaluation of the design}
 Figures \ref{fig:nim-cd-play}, \ref{fig:ahe-ie} and \ref{fig:tt-take} contain the class diagram and sequence diagrams for our model of Nim. Nim is a fairly simple game, which means that the only real difficulty was designing a workaround for changing an object's association relations not being allowed during execution. This is why the class \textit{Game} has variables \textit{gameFinished} and \textit{p1Win}. These are a substitute for having a class \textit{Player} and an association \textit{Game}---\textit{Player} that designates a winner. Other limitations that contributed to making the diagrams longer than they otherwise could have been were that every alt combined fragment must have both an \textit{if} branch and an \textit{else} branch, and also that object call instructions must not contain expressions that require evaluation more complex than variable retrieval.
@@ -585,7 +585,9 @@ Figures \ref{fig:nim-cd-play}, \ref{fig:ahe-ie} and \ref{fig:tt-take} contain th
 \subsection{Evaluation of simulation}
 
 We simulated a game with two heaps. One of the heaps contains two objects and the other contains three objects. The first player removes all three objects from the second heap. The second player then removes one object from the first heap. Finally, the first player has no choice but to remove the last object and loses.
-Figure \ref{fig:grounding} contains a graph of the size of the grounding reported by IDP per step. Figure \ref{fig:ms} shows a graph of the cumulative execution time per step measured in milliseconds. We can see that the grounding size was either one or three for most steps, with six exceptions. However, IDP was using a total of approximately 4.84 gigabyte of virtual memory at the final time step, which was also the greatest usage during this simulation run. The execution time graph shows a linear curve, indicating that the time interval between steps remained stable. It also shows that the total duration of the game was approximately 18 minutes, which is fairly long for a simple game like Nim.
+Table \ref{tab:sim-mem} contains the virtual memory usage at the start of each turn. It shows how simulating a game will require several gigabytes of memory.
+
+Figure \ref{fig:boxplot} shows a boxplot of the execution time per time step, and figure \ref{fig:boxplot-nooutliers} shows a boxplot of the same data with the outliers removed. Half of the data lies between approximately 6.65 seconds and 6.9 seconds. Figure \ref{fig:boxplot-nooutliers} also shows the vast majority of the data is spread between approximately 6.5 seconds and 7.15 seconds. This distribution does lead to the total duration of the game being slightly less than 19 minutes, since the simulation was 116 steps long.
 
 \subsection{Evaluation of verification for requirements}
 
@@ -635,15 +637,28 @@ The input structure for \textit{isEmpty()} specifies that there are seven time s
 	\label{fig:tt-take}
 \end{figure*}
 
+\begin{table}[]
+	\centering
+	\begin{tabular}{|l|l|l|l|l|}
+		\hline
+		Turn 1 & 0,91 GB  \\ \hline
+		Turn 2 & 2,09 GB  \\ \hline
+		Turn 3 & 3,34 GB  \\ \hline
+		End   & 4,84 GB  \\ \hline
+	\end{tabular}
+	\caption{Virtual memory usage during the simulation at the start of each turn}
+	\label{tab:sim-mem}
+\end{table}
+
 \begin{figure*}[!t]
 	\centering
-	\subfloat[Graph of grounding size per step]{\includegraphics[width=0.5\textwidth]{grounding}%
-		\label{fig:grounding}}
+	\subfloat[Boxplot of the execution time per simulation step]{\includegraphics[width=0.5\textwidth]{boxplot}%
+		\label{fig:boxplot}}
 	\hfil
-	\subfloat[Graph of cumulative execution time per step]{\includegraphics[width=0.5\textwidth]{ms}}%
-		\label{fig:ms}
-	\caption{Graphs for grounding size and cumulative execution time}
-	\label{fig:grounding-ms}
+	\subfloat[Boxplot of the execution time per simulation step with the outliers removed]{\includegraphics[width=0.5\textwidth]{boxplotnooutliers}}%
+		\label{fig:boxplot-nooutliers}
+	\caption{Boxplots for the execution time per simulation step}
+	\label{fig:boxplots}
 \end{figure*}
 
 % An example of a floating figure using the graphicx package.
