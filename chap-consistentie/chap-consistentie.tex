@@ -22,7 +22,7 @@ De signatuur van \textit{Charactername/2} is daarom \textit{Charactername(Charac
 Voor elk attribuut wordt ook een regel omtrent multipliciteit afgeleid. Zij \textit{lowerBound} de ondergrens en \textit{upperBound} de bovengrens. Dan is de meest algemene vorm van deze regel als volgt:
 	
 \begin{align*}
-	\forall{o1}[KlasseType](lowerBound \geq \#\{o2 [AttribuutType] : \\ Klasseattribuutnaam(o1,o2)\} \geq upperBound).
+	\forall{o1}[KlasseType](lowerBound \geq \#\{o2 [AttribuutType] : \\ Klassenaamattribuutnaam(o1,o2)\} \geq upperBound).
 \end{align*}
 	
 waarbij \textit{lowerBound} wordt weggelaten als deze $0$ is en \textit{upperBound} wordt weggelaten als deze $*$ is. Indien beide van deze voorwaarden gelden, wordt er geen regel afgeleid betreffende de multipliciteit van het attribuut. Als $lowerBound = upperBound$, wordt deze regel in de plaats:
@@ -38,21 +38,10 @@ Voor \textit{Charactername/2} wordt daarom afgeleid:
 \end{align*}
 
 \section{Voorstellen van operaties}
-Voor elke operatie voegen we een predicaat toe dat beantwoordt aan volgend patroon: \textit{Klassenaamoperatienaam/(m+2)}, waarbij $m$ het aantal argumenten dat als invoer wordt meegegeven aan de operatie. De signatuur ziet eruit als \\ \textit{$Klasseoperatienaam(o,p_1,\ldots,p_m,r)$}, waarbij \textit{o} het object van het logisch type overeenkomstig de klasse waarvan de operatie deel is, \textit{$p_1$} \ldots \textit{$p_m$} de argumenten en \textit{r} het resultaat van de oproep van de operatie op het object \textit{o} met de gegeven argumenten. Indien er geen argumenten zijn, ziet de signatuur eruit als \textit{Klassenaamoperatienaam(o,r)}. Voor \textit{determineDamageWeaponFrom(Weapon)} van \textit{Character} wordt dit dus \textit{CharacterdetermineDamageFrom(Character,Weapon,int)}.
+Voor elke operatie voegen we een functie toe dat beantwoordt aan volgend patroon: \sloppy
+	 \textit{Klassenaamoperatienaam/(m+1) : ResultaatType}, waarbij $m$ het aantal argumenten dat als invoer wordt meegegeven aan de operatie en \textit{ResultaatType} het type van het resultaat, zij het een primitief type of een klasse. De signatuur ziet eruit als \textit{$Klassenaamoperatienaam(o,p_1,\ldots,p_m)$}, waarbij \textit{o} het object van het logisch type overeenkomstig de klasse waarvan de operatie deel is en \textit{$p_1$} \ldots \textit{$p_m$} de argumenten. Indien er geen argumenten zijn, ziet de signatuur eruit als \textit{Klassenaamoperatienaam(o)}. Voor \textit{determineDamageWeaponFrom(Weapon)} van \textit{Character} wordt dit dus \textit{CharacterdetermineDamageFrom(Character,Weapon) : int}.
 
-We moeten ervoor zorgen dat elke combinatie van object waarop de operatie wordt opgeroepen en mogelijke invoerparameters \'e\'en enkel resultaat is. Daarom leiden we regels af van de vorm:
-
-\begin{align*}
-	&\forall{o}[KlasseType]\forall{p_1}[ParameterType_1]\ldots\forall{p_m}[ParameterType_m]
-	\\
-	&\exists!{r}[ResultaatType](Klassenaamoperatienaam(o,p_1,\ldots,p_m,r)).
-\end{align*}
-	
-De invulling voor \textit{CharacterdetermineDamageFrom(Character,Weapon,int)} wordt:
-	
-\begin{align*}
-	&\forall{o}[Character\forall{p_1}[Weapon]\exists!{r}[int](CharacterdetermineDamageFrom(o,p1,r)).
-\end{align*}
+Voor elke combinatie van object waarop de operatie wordt opgeroepen en mogelijke invoerparameters moet het het geval zijn dat er \'e\'en enkel resultaat is. Dit is triviaal het geval aangezien een functie elk element uit het domein afbeeldt op exact \'e\'en element uit het codomein.
 
 \section{Voorstellen van associaties}
 Voor elke associatie voegen we een predicaat toe dat beantwoordt aan volgend patroon: \textit{$ClassOneand\ldots{}andClassM/m$}, waarbij \textit{m} de ariteit van de associatie. Voor de associatie tussen \textit{Inventory} en \textit{Item} wordt dit dus \textit{InventoryandItem(Inventory,Item)}.
@@ -63,10 +52,10 @@ Zij $lowerBound_l$ de ondergrens en $upperBound_l$ de bovengrens:
 \begin{align*}
 	&\forall{c_1}[Klasse_1]\ldots\forall{c_m}[Klasse_m](lowerBound_l \leq
 	\\
-	&\#\{o_l[Klasse_l] : ClassOneand\ldots{}ClassM(c_1,\ldots,o_l,\ldots,c_m)\} \leq upperBound_l).
+	&\#\{o_l[Klasse_l] : ClassOneand\ldots{}andClassM(c_1,\ldots,o_l,\ldots,c_m)\} \leq upperBound_l).
 \end{align*}
 	
-waarbij de \textit{c} met index \textit{l} overgeslagen wordt. Indien de ondergrens gelijk is aan $0$ of de bovengrens gelijk is aan $*$ worden dezen weggelaten. Als beide voorwaarden gelden, wordt voor deze \textit{l} geen regel afgeleid. Indien $lowerBound_l = upperBound_l$ wordt in de plaats afgeleid:
+waarbij de \textit{c} met index \textit{l} overgeslagen wordt. Indien de ondergrens gelijk is aan $0$ of de bovengrens gelijk is aan $*$ worden deze weggelaten. Als beide voorwaarden gelden, wordt voor deze \textit{l} geen regel afgeleid. Indien $lowerBound_l = upperBound_l$ wordt in de plaats afgeleid:
 	
 	\begin{align*}
 	&\forall{c_1}[Klasse_1]\ldots\forall{c_m}[Klasse_m] \exists_{=upperbound_l}o_l[Klasse_l](ClassOneand\ldots{}andClassM\\&(c_1,\ldots,o_l,\ldots,c_m)).
@@ -95,20 +84,20 @@ Er zijn ook twee predicaten nodig om overervingsrelaties tussen klasses te model
 
 \begin{align}
 \{
-\nonumber &\forall{x}[ClassObject]\forall{y}[ClassObject](IsSupertypeOf(x,y) \leftarrow \\ &IsDirectSupertypeOf(x,y)).\label{def:tc1} \\
-\nonumber &\forall{x}[ClassObject]\forall{y}[ClassObject](IsSupertypeOf(y,x) \leftarrow \\
-&\exists{z}(IsSupertypeOf(y,z) \land IsSupertypeOf(z,x))).\label{def:tc2}
+\nonumber &\forall{x}[ClassObject]\forall{y}[ClassObject](\mathit{IsSupertypeOf}(x,y) \leftarrow \\ &\mathit{IsDirectSupertypeOf}(x,y)).\label{def:tc1} \\
+\nonumber &\forall{x}[ClassObject]\forall{y}[ClassObject](\mathit{IsSupertypeOf}(y,x) \leftarrow \\
+&\exists{z}(\mathit{IsSupertypeOf(y,z)} \land \mathit{IsSupertypeOf}(z,x))).\label{def:tc2}
 \}
 \end{align}
 
-Zin \ref{def:tc1} maakt gebruik van \textit{IsDirectSupertypeOf/2} om een basisgeval voor \textit{IsSupertypeOf/2} op te stellen. Zin \ref{def:tc2} bouwt dan verder de hi\"erarchie\"en op.
+\sloppy Zin \ref{def:tc1} maakt gebruik van \textit{IsDirectSupertypeOf/2} om een basisgeval voor \\ \textit{IsSupertypeOf/2} op te stellen. Zin \ref{def:tc2} bouwt dan verder de hi\"erarchie\"en op.
 
 We maken in een tweede definitie gebruik van \textit{IsSupertypeOf/2} om \textit{StaticClass/2} in te vullen:
 
 \begin{align*}
 \{
 &\forall{x}[ClassObject]\forall{o}[Object](StaticClass(x,o) \leftarrow RuntimeClass(x,o)). \\
-&\forall{x}[ClassObject]\forall{y}[ClassObject]\forall{o}[Object](StaticClass(y,o) \leftarrow \\ &RuntimeClass(x,o) \land IsSupertypeOf(y,x)).
+&\forall{x}[ClassObject]\forall{y}[ClassObject]\forall{o}[Object](StaticClass(y,o) \leftarrow \\ &RuntimeClass(x,o) \land \mathit{IsSupertypeOf}(y,x)).
 \}
 \end{align*}
 
@@ -116,9 +105,9 @@ In een aparte definitie lijsten we de invulling voor \textit{IsDirectSupertype/2
 
 \begin{align*}
 \{
-IsDirectSupertypeOf(Statistic,Weaponlevel) \leftarrow .\\
-IsDirectSupertypeOf(Statistic,DerivedStatistic) \leftarrow .\\
-IsDirectSupertypeOf(Item,Weapon) \leftarrow .\\
+&\mathit{IsDirectSupertypeOf}(Statistic,Weaponlevel) \leftarrow .\\
+&\mathit{IsDirectSupertypeOf}(Statistic,DerivedStatistic) \leftarrow .\\
+&\mathit{IsDirectSupertypeOf}(Item,Weapon) \leftarrow .\\
 \}
 \end{align*}
 

@@ -15,14 +15,16 @@ Verder zijn er ook kaders die berichten omsluiten. Deze kaders duiden \textbf{ge
 
 In dit hoofdstuk beschouwen we hoe we het vocabularium en de logische theorie die we hebben opgebouwd eerder in de tekst kunnen uitbreiden om het gedrag voorgesteld in een sequentiediagram te modelleren.
 
-\begin{landscape}
-	\thispagestyle{empty}
-\begin{figure}
-	\includegraphics[width=1.5\textwidth]{chap-gedrag/seq-diagram-game.png}
+%\begin{landscape}
+	%\thispagestyle{empty}
+	%\resizebox{\textwidth}{!}{
+\begin{sidewaysfigure}[htp]
+	\includegraphics[height=0.55\textwidth]{chap-gedrag/seq-diagram-game.png}
 	\caption{Sequentiediagram gebaseerd op het klassediagram van figuur \ref{fig:diagram-voorbeeld}}
 	\label{fig:seq-diagram-game}
-\end{figure}
-\end{landscape}
+\end{sidewaysfigure}
+%}
+%\end{landscape}
 
 \section{De keuze voor lineaire tijdscalculus}
 UML-diagrammen schrijven mogelijke toestanden van softwaresystemen en acties op deze voor. Die systemen kunnen van toestand veranderen tussen tijdstappen. Sequentiediagrammen zijn een manier om te beschrijven hoe zulke veranderingen teweeggebracht kunnen worden. Tijdens de uitvoering van een sequentiediagram mag het systeem enkel veranderen zoals beschreven door de huidige actie. Daarom hebben we een mechanisme nodig binnen FO($\cdot$) dat dynamische systemen en bewerkingen erop kan beschrijven. Tegelijk moet dat mechanisme garanderen dat eigenschappen van het systeem die niet worden be\"invloed door de huidige beschouwde actie van het sequentiediagram niet veranderen. Lineaire tijdscalculus\cite{BogaertsBart2014Sdsu}, oftewel LTC, voldoet aan deze voorwaarden. Daarom zullen we om sequentiediagrammen uitvoerbaar te maken binnen FO($\cdot$) het generatieproces voor het vocabularium en de theorie die we bekomen hebben in hoofdstuk \ref{sec:consistentie} uitbreiden volgens de principes van LTC. Dit betekent dat we de predicaten voor operaties die voorheen gegenereerd werden in hoofdstuk \ref{sec:consistentie} achterwege laten.
@@ -663,26 +665,40 @@ In een project stelt men doorgaans meerdere sequentiediagrammen op die elkaar oo
 	\label{fig:recursion-class}
 \end{figure}
 
-\begin{landscape}
-\thispagestyle{empty}
-	\begin{figure}
-		\centering
-		\begin{subfigure}{\textwidth}
-			\includegraphics[width=0.4\textwidth]{chap-gedrag/methodOne.png}
-			\caption{Sequentiediagram voor methodOne()}
-			\label{fig:methodOne}
-		\end{subfigure}%
-		\begin{subfigure}{\textwidth}
-			\includegraphics[width=0.75\textwidth]{chap-gedrag/methodTwo.png}
-			\caption{Sequentiediagram voor methodTwo()}
-			\label{fig:methodtwo}
-		\end{subfigure}
-		\caption{Sequentiediagrammen voor klasse A in figuur \ref{fig:recursion-class}}
-		\label{fig:seq-recursion}
-	\end{figure}
-\end{landscape}
+%\begin{landscape}
+%\thispagestyle{empty}
+%	\begin{sidewaysfigure}[htp]
+%		\centering
+%		\begin{subfigure}{\textwidth}
+%			\includegraphics[height=0.4\textwidth]{chap-gedrag/methodOne.png}
+%			\caption{Sequentiediagram voor methodOne()}
+%			\label{fig:methodOne}
+%		\end{subfigure}%
+%		\begin{subfigure}{\textwidth}
+%			\includegraphics[height=0.4\textwidth]{chap-gedrag/methodTwo.png}
+%			\caption{Sequentiediagram voor methodTwo()}
+%			\label{fig:methodtwo}
+%		\end{subfigure}
+%		\caption{Sequentiediagrammen voor klasse A in figuur \ref{fig:recursion-class}}
+%		\label{fig:seq-recursion}
+%	\end{sidewaysfigure}
+%\end{landscape}
 
-In de volgende subsecties gebruiken we het voorbeeld uitgebeeld in figuren \ref{fig:recursion-class} en \ref{fig:seq-recursion} om de gebruikte principes te illustreren.
+\begin{figure}[htp]
+	\centering
+	\includegraphics[width=0.5\textwidth]{chap-gedrag/methodOne.png}
+	\caption{Sequentiediagram voor methodOne()}
+	\label{fig:methodOne}
+\end{figure}%
+
+\begin{figure}[htp]
+	\centering
+	\includegraphics[width=\textwidth]{chap-gedrag/methodTwo.png}
+	\caption{Sequentiediagram voor methodTwo()}
+	\label{fig:methodtwo}
+\end{figure}
+
+In de volgende subsecties gebruiken we het voorbeeld uitgebeeld in figuren \ref{fig:recursion-class} en \ref{fig:methodOne} en \ref{fig:methodtwo} om de gebruikte principes te illustreren.
 
 \subsection{Aanpassingen aan \textit{SDPoint}}
 Het is niet meer voldoende om \textit{SDPoint}s te modelleren als natuurlijke getallen aangezien elk diagram zijn eigen \textit{SDPoint}s heeft. Om de \textit{SDPoint}s horende bij elk diagram van elkaar te kunnen onderscheiden, maken we van het logisch type \textit{SDPoint} nu een \textit{constructed type} in IDP. We gebruiken als patroon voor de naamgeving van elk logisch object $<diagramnaam>\_<instructienummer>$. Voor het voorbeeld krijgen we o.a. $methodOne\_2$ en $methodTwo\_3$. We voegen ook een nieuwe functie toe aan het vocabularium dat gegeven een \textit{SDPoint} het volgende \textit{SDPoint} teruggeeft, namelijk $NextSD(SDPoint) : SDPoint$.

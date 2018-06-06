@@ -2,14 +2,14 @@
 In dit hoofdstuk beschrijven we een alternatieve voorstellingsmethode voor klassediagrammen waarmee we bepaalde soorten kwaliteitsgebreken kunnen detecteren. Waar in hoofdstuk \ref{sec:consistentie} objecten centraal stonden, doen we daar hier afstand van: We abstraheren de logische types voor klasses weg en concentreren ons in de plaats op \textit{ClassObject}, een logisch type dat een overeenkomstig object heeft voor alle klasses in het diagram. We gebruiken het diagram in figuur \ref{fig:diagram-voorbeeld} weer als begeleidend voorbeeld. In de volgende subsecties overlopen we hoe we de theorie die we gebruiken voor dit probleem opbouwen.
 
 \section{Gebruikte logische types en predicaten}
-Waar we in sectie \ref{sec:hierarchies} het logisch type \textit{ClassObject} en het predicaat \textit{IsSupertypeOf/2} afwezen, behouden we ze hier en berekenen we de transitieve sluiting van \textit{IsSupertypeOf/2} zoals beschreven in diezelfde sectie.
+\sloppy Waar we in sectie \ref{sec:hierarchies} het logisch type \textit{ClassObject} en het predicaat \\ \textit{IsSupertypeOf/2} afwezen, behouden we ze hier en berekenen we de transitieve sluiting van \textit{IsSupertypeOf/2} zoals beschreven in diezelfde sectie.
 
-We gebruiken daar bijkomend de volgende nieuwe predicaten:
+We gebruiken daar bijkomend de volgende nieuwe logische symbolen:
 
 \begin{itemize}
 	\item \textbf{\textit{BiAssoc(ClassObject,ClassObject)}}: drukt uit dat er een binaire associatie bestaat tussen de twee klasses.
-	\item \textbf{\textit{BiAssocLow(ClassObject,ClassObject,ClassObject,nat)}}: voor \textit{BiAssocLow(x,y,x,n1)} geldt dat voor de binaire associatie tussen klasse \textit{x} en klasse \textit{y} de ondergrens voor de multipliciteit aan de \textit{x}-kant gelijk is aan \textit{n1}; een gelijkaardige interpretatie geldt voor \textit{BiAssocLow(x,y,y,n2)}.
-	\item \textbf{\textit{BiAssocHigh(ClassObject,ClassObject,ClassObject,nat)}}: gelijkaardig aan \textit{BiAssocLow/4}, maar dan voor de bovengrens van de multipliciteit.
+	\item \sloppy \textbf{\textit{BiAssocLow(ClassObject,ClassObject,ClassObject) : nat}}: voor \\ \textit{BiAssocLow(x,y,x) = n1} geldt dat voor de binaire associatie tussen klasse \textit{x} en klasse \textit{y} de ondergrens voor de multipliciteit aan de \textit{x}-kant gelijk is aan \textit{n1}; een gelijkaardige interpretatie geldt voor \textit{BiAssocLow(x,y,y) = n2}.
+	\item \textbf{\textit{BiAssocHigh(ClassObject,ClassObject,ClassObject) : nat}}: gelijkaardig aan \textit{BiAssocLow/3}, maar dan voor de bovengrens van de multipliciteit.
 \end{itemize}
 
 Deze predicaten worden ingevuld met een lijst van feiten die af te lezen zijn van het diagram. In hoofdstuk \ref{sec:rol-idp} wordt de logische theorie die het resultaat is van dit proces weergegeven.
@@ -28,14 +28,15 @@ Er zijn drie kwaliteitsgebreken waarnaar wordt gezocht in de resulterende theori
 We defini\"eren deze respectievelijke gebreken in de logische theorie door middel van de volgende logische zinnen:
 
 \begin{align}
-	\nonumber \forall{x}[ClassObject]\forall{y}[ClassObject](ManyToMany(x,y) \Leftrightarrow BiAssoc(x,y) \land \\ \lnot\exists{z}[nat](BiAssocHigh(x,y,x,z)) \land \lnot\exists{z}[nat](BiAssocHigh(x,y,y,z))).\label{form:manytomany}
+	\nonumber \forall{x}[ClassObject]\forall{y}[ClassObject](ManyToMany(x,y) \Leftrightarrow BiAssoc(x,y) \land \\ \lnot\exists{z}[nat](BiAssocHigh(x,y,x) = z) \land \lnot\exists{z}[nat](BiAssocHigh(x,y,y) = z)).\label{form:manytomany}
 \end{align}
 
 \begin{align}
-	\nonumber \forall{x}[ClassObject](LooseClass(x) \Leftrightarrow \lnot(\exists{y}[ClassObject](\lnot(x = y) \land (BiAssoc(x,y) \\ \lor \exists{s}[ClassObject]\exists{y}[ClassObject](IsSupertypeOf(s,x) \land BiAssoc(s,y)))))).\label{form:loose}
+	\nonumber \forall{x}[ClassObject](LooseClass(x) \Leftrightarrow \lnot(\exists{y}[ClassObject](\lnot(x = y) \land (BiAssoc(x,y) \\ \lor \exists{s}[ClassObject]\exists{y}[ClassObject](\mathit{IsSupertypeOf}(s,x) \land BiAssoc(s,y)))))).\label{form:loose}
 \end{align}
 
 \begin{figure}
+	\centering
 	\includegraphics{chap-kwaliteitsgebrek/hierarchy.png}
 	\caption{Voorbeeld van meer permissieve multipliciteiten in een klassehi\"erarchie en van een losstaande klasse (zijnde \textit{Loose})}
 	\label{fig:hierarchie}

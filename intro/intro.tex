@@ -8,7 +8,7 @@ Het is echter makkelijk om het overzicht te verliezen als de gebruikte diagramme
 
 In deze masterproef beschouwen we in het bijzonder klassediagrammen en sequentiediagrammen\cite{RumbaughJames2005Tuml}.
 Een klassediagram beschrijft welke concepten (in deze tekst verder \textit{klasses} genoemd) er bestaan binnen de software. Elk van die klasses kan attributen en operaties hebben. Verder geeft een klassediagram ook weer welke klasses in relatie staan tot elkaar. Deze relaties leggen vast aan welke beperkingen alle mogelijke toestanden van de beschreven software moeten voldoen om beschouwd te worden als correct.
-Een sequentiediagram modelleert een bewerking op een klasse. Het toont zogenaamde \textbf{levenslijnen} die instanties van bepaalde klasses voorstellen en een opeenvolging van instructies die levenslijnen uitvoeren op een andere levenslijn. Deze instructies veranderen de toestand van het systeem of roepen een andere sequentiediagram op. Sequentiediagrammen bieden ook als---dan -en lusstructuren aan waarmee men de uitvoeringsvolgorde van de instructies kan beheersen.
+Een sequentiediagram modelleert een bewerking op een klasse. Het toont zogenaamde \textbf{levenslijnen} die instanties van bepaalde klasses voorstellen en een opeenvolging van instructies die levenslijnen uitvoeren op een andere levenslijn. Deze instructies veranderen de toestand van het systeem of roepen een ander sequentiediagram op. Sequentiediagrammen bieden ook als---dan- en lusstructuren aan waarmee men de uitvoeringsvolgorde van de instructies kan beheersen.
 
 \section{Klassediagrammen}
 
@@ -21,7 +21,7 @@ Beschouw volgend klassediagram:
 	\caption{Een voorbeeld van een klassediagram}
 \end{figure}
 
-Dit klassediagram drukt uit dat er twee klasses bestaan: \textit{C} en \textit{D}. \textit{C} heeft \'e\'en attribuut, \textit{name}, dat van type \textit{string} is. \textit{D} heeft ook \'e\'en attribuut, \textit{number}, van type \textit{int}. \textit{C} heeft ook \'e\'en operatie \textit{getDNumber} dat \textit{index}, van type \textit{int}, als parameter heeft. \textit{getDNumber} geeft een resultaat terug dat ook van type \textit{int} is. Voorts drukt de lijn tussen \textit{C} en \textit{D} uit dat er een relatie bestaat tussen de twee klasses. Beschouw klasse C. Als we vanuit die klasse de lijn volgen, zien we dat er aan het ander uiteinde staat dat elke \textit{C}-object in relatie moet staan tot exact twee \textit{D}-objecten. Zo ook zien we dat, als we vertrekken vanuit \textit{D}, elk \textit{D}-object in relatie moet staan tot exact \'e\'en \textit{C}-object.
+Dit klassediagram drukt uit dat er twee klasses bestaan: \textit{C} en \textit{D}. \textit{C} heeft \'e\'en attribuut, \textit{name}, dat van type \textit{string} is. \textit{D} heeft ook \'e\'en attribuut, \textit{number}, van type \textit{int}. \textit{C} heeft ook \'e\'en operatie \textit{getDNumber} dat \textit{index}, van type \textit{int}, als parameter heeft. \textit{getDNumber(int)} geeft een resultaat terug dat ook van type \textit{int} is. Voorts drukt de lijn tussen \textit{C} en \textit{D} uit dat er een relatie bestaat tussen de twee klasses. Beschouw klasse C. Als we vanuit die klasse de lijn volgen, zien we dat er aan het ander uiteinde staat dat elke \textit{C}-object in relatie moet staan tot exact twee \textit{D}-objecten. Zo ook zien we dat, als we vertrekken vanuit \textit{D}, elk \textit{D}-object in relatie moet staan tot exact \'e\'en \textit{C}-object.
 Met de mogelijke problemen genoemd in sectie \ref{sec:situering} in het achterhoofd beschouwen we in deze masterproef twee categorie\"en van gebreken in een klassediagram:
 
 \begin{itemize}
@@ -33,7 +33,7 @@ We onderzoeken hoe we klassediagrammen kunnen vertalen naar een voorstelling die
 
 \section{Sequentiediagrammen}
 
-Beschouw volgend sequentiediagram:
+Naast het kunnen redeneren op klassediagrammen willen we ook kunnen redeneren op het gedrag voorgesteld in een stel sequentiediagrammen. Meer bepaald willen we automatisch kunnen afleiden of een sequentiediagram voldoet aan bepaalde vereisten. Als een ontwerper gereedschap beschikbaar heeft om op deze manieren te redeneren op klassediagrammen en sequentiediagrammen, zou dit meer vertrouwen moeten geven in de correctheid en duidelijkheid van zijn ontwerp. Beschouw volgend sequentiediagram:
 
 \begin{figure}[H]
 	\label{fig:sd}
@@ -46,7 +46,7 @@ Het toont hoe de juiste instantie van \textit{D} wordt opgehaald op basis van in
 
 Hoofdstuk \ref{sec:gedrag} bevat een uitgebreider voorbeeld van een sequentiediagram.
 
-In deze masterproef onderzoeken we hoe we sequentiediagrammen kunnen vertalen naar een voorstelling die uitvoerbaar is en of we kunnen verifi\"eren of de uitvoer van een sequentiediagram beantwoordt aan de vereisten voor het deel van het systeem dat dat sequentiediagram modelleert.
+In deze masterproef onderzoeken we hoe we sequentiediagrammen kunnen vertalen naar een voorstelling die een uitvoering van het systeem kan simuleren en of we kunnen verifi\"eren of de uitvoer van een sequentiediagram beantwoordt aan de vereisten voor het deel van het systeem dat dat sequentiediagram modelleert. Het kan immers voorkomen dat een ontwerper een bug introduceert die ervoor zorgt dat uitvoerpaden die verlopen zoals de sequentiediagrammen voorschrijven ongewenste wendingen nemen of zelfs in een oneindige lus terechtkomen. Het kan ook voorkomen dat een sequentiediagram bepaalde controles of bewerkingen mist die ervoor zorgen dat \'e\'en of meerdere eisen ten aanzien van het gedrag van het sequentiediagram niet vervuld zijn.
 
 \section{Verdere verloop van deze tekst}
 
