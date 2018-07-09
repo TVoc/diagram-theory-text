@@ -12,7 +12,7 @@ We gebruiken daar bijkomend de volgende nieuwe logische symbolen:
 	\item \textbf{\textit{BiAssocHigh(ClassObject,ClassObject,ClassObject) : nat}}: gelijkaardig aan \textit{BiAssocLow/3}, maar dan voor de bovengrens van de multipliciteit.
 \end{itemize}
 
-Deze predicaten worden ingevuld met een lijst van feiten die af te lezen zijn van het diagram. In hoofdstuk \ref{sec:rol-idp} wordt de logische theorie die het resultaat is van dit proces weergegeven.
+Deze predicaten worden ingevuld met een lijst van feiten die af te lezen zijn van het diagram.
 
 \section{Kwaliteitsgebreken detecteren}
 Er zijn drie kwaliteitsgebreken waarnaar wordt gezocht in de resulterende theorie:
@@ -53,4 +53,5 @@ Deze zin onderscheidt drie gevallen:
 	\item Klasse \textit{x} en klasse \textit{y} zijn geassocieerd. Er bestaat de klasse \textit{Sx} die een superklasse is van \textit{x} en een klasse \textit{Sy} die een superklasse is van \textit{y}. De associatie \textit{x}---\textit{y} heeft aan het uiteinde \textit{x} ofwel een lagere ondergrens dan de associatie \textit{Sx}---\textit{Sy} aan uiteinde \textit{Sx} of een grotere bovengrens.
 \end{itemize}
 
-In hoofdstuk \ref{sec:rol-idp} wordt uitgelegd hoe deze theorie wordt gebruik om kwaliteitsgebreken te vinden.
+Bijlage \ref{app:kwaliteitsgebrek} bevat de theorie die werd gegenereerd uit een combinatie van diagrammen \ref{fig:diagram-voorbeeld} en \ref{fig:hierarchie}. IDP
+vindt alle \textit{many-to-many} associaties, besluit dat \textit{Loose} een losstaande klasse is en dat de associatie Bob---David overbodig is door de samenloop van de klassehi\"erarchie en de opgelegde multipliciteiten.

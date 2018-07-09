@@ -1,7 +1,11 @@
 \chapter{Simuleren van gedrag op basis van een sequentiediagram}\label{sec:gedrag}
-Een ander populair type van UML-diagram is het sequentiediagram. Waar klassediagrammen de informatie bevat in klasses en de verbanden tussen klasses benoemen, beschrijven sequentiediagrammen het gedrag van methodes gedefinieerd voor deze klasses. In deze diagrammen communiceren instanties van klasses via berichten. Doorgaans zijn deze berichten een oproep van een methode, of een toekenning aan een variabele intern aan het diagram of een instantiatie van een nieuwe instantie. De berichten zijn genummerd volgens een bepaalde volgorde en samen modelleren ze het gedrag van een stuk van de software.
+Een ander populair type van UML-diagram is het sequentiediagram\cite{RumbaughJames2005Tuml}. Waar klassediagrammen de informatie bevat in klasses en de verbanden tussen klasses benoemen, beschrijven sequentiediagrammen het gedrag van methodes gedefinieerd voor deze klasses. In deze diagrammen communiceren instanties van klasses via berichten. Doorgaans zijn deze berichten een oproep van een methode, of een toekenning aan een variabele intern aan het diagram of een instantiatie van een nieuwe instantie. De berichten zijn genummerd volgens een bepaalde volgorde en samen modelleren ze het gedrag van een stuk van de software.
 
-\parbreak
+In dit hoofdstuk beschouwen we hoe we vocabularia en logische theorie\"en gegenereerd volgens de regels beschreven in sectie \ref{sec:cd-rep-cons} kunnen uitbreiden om het gedrag voorgesteld in een sequentiediagram te modelleren.
+
+\section{Componenten van een sequentiediagram}
+
+In deze sectie beschrijven we welke componenten we beschouwen in deze masterproef.
 
 Figuur \ref{fig:seq-diagram-game} geeft een voorbeeld van een sequentiediagram gebaseerd op het klassediagram voorgesteld in figuur \ref{fig:diagram-voorbeeld}.
 
@@ -13,7 +17,28 @@ Verder zijn er ook kaders die berichten omsluiten. Deze kaders duiden \textbf{ge
 	\item Het \textbf{lusfragment}: Deze soort duidt een lusconstructie aan. Er staat aangeduid onder welke voorwaarden er een iteratie wordt uitgevoerd. Deze voorwaarde wordt gecontroleerd zowel v\'o\'or de eerste keer dat er mogelijks een iteratie wordt uitgevoerd als elke keer dat een iteratie ten einde komt. Indien de voorwaarde niet geldt, wordt de lus overgeslagen. Figuur \ref{fig:seq-diagram-frag-ex} bevat een voorbeeld van een diagram met lusfragmenten.
 \end{enumerate}
 
-In dit hoofdstuk beschouwen we hoe we het vocabularium en de logische theorie die we hebben opgebouwd eerder in de tekst kunnen uitbreiden om het gedrag voorgesteld in een sequentiediagram te modelleren.
+Berichten worden voorgesteld door pijlhoofden aan ofwel een ononderbroken lijn ofwel een streepjeslijn. Ze kunnen verscheidene betekenissen hebben afhankelijk van de context.
+
+Allereerst zijn er berichten die een variabele defini\"eren en er een waarde aan toekennen. Die waarde kan direct berekend worden, zoals in instructie 12 in figuur \ref{fig:seq-diagram-game}. De waarde kan een directe waarde zijn zoals 3 of ``foo'', een variabele, of een bewerking op directe waarden of variabelen van primitieve types. Als de instructie een bewerking op waarden van een primitief type is, moeten de gebruikte waardes allemaal van hetzelfde type zijn en moet het type een geldig invoertype voor de bewerking zijn, anders is het sequentiediagram ongeldig. De toegekende waarde kan ook het resultaat zijn van een methodeoproep, zoals in instructie 3 in dezelfde figuur. Als de methode die wordt opgeroepen een methode is gedefinieerd voor een klasse door het klassediagram, wordt de waarde eerst berekend in een uitvoering van het bijhorend sequentiediagram voor het wordt toegekend aan de variabele.
+
+Een numerieke variabele kan een waarde krijgen door middel van de functies \textit{chooseEx(lowerBound, upperBound)} en \textit{chooseIn(lowerBound, upperBound)}. Bij uitvoering van die functies geeft de gebruiker een getal $n$ op. Bij \textit{chooseEx} geldt dat $n \geq lowerBound$ en $n < upperBound$ en bij \textit{chooseIn} geldt dat $n \geq lowerBound$ en $n < upperBound$.
+
+Een variabele kan ook gedefinieerd worden door een paar van methodeoproep en terugkeerbericht. Instructies 6 en 7 in figuur \ref{fig:seq-diagram-game} zijn daar een voorbeeld van. Instructie 6 is een methodeoproep. Instructie 7 definieert impliciet de variabele \textit{defenceVal} en kent de waarde berekend in de oproep eraan toe.
+
+Methodeoproepen zijn enkel geldig als de methode die wordt opgeroepen gedefinieerd is voor de klasse waar de ontvanger van het bericht een instantie van is. Als een methode gedefinieerd voor een klasse in het klassediagram wordt opgeroepen, wordt verwacht dat voor elke parameter een geldige waarde van het juiste type wordt opgegeven, hetzij een directe waarde, hetzij een variabele. Indien het verkeerde aantal argumenten wordt opgegeven, is het gedrag van de oproep niet gedefinieerd. Indien een waarde van een fout type wordt opgegeven, is het sequentiediagram niet geldig.
+
+Attributen en associaties defini\"eren voor klasses impliciet enkele methodes. 
+
+We beschouwen enkel attributen met een multipliciteit van $1..1$. Daarvoor defini\"eren we methodes volgens de patronen \textit{getAttribuutnaam()} en \textit{setAttribuutnaam()}. Voor \textit{value} in de klasse \textit{Statistic} in figuur \ref{fig:diagram-voorbeeld} krijgen we \textit{getValue()} en \textit{setValue(int)}. \textit{getValue()} haalt de waarde van \textit{value} op en \textit{setValue(int)} zorgt ervoor dat de waarde van \textit{value} gelijk is aan de gegeven waarde in de volgende tijdstap.
+
+Wat betreft associaties beschouwen we enkel binaire associaties. Ze defini\"eren de volgende soorten van methodes:
+
+\begin{itemize}
+	\item De multipliciteit is $1..1$: We defini\"eren een methode volgens het patroom \textit{getKlassenaam()}. De klasse \textit{Character} in figuur \ref{fig:diagram-voorbeeld} krijgt dus de methode \textit{getInventory()} dat de gerelateerde instantie van klasse \textit{Inventory} als resultaat heeft.
+	\item De multipliciteit is $0..1$: Zoals hierboven, maar er is mogelijks geen resultaat.
+	\item De multipliciteit is van de vorm $0..n$, $0..*$, $1..n$ of $1..*$ waarbij $n \in \mathbb{N}$: We defini\"eren een methode \textit{getKlassenaam(int)} waar het argument de betekenis heeft van een index. Een uiteinde met een multipliciteit met een bovengrens groter dan 1 stellen we immers voor door een verzameling waar ieder lid een volgnummer heeft. Het opgegeven argument moet groter zijn dan 0. Als het argument groter is dan $n$ of als de ondergrens gelijk is aan 0 en de verzameling horend bij het uiteinde is leeg, heeft de oproep geen resultaat. De klasse \textit{Inventory} in figuur \ref{fig:diagram-voorbeeld} krijgt dus de methode \textit{getItem(int)}.
+	\item Men kan een instantie aan het andere uiteinde van een associatie opvragen op basis van de waarde van een attribuut. Klasse \textit{Character} krijgt een methode \textit{getStatisticByName(string)}. Het resultaat is de gerelateerde instantie van klasse \textit{Statistic} die het opgegeven argument als waarde heeft van \textit{name}, als die bestaat. Als de opgegeven waarde geen unieke instantie benoemt, is het gedrag van dit soort methode niet gedefinieerd. Instructie 14 in figuur \ref{fig:seq-diagram-game} heeft dus een instantie van klasse \textit{Statistic} gerelateerd aan \textit{target} waarvoor \textit{name} gelijk is aan \textit{``hp''} als resultaat, als die bestaat.
+\end{itemize}
 
 %\begin{landscape}
 	%\thispagestyle{empty}

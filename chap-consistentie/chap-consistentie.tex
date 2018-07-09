@@ -21,37 +21,42 @@ We gebruiken figuren \ref{fig:voorbeeld1} en \ref{fig:voorbeeld2} ter illustrati
 
 \subsection{Klasse}
 
-Klassediagrammen beschrijven de mogelijke structuur van de toestand van een object in het gemodelleerde probleemdomein en welke bewerkingen er beschikbaar zijn op een object. \textbf{Klasses} bepalen hoe die structuur eruit ziet voor een object en benoemt de bewerkingen. We zeggen dat een object een \textbf{instantie} is van een klasse als de toestand van en bewerkingen beschikbaar op dat object overeenkomen met die klasse. Dit concept defini\"eren we preciezer later in deze sectie.
+Klassediagrammen beschrijven de structuur van de toestand van een object in het gemodelleerde probleemdomein. Die structuur bestaat uit discrete stukken informatie die het object bevat of kan bevatten, de bewerkingen die beschikbaar zijn voor een object, en een beschrijving van hoe men het object kan relateren aan andere objecten uit het probleemdomein. \textbf{Klasses} bepalen hoe die structuur eruit ziet voor een object. We zeggen dat een object een \textbf{instantie} is van een klasse als de toestand van en bewerkingen beschikbaar op dat object overeenkomen met die klasse. Dit concept defini\"eren we preciezer later in deze sectie.
 
 Een klasse bestaat uit de volgende elementen:
 
 \begin{itemize}
 	\item Elke klasse heeft een unieke \textbf{naam} binnen eenzelfde klassediagram.
-	\item \textbf{Attribuut}: De toestand van een klasse bestaat uit de combinatie van zijn attributen. Elk attribuut heeft een naam en een type. De type van een attribuut kan zowel een primitief type zijn zoals \textit{int} of \textit{string} of een andere klasse uit het diagram, al is dit tweede niet gebruikelijk. Klasse \textit{A} in figuur \ref{fig:voorbeeld1} heeft \textit{name} als attribuut met als type \textit{string}. Een attribuut kan ook een multipliciteit hebben, genoteerd als $n..m$ waarvoor $n,m \in \mathbb{N}$ en $n \leq m$. Dit betekent dat een attribuut minimaal $n$ verschillende waarden heeft en maximaal $m$ verschillende waarden. In de plaats van een bovengrens kan er ook $*$ staan, wat betekent dat een attribuut een arbitrair aantal aan verschillende waarden kan hebben. Indien de ondergrens 0 is, kan het zijn dat er geen waarde bestaat voor die attribuut.
-	\item \textbf{Operatie}: De operaties van een klasse duiden de beschikbare bewerkingen op een klasse aan. De definitie van een operatie bestaat uit een naam, mogelijks een lijst van argumenten samen met hun types, en het type van het resultaat. Het resultaattype is ofwel een primitief type, een andere klasse uit het diagram, of \textit{void}, wat eigenlijk betekent dat de operatie geen resultaat heeft. Klasse \textit{C} heeft een operatie met als naam \textit{getB}, \'e\'en argument \textit{index} met type \textit{int}, en met als resultaattype de klasse \textit{B}.
+	\item \textbf{Attribuut}: De toestand van een klasse bestaat uit de combinatie van zijn attributen. Elk attribuut heeft een naam en een type. De type van een attribuut kan zowel een primitief type zijn zoals \textit{int} of \textit{string} of een andere klasse uit het diagram. Klasse \textit{A} in figuur \ref{fig:voorbeeld1} heeft \textit{name} als attribuut met als type \textit{string}. Een attribuut heeft ook een multipliciteit, genoteerd als $n..m$ waarvoor $n,m \in \mathbb{N}$ en $n \leq m$. Dit betekent dat een attribuut minimaal $n$ verschillende waarden heeft en maximaal $m$ verschillende waarden. In de plaats van een bovengrens kan er ook $*$ staan, wat betekent dat een attribuut een arbitrair aantal aan verschillende waarden kan hebben. Indien de ondergrens 0 is, kan het zijn dat er geen waarde bestaat voor die attribuut. Als het diagram geen multipliciteit specificeert voor een attribuut, dan geldt standaard dat de multipliciteit $1..1$ is. In figuur \ref{fig:voorbeeld1} heeft het attribuut \textit{id} van klasse \textit{B} een multipliciteit van $1..2$.
+	\item \textbf{Operatie}: De operaties van een klasse duiden de beschikbare bewerkingen op een klasse aan. De definitie van een operatie bestaat uit een naam, mogelijks een lijst van argumenten samen met hun types, en het type van het resultaat. Het resultaattype is ofwel een primitief type, een andere klasse uit het diagram, of \textit{void}, wat eigenlijk betekent dat de operatie geen resultaat heeft. Klasse \textit{C} in figuur \ref{fig:voorbeeld1} heeft een operatie met als naam \textit{getB}, \'e\'en argument \textit{index} met type \textit{int}, en met als resultaattype de klasse \textit{B}.
 \end{itemize}
 
 \subsection{Associatie}
 
 Een associatie relateert een object \'e\'en of meerdere andere objecten van ofwel dezelfde klasse ofwel een andere klasse. Een associatie is ofwel binair ofwel meervoudig. We bespreken deze twee apart.
 
-\subsubsection{Binaire associatie}
+\subsubsection{Binaire associatie}\label{sec:bin-assoc}
 
 Een binaire associatie relateert een object van een klasse aan objecten van ofwel dezelfde klasse ofwel een andere klasse. In figuur \ref{fig:voorbeeld1} relateert de associatie \textit{B}---\textit{C} objecten van klasse \textit{B} aan objecten van klasse \textit{C}, terwijl de associatie \textit{A}---\textit{A} objecten van klasse A relateert aan andere objecten van klasse \textit{A}. Er wordt niet uitgesloten dat een object van klasse \textit{A} gerelateerd wordt aan zichzelf.
 
-Elk uiteinde van een associatie is onderhevig aan een multipliciteit, genoteerd als $n..m$ met $n,m \in \mathbb{N}$ en $n \leq m$ of $n..*$ met $n \mathbb{N}$. Beschouw de associatie \textit{B}---\textit{C} in figuur \ref{fig:voorbeeld1}. Een object van klasse \textit{B} moet gerelateerd zijn aan minimaal \'e\'en object van klasse \textit{C}. Er is geen bovengrens op de hoeveelheid objecten van klasse \textit{C} waaraan een object van klasse \textit{B} gerelateerd is. Een object van klasse \textit{C} moet gerelateerd zijn aan minimaal \'e\'en object van klasse \textit{B} en maximaal drie objecten van klasse \textit{B}.
+Elk uiteinde van een associatie is onderhevig aan een multipliciteit, genoteerd als $n..m$ met $n,m \in \mathbb{N}$ en $n \leq m$ of $n..*$ met $n \in \mathbb{N}$. Beschouw de associatie \textit{B}---\textit{C} in figuur \ref{fig:voorbeeld1}. Een object van klasse \textit{B} moet gerelateerd zijn aan minimaal \'e\'en object van klasse \textit{C}. Er is geen bovengrens op de hoeveelheid objecten van klasse \textit{C} waaraan een object van klasse \textit{B} gerelateerd is. Een object van klasse \textit{C} moet gerelateerd zijn aan minimaal \'e\'en object van klasse \textit{B} en maximaal drie objecten van klasse \textit{B}.
 
 De multipliciteiten op de associatie \textit{A}---\textit{A} impliceren dat elk object van klasse \textit{A} moet gerelateerd zijn aan exact \'e\'en object van klasse \textit{A}, zij het zichzelf of een ander object.
 
 Het is toegelaten om tussen twee klasses meerdere associatierelaties te defini\"eren. Deze worden beschouwd als aparte associaties en kunnen hun eigen multipliciteiten defini\"eren. Voor eenvoud van implementatie beschouwen we echter in deze masterproef enkel klassediagrammen die tussen twee klasses hoogstens \'e\'en associatierelatie defini\"eren.
 
-In deze masterproef beschouwen we alleen bidirectionele associaties. Dit betekent dat beide uiteindes van een associatie \textbf{navigeerbaar} zijn. We stellen dat een associatie \textit{X}---\textit{Y} impliciet voor klasse \textit{X} de operatie \textit{getY()} definieert dat het gerelateerde \textit{Y}-object als resultaat heeft indien de multipliciteit aan de \textit{Y}-kant ofwel $0..1$ is of $1..1$. Voor $0..1$ kan het natuurlijk het geval zijn dat zulk een object niet bestaat. Indien de multipliciteit aan de \textit{Y}-kant in de plaats van de vorm $0..*$, $0..n$, $n..*$ of $n..m$ is, waarbij $n, m > 0$ en $n \leq m$, definieert men \textit{getAllY()} dat de verzameling van alle gerelateerde \textit{Y}-objecten als resultaat heeft. Als de multipliciteit van de vorm $0..*$ of $0..n$  is, kan deze verzameling uiteraard leeg zijn.
+In deze masterproef beschouwen we alleen bidirectionele associaties. Dit betekent dat beide uiteindes van een associatie \textbf{navigeerbaar} zijn. Gegeven een object kan men navigatie over een associatie naar het andere uiteinde uitvoeren, wat mogelijks een object of een verzameling van objecten als resultaat heeft. Wat dit concreet betekent, hangt af van de grenzen van de multipliciteit op het uiteinde aan de andere kant in de associatie:
 
-Voor reflexieve associaties kan men rolnamen gebruiken om de uiteindes te desambigueren, maar we beschouwen rolnamen hier niet verder. In de plaats kan men stellen dat de associatie \textit{A}---\textit{A} in figuur \ref{fig:voorbeeld1} impliciet de operaties \textit{getA1()} en \textit{getA2()} definieert.
+\begin{itemize}
+	\item De multipliciteit is $1..1$: Navigatie resulteert in het unieke object waaraan het object gerelateerd is.
+	\item De multipliciteit is $0..1$: Het kan zijn dat navigatie geen resultaat geeft omdat er geen gerelateerd object aan het andere uiteinde bestaat. In het andere geval heeft navigatie het gerelateerd object als resultaat.
+	\item De multipliciteit is $1..n$ waarbij $n > 1$ of $1..*$: Navigatie resulteert in een verzameling dat alle gerelateerde objecten bevat als lid. Als de bovengrens $n$ is, is de maximale cardinaliteit van de verzameling $n$. Als de bovengrens $*$ is, heeft de verzameling een arbitrair grote cardinaliteit.
+	\item De multipliciteit is $0..n$ waarbij $n > 0$ of $0..*$: Zoals hierboven, maar de resulterende verzameling kan leeg zijn.
+\end{itemize}
 
-\subsubsection{Meervoudige associatie}
+\subsubsection{Meervoudige associatie}\label{sec:nary-assoc}
 
-Er kunnen associaties bestaan tussen meer dan twee klasses tegelijk. Het diagram in figuur \ref{fig:voorbeeld2} bevat een voorbeeld van een ternaire associatie die objecten van de klasses \textit{D}, \textit{E} en \textit{F} aan elkaar relateert. De specificatie voor UML-klassediagrammen geeft geen eenduidige semantiek voor meervoudige associaties. We illustreren de semantiek die in deze masterproef wordt gebruikt aan de hand van figuur \ref{fig:voorbeeld2}:
+Er kunnen associaties bestaan tussen meer dan twee klasses tegelijk. Het diagram in figuur \ref{fig:voorbeeld2} bevat een voorbeeld van een ternaire associatie die objecten van de klasses \textit{D}, \textit{E} en \textit{F} aan elkaar relateert. We illustreren de semantiek die de specificatie van UML-klassediagrammen\cite{OMG-UML} definieert voor meervoudige associaties aan de hand van figuur \ref{fig:voorbeeld2}:
 
 \begin{itemize}
 	\item Voor elk tupel $(d,e)$ waar $d \in D, e \in E$ geldt dat minimaal $l$ objecten van klasse \textit{F} gerelateerd zijn aan het tupel en maximaal $k$ objecten van klasse \textit{F}.
@@ -63,21 +68,36 @@ Indien de ondergrens voor de multipliciteit van een uiteinde $0$ is, is het moge
 
 De semantiek voor ternaire associaties opgesteld aan de hand van figuur \ref{fig:voorbeeld2} is eenvoudig te veralgemenen voor meervoudige associaties van arbitraire ariteit.
 
-We stellen dat de associatie \textit{D}---\textit{E}---\textit{F} voor de klasse \textit{D} impliciet de operaties \textit{getAllE(F)} en \textit{getAllF(E)} definieert. Met \textit{getAllE(F)} kan men gegeven een \textit{F}-object de verzameling van alle gerelateerde \textit{E}-objecten opvragen voor het resulterende \textit{D}---\textit{F} tupel. Als de ondergrens aan de \textit{E}-kant 0 is, kan het zijn dat die verzameling leeg is. Als de bovengrens aan de \textit{E}-kant 1 is, wordt de operatie in de plaats \textit{getE(F)}, dat het gerelateerde object teruggeeft voor het resulterende tupel. Indien de multipliciteit $0..1$ is, is het mogelijk dat zulk een object niet bestaat voor het tupel. Als de bovengrens aan de \textit{E}-kant * is, kan de resulterende verzameling een arbitraire grootte hebben. \textit{getAllF(E)} defini\"eren we analoog. Er bestaan gelijkaardige operaties voor de klasses \textit{E} en \textit{F}.
+Merk op dat, als in figuur \ref{fig:voorbeeld2} $i$ gelijk is aan 1, deze semantiek impliceert dat voor alle mogelijke tupels $(d,e)$ waar $d \in D, e \in E$ er exact \'e\'en gerelateerd object van klasse \textit{F} moet bestaan. Daarom is het gebruikelijk om de ondergrenzen voor alle uiteindes gelijk te stellen aan 0.
 
-In deze sectie treden we meer in detail over hoe we klassediagrammen voorstellen in FO($\cdot$). Daarvoor willen we een specifieke vorm van logische theorie automatisch laten genereren. In deze theorie\"en staan \textbf{objecten} centraal. Deze objecten zijn instanties van een klasse die voorkomt in het beschouwde diagram, hebben exact de attributen en operaties van die klasse en maken deel uit van exact die relaties die het diagram voorschrijft voor die klasse.
+Ook meervoudige associaties zijn navigeerbaar. Voor associaties met een ariteit van $n$ heeft navigatie nu een tupel met ariteit $(n-1)$ als invoer. De $(n-1)$ elementen van het tupel bestaan uit objecten van de gerelateerde klasse horend bij elk uiteinde van de associatie waarbij \'e\'en uiteinde wordt uitgesloten. Er wordt genavigeerd naar het uiteinde die uitgesloten werd uit het tupel. De concrete betekenis van navigatie is analoog aan die van binaire associaties zoals beschreven in sectie \ref{sec:bin-assoc}.
 
-\subsection{Generalizatie}
+\subsection{Generalizatie}\label{sec:semantics-gen}
 
 Klassediagrammen laten toe om directe overervingsrelaties te defini\"eren tussen klasses. Het diagram in figuur \ref{fig:voorbeeld1} stelt dat \textit{A} een directe superklasse is van \textit{B}. Klasses kunnen de directe superklasse zijn van meerdere klasses en klasses kunnen de directe subklasse zijn van meerdere klasses. Dit betekent dat klassediagrammen meervoudige overerving toestaan. Klassehi\"erarchie\"en worden gedefinieerd door de transitieve sluiting over de directe overervingsrelaties die aanwezig zijn in een diagram.
 
-We kunnen nu volledig het concept van \textbf{instantie} defini\"eren. Een object kan een directe instantie zijn van \'e\'en of meerdere klasses, al is dat tweede niet gebruikelijk. Stel dat klasse \textit{Y} een subklasse is van klasse \textit{X} volgens de klassehi\"erarchie\"en gedefinieerd door het diagram. Als een object een directe instantie is van klasse \textit{Y}, is dat object ook een instantie van klasse \textit{X}. Merk op dat als een object een directe instantie is van meer dan \'e\'en klasse, dat het object mogelijks deelneemt aan meer dan \'e\'en klassehi\"erarchie, ook al wordt meervoudige overerving niet toegepast in het diagram.
+We kunnen nu volledig het concept van \textbf{instantie} defini\"eren. Een instantie is een object dat beantwoordt aan de structuur opgelegd door een klasse. Die structuur bestaat uit de attributen, operaties en associaties gedefinieerd voor de klasse.
+
+Een object kan een instantie zijn van meerdere klasses. In de eerste plaats is een object een directe instantie van een bepaalde klasse. Als die klasse deel uitmaakt van een klassehi\"erarchie, betekent dit dat het object een indirecte instantie is van alle superklasses van de klasse. Beschouw het diagram in figuur \ref{fig:multi-inheritance}. Het duidt directe overervingsrelaties aan door pijlen met een leeg hoofd. De klasse van waaruit de pijl vertrekt is de subklasse terwijl de klasse waarnaar de pijl wijst de superklasse is.
+
+Een klasse kan betrokken zijn bij meerdere directe overervingsrelaties. De klasse kan een superklasse zijn van meerdere klasses. De klasse kan ook de subklasse zijn van meerdere klasses; dit noemen we \textit{meervoudige overerving}.
+
+In figuur \ref{fig:multi-inheritance} is klasse \textit{Z} een subklasse van klasse \textit{Y}. Door meervoudige overerving is klasse \textit{Y} een subklasse van klasses \textit{X} en \textit{O}. De transitieve sluiting over directe overervingsrelaties betekent dat directe instanties van klasse \textit{Z} ook instanties zijn van de klasses \textit{X} en \textit{O}.
+
+UML gebruikt meervoudige overerving om \textbf{meervoudige classificatie}\cite{RumbaughJames2005Tuml} te defini\"eren. Dit laat toe dat een object een directe instantie is van meer dan \'e\'en klasse zonder dat de klasses noodzakelijk met elkaar in verband staan in een klassehi\"erarchie. Stel dat een object \textit{x} een directe instantie is van klasses \textit{H} en \textit{I}. Dit betekent dat \textit{x} feitelijk een directe instantie is van een impliciet gedefinieerde klasse \textit{J} dat zelf geen attributen, operaties of associaties definieert en een subklasse is van klasses \textit{H} en \textit{I}. De meeste objectgerichte programmeertalen implementeren meervoudige classificatie echter niet, en deze masterproef beschouwt het verder niet.
+
+\begin{figure}
+	\centering
+	\includegraphics[width=0.6\textwidth]{chap-consistentie/voorbeeld6.png}
+	\caption{Voorbeeld van meervoudige overerving}
+	\label{fig:multi-inheritance}
+\end{figure}
 
 Subklasses erven alle attributen, operaties en associaties van al hun superklasses. Objecten moeten dus deelnemen aan alle associaties gedefinieerd voor de klasses waar het een directe instantie van is alsook alle associaties gedefinieerd voor alle superklasses waar het object een instantie van is.
 
-De specificatie van klassediagrammen stelt dat in een klassehi\"erarchie een attribuut met een bepaalde signatuur, bestaande uit zijn naam, type en multipliciteit, maar \'e\'enmaal mag gedefinieerd worden. Verder mag een operatie met een bepaalde signatuur, zijnde haar naam, lijst van parameters met hun bijhorende type waarbij een subklasse het type van een parameter mag vervangen door een subklasse ervan, en resultaattype, dat een subklasse ook mag vervangen door een subklasse ervan, meermaals gedefinieerd worden in deze klassehi\"erarchie. Doorgaans doet men dit om aan te geven dat een subklasse de implementatie van een bepaalde methode anders invult. Men duidt de herdefinitie van een operatie in een subklasse aan met de term \textit{overriding}. Als een klasse echter deel uitmaakt van meerdere klassehi\"erarchie\"en, mag die klasse maar een definitie van een operatie van een bepaalde signatuur overerven van ten hoogste \'e\'en klassehi\"erarchie. Als een klasse in dat geval de operatie zelf herdefinieert, is het diagram wel geldig.
+De specificatie van klassediagrammen stelt dat in een klassehi\"erarchie een attribuut met een bepaalde signatuur, bestaande uit zijn naam, type en multipliciteit, maar \'e\'enmaal mag gedefinieerd worden. Verder mag een operatie met een bepaalde signatuur, zijnde haar naam, lijst van parameters met hun bijhorende type, en resultaattype maar eenmaal gedefinieerd worden in deze klassehi\"erarchie, tenzij een subklasse de operatie met die signatuur herdefinieert. Dit noemt men \textit{\textbf{overriding}}. Doorgaans doet men dit om aan te geven dat een subklasse de implementatie van een bepaalde methode anders invult. De specificatie van UML\cite{OMG-UML} stelt dat bij \textit{overriding} de ontwerper zelf moet beslissen of \textit{covariantie}, \textit{contravariantie} of \textit{invariantie} voor de types van de parameters en resultaat van een operatie geldt. Covariantie betekent dat een type vervangen mag worden door een subtype. Contravariantie betekent dat een type vervangen mag worden door een supertype. Invariantie betekent dat een type niet mag veranderen. Elk van deze vormen van variantie kan gelden voor parametertypes en resultaattypes.
 
-Voor eenvoud van implementatie houden we in deze masterproef echter geen rekening met herdefinitie van een attribuut, \textit{overriding} of het overerven van een operatie uit meerdere klassehi\"erarchie\"en. Dit betekent dat wij overge\"erfde attributen en attributen met dezelfde signatuur gedefinieerd in de subklasse zelf behandelen als aparte attributen. We behandelen overge\"erfde operaties en operaties met dezelfde signatuur gedefinieerd in een subklasse op een analoge manier. De conflicten genoemd in de vorige paragraaf leiden er dus niet toe dat een klassediagram ongeldig is.
+Als een klasse deel uitmaakt van meerdere klassehi\"erarchie\"en, mag die klasse maar een definitie van een operatie van een bepaalde signatuur overerven van ten hoogste \'e\'en klassehi\"erarchie. Als een klasse een operatie van een bepaalde signatuur zelf herdefinieert, blijft het diagram wel geldig als die klasse anders meer dan \'e\'en definitie van een operatie van dezelfde signatuur zou overerven.
 
 \section{Semantiek voor klassediagrammen}
 
@@ -85,17 +105,28 @@ In deze sectie beschrijven we een modelsemantiek voor klassediagrammen gebaseerd
 
 Met de \textbf{instantiatie} van een klasse bedoelen we de verzameling van alle instanties van een klasse, zij het directe instanties of als gevolg van de klassehi\"erarchie\"en in het diagram.
 
-Allereerst is er een triviaal model voor alle klassediagrammen. Dit bestaat uit lege instantiaties voor alle klasses.
+Een model is een verzameling van de volgende delen:
 
-Attributen, operaties, associaties en overervingsrelaties hebben allemaal gevolgen voor objecten.
+\begin{itemize}
+	\item Voor elke klasse een corresponderende verzameling die de objecten die lid zijn van de instantiatie ervan bevatten.
+	\item Voor elke attribuut een verzameling van paren. Aan de linkerkant bevindt zich een instantie van de klasse waarvoor het attribuut gedefinieerd is en aan de rechterkant bevindt zich een waarde van het attribuut die hoort bij die instantie.
+	\item Voor elke operatie een totale functie van $(m+1)$ argumenten, waar $m$ gelijk is aan het aantal parameters van de operatie. De functie specificeert voor elke mogelijke combinatie van instantie en invoerargumenten een uniek resultaat.
+	\item Voor elke associatie een verzameling van $n$-aire tupels, waar $n$ de ariteit van de associatie.
+\end{itemize}
 
-Alle objecten moeten voor alle attributen gedefinieerd in de klasses waar het een directe instantie van is en voor alle overge\"erfde attributen zoveel verschillende waarden hebben als voorgeschreven door de multipliciteit van het attribuut. Als de ondergrens 0 is, kan het zijn dat er geen waarde aanwezig is.
+Een model voldoet aan een klassediagram als en slechts als de volgende voorwaarden gelden:
 
-Alle objecten moeten voor alle operaties gedefinieerd in de klasses waar het een directe instantie van is en voor alle overge\"erfde operaties voldoen aan de volgende voorwaarde: Voor alle mogelijke combinaties van argumenten, allemaal van het juiste type, moet er een resultaat van het juiste type zijn. Deze voorwaarde ten gevolge van operaties laten we vallen wanneer we de vertaling van sequentiediagrammen beschouwen in hoofdstuk \ref{sec:gedrag}. Sequentiediagrammen specificeren immers het gedrag van operaties.
+\begin{itemize}
+	\item Als een object een directe instantie is van een klasse, moet dat object ook een instantie zijn van alle superklasses.
+	\item Alle objecten moeten voor alle attributen gedefinieerd in de klasses waar het een directe instantie van is en voor alle overge\"erfde attributen zoveel verschillende waarden hebben als voorgeschreven door de multipliciteit van het attribuut. Als de ondergrens 0 is, kan het zijn dat er geen waarde aanwezig is. Enkel objecten die instanties zijn van de klasses waarvoor een bepaald attribuut gedefinieerd is, mogen waarden hebben voor dat attribuut.
+	\item Alle objecten moeten voor alle operaties gedefinieerd in de klasses waar het een directe instantie van is en voor alle overge\"erfde operaties voldoen aan de volgende voorwaarde: Voor alle mogelijke combinaties van argumenten, allemaal van het juiste type, moet er een resultaat van het juiste type zijn. Enkel objecten die instanties zijn van de klasses waarvoor een bepaalde operatie gedefinieerd is mogen voorkomen als instanties waarvoor de functie die overeenkomt met de operatie combinaties van invoerargumenten en resultaat kent.
+	\item Zij $n$ het aantal keren dat een klasse voorkomt in een uiteinde in een associatie. Voor alle tupels die lid zijn van de verzameling van tupels overeenkomend met de associatie moet gelden dat exact $n$ elementen lid zijn van die klasse.
+	\item Elk uiteinde van een associatie moet consistent dezelfde plek hebben in de tupels die lid zijn van de verzameling van tupels die overeenkomt met die associatie.
+	\item Stel dat \textit{x} een instantie is van klasse \textit{X} die in verband staat met klasse \textit{Y} door middel van een binaire associatie. Het uiteinde \textit{Y} heeft een multipliciteit van $n..m$. Stel $A$ gelijk aan de verzameling van tupels die de invulling zijn van de associatie \textit{X}---\textit{Y}. Stel verder $B$ gelijk aan de deelverzameling van $A$ waar voor alle leden geldt dat \textit{x} voorkomt op de plaats horend bij uiteinde \textit{X}. Dan moet gelden dat $n \leq |B|$ en $|B| \leq m$. Als de bovengrens voor uiteinde \textit{Y} gelijk is aan $*$, is er geen bovengrens op $|B|$.
+	\item De verzameling van tupels die overeenkomt met een meervoudige associatie moet voldoen aan de semantiek voor meervoudige associaties beschreven in sectie \ref{sec:nary-assoc}.
+\end{itemize}
 
-Alle objecten moeten voor alle associaties gedefinieerd voor de klasses waar het een directe instantie van is en voor alle overge\"erfde associaties een invulling hebben die voldoet aan de multipliciteit gespecificeerd voor het andere uiteinde.
-
-Stel dat er een associatie \textit{X}---\textit{Y} bestaat en dat object \textit{x} een instantie is van \textit{X}. Zij $n..m$ met $n \leq m$ de multipliciteit aan uiteinde \textit{Y}. Object \textit{x} moet dan in de context van associatie \textit{X}---\textit{Y} gerelateerd zijn aan minstens $n$ objecten van klasse \textit{Y} en maximaal $m$ objecten van klasse \textit{Y}. De minimumvoorwaarde valt weg als $n = 0$ en de maximumvoorwaarde valt weg als $m = *$.
+Merk op dat deze voorwaarden tot gevolg hebben dat men voor alle klassediagrammen een model kan opstellen dat voldoet aan het diagram door een lege instantiatie toe te kennen aan elke klasse. We noemen dit het triviaal model.
 
 We geven een voorbeeldmodel voor het diagram in figuur \ref{fig:voorbeeld1}:
 
@@ -107,18 +138,18 @@ We geven een voorbeeldmodel voor het diagram in figuur \ref{fig:voorbeeld1}:
 	\item Attribuut \textbf{\textit{id}} in \textbf{\textit{B}}: $\{(b1,1);(b2,2);(b3,3)\}$
 	\item Attribuut \textbf{\textit{id}} in \textbf{\textit{C}}: $\{(c,1)\}$
 	\item Operatie \textbf{\textit{calculateNumber} in \textbf{\textit{A}}: $\{(a,n)\rightarrow{}n\}$} voor alle instanties \textit{a} van \textit{A} en voor alle $n \in \mathbb{N}$
-	\item Operatie \textbf{\textit{getNumber}} in \textbf{\textit{B}}: $\{b1\rightarrow{}1; b2\rightarrow{}2; b1\rightarrow{}3\}$
+	\item Operatie \textbf{\textit{getNumber}} in \textbf{\textit{B}}: $\{b1\rightarrow{}1; b2\rightarrow{}2; b3\rightarrow{}3\}$
 	\item Operatie \textbf{\textit{getText}} in \textbf{\textit{C}}: $\{c\rightarrow{}``foo''\}$
 	\item Operatie \textbf{\textit{calcB}} in \textbf{\textit{C}}: $\{(c,n)\rightarrow{}b1\}$ voor alle $n \in \mathbb{N}$
-	\item Associatie \textbf{\textit{A}---\textit{A}}: $\{a\leftrightarrow{}a; b1\leftrightarrow{}b1; b2\leftrightarrow{}b2; b3\leftrightarrow{}b3$
-	\item Associatie \textbf{\textit{B}---\textit{C}}: $\{b1\rightarrow{}\{c\}; b2\rightarrow{}\{c\}; b3\rightarrow{}\{c\}; c\rightarrow{}\{b1;b2;b3\}\}$
+	\item Associatie \textbf{\textit{A}---\textit{A}}: $\{(a, a); (b1, b1); (b2, b2); (b3, b3)\}$
+	\item Associatie \textbf{\textit{B}---\textit{C}}: $\{(b1,c); (b2,c); (b3,c)\}$
 \end{itemize}
 
 \subsection{Consistentie van klassediagrammen}
 
 We nemen de definities voor consistentie over van Daniela Berardi et al.\cite{BerardiDaniela2005RoUc}.
 
-Een klassediagram is consistent als en slechts als er een eindig model bestaat waarvoor minstens \'e\'en klasse minstens \'e\'en instantie bevat. Deze definitie sluit dus het triviale model waarvoor geen enkele klasse een instantie bevat uit.
+Een klassediagram is consistent als en slechts als er een eindig model bestaat waarvoor minstens \'e\'en klasse minstens \'e\'en instantie bevat. Deze definitie sluit dus het triviaal model uit.
 
 Een klasse in een klassediagram is consistent als en slechts als er een eindig model bestaat waarvoor de klasse minstens \'e\'en instantie bevat.
 
@@ -149,13 +180,15 @@ Als gevolg van de eerder gedefinieerde semantiek voor de beschikbare componenten
 	\label{fig:incon-gen-assoc}
 \end{figure}
 
-Beschouw het diagram in figuur \ref{fig:incon-assoc-simple}. Stel dat de klasse \textit{U} twee instanties \textit{u1} en \textit{u2} bevat. We proberen de associatie in te vullen als volgt: $\{u1\leftrightarrow{}u1; u1\leftrightarrow{}u2\}$. Om \textit{u2} twee gerelateerde objecten aan de rechterkant te geven, zouden we allereerst $u2\leftrightarrow{}u1$ moeten toevoegen, maar dit zou ingaan tegen de multipliciteit van 1 aan de linkerkant voor \textit{u1}. Voor een gelijkaardige reden kan $u2\leftrightarrow{}u2$ ook niet toegevoegd worden. Zo wordt er afgedwongen dat er twee extra instanties moeten toegevoegd worden: \textit{u3} en \textit{u4}. Zo kunnen we $u2\leftrightarrow{}u3$ en $u2\leftrightarrow{}u4$ toevoegen. Wanneer we \textit{u3} en \textit{u4} allebei twee gerelateerde objecten aan de rechterkant willen geven, doet zich echter een gelijkaardig probleem als voor \textit{u2} voor waardoor de toevoeging van \textit{u3} en \textit{u4} nodig was in de eerste plaats. Dit zorgt ervoor dat een geldig niet-leeg model voor dit diagram oneindig groot zou moeten zijn en dat de klasse \textit{U} inconsistent is.
+Beschouw het diagram in figuur \ref{fig:incon-assoc-simple}. Stel dat de klasse \textit{U} twee instanties \textit{u1} en \textit{u2} bevat. We proberen de associatie in te vullen als volgt: $\{(u1, u1); (u1, u2)\}$. Om \textit{u2} twee gerelateerde objecten aan de rechterkant te geven, zouden we allereerst $(u2, u1)$ moeten toevoegen, maar dit zou ingaan tegen de multipliciteit van 1 aan de linkerkant voor \textit{u1}. Voor een gelijkaardige reden kan $(u2, u2)$ ook niet toegevoegd worden. Zo wordt er afgedwongen dat er twee extra instanties moeten toegevoegd worden: \textit{u3} en \textit{u4}. Zo kunnen we $(u2, u3)$ en $(u2, u4)$ toevoegen. Wanneer we \textit{u3} en \textit{u4} allebei twee gerelateerde objecten aan de rechterkant willen geven, doet zich echter een gelijkaardig probleem als voor \textit{u2} voor waardoor de toevoeging van \textit{u3} en \textit{u4} nodig was in de eerste plaats. Dit zorgt ervoor dat een geldig niet-leeg model voor dit diagram oneindig groot zou moeten zijn en dat de klasse \textit{U} inconsistent is.
 
 Beschouw het diagram in figuur \ref{fig:incon-assoc-multi}. De associaties \textit{J}---\textit{K} en \textit{K}---\textit{L} hebben tot gevolg dat \textit{J}, \textit{K} en \textit{L} exact even veel instanties moeten bevatten. De associatie \textit{J}---\textit{L} stelt echter dat alle instanties van klasse \textit{L} in verband moeten staan met twee instanties van klasse \textit{J}. Dit zorgt ook voor oneindig grote niet-lege modellen en dus inconsistentie van het diagram.
 
-Beschouw het diagram in figuur \ref{fig:incon-gen-assoc}. Stel dat klasse \textit{V} als directe instantie \textit{v} heeft en klasse \textit{W} als directe instanties \textit{w1} en \textit{w2}. We stellen $\{v\rightarrow{}w1; v\rightarrow{}w2; w1\rightarrow{}v; w2\rightarrow{}v\}$. \textit{w1} en \textit{w2} zijn echter ook instanties van klasse \textit{V}, waardoor er vier nieuwe objecten nodig zijn om de associatie voor beide objecten te vervullen. Het probleem zet zich voor de vier objecten verder. Dit zorgt weer voor oneindig grote niet-lege modellen en inconsistentie van het diagram.
+Beschouw het diagram in figuur \ref{fig:incon-gen-assoc}. Stel dat klasse \textit{V} als directe instantie \textit{v} heeft en klasse \textit{W} als directe instanties \textit{w1} en \textit{w2}. We stellen $\{(v, w1); (v, w2)\}$. \textit{w1} en \textit{w2} zijn echter ook instanties van klasse \textit{V}, waardoor er vier nieuwe objecten nodig zijn om de associatie voor beide objecten te vervullen. Het probleem zet zich voor de vier objecten verder. Dit zorgt weer voor oneindig grote niet-lege modellen en inconsistentie van het diagram.
 
-\section{Voorstellingswijze van klassediagrammen in FO($\cdot$) volgens de voorgestelde semantiek}
+\section{Voorstellingswijze van klassediagrammen in FO($\cdot$) volgens de voorgestelde semantiek}\label{sec:cd-rep-cons}
+
+In deze sectie treden we meer in detail over hoe we klassediagrammen voorstellen in FO($\cdot$). Daarvoor willen we een specifieke vorm van logische theorie automatisch laten genereren. In deze theorie\"en staan \textbf{objecten} centraal. Deze objecten zijn instanties van een klasse die voorkomt in het beschouwde diagram, hebben exact de attributen en operaties van die klasse en maken deel uit van exact die relaties die het diagram voorschrijft voor die klasse.
 
 Het merendeel van het werk in deze sectie bestaat erin om de methode om klassediagrammen te vertalen naar eerste-orde-predicatenlogica ge\"introduceerd in Daniela Berardi et al.\cite{BerardiDaniela2005RoUc} aan te passen om gebruik te maken van logische types zoals gedefinieerd in FO($\cdot$).
 
@@ -220,11 +253,11 @@ waarbij de \textit{c} met index \textit{l} overgeslagen wordt. Indien de ondergr
 	Voor \textit{InventoryandItem/2} worden de volgende regels afgeleid:
 	
 \begin{align*}
-		\forall{o_2}[Item](\#{o_1[Inventory]: InventoryandItem(o_1,o_2)} \leq 1).
+		\forall{o_2}[Item](\#\{o_1[Inventory]: InventoryandItem(o_1,o_2)\} \leq 1).
 \end{align*} 
 		
 \begin{align*}
-		\forall{o_1}[Inventory](\#{o_2[Item]: InventoryandItem(o_1,o_2)} \leq 5).
+		\forall{o_1}[Inventory](\#\{o_2[Item]: InventoryandItem(o_1,o_2)\} \leq 5).
 \end{align*}
 
 \subsection{Voorstellen van klassehi\"erarchi\"een}\label{sec:hierarchies}
@@ -271,6 +304,30 @@ We hebben echter niet voor deze aanpak gekozen voor twee redenen.
 Attribuutpredicaten, operatiepredicaten en associatiepredicaten zouden logisch type \textit{Object} als argumenten moeten hebben. Dit betekent dat er nieuwe regels nodig zijn die afdwingen dat die objecten van het juiste type zijn. Grotere theorie\"en leiden tot een grotere rekentijd en geheugengebruik bij de uitvoering van redeneertaken.
 De multipliciteitsregels zouden ook herschreven moeten worden om gebruik te maken van \textit{StaticClass}. Dit maakt zinnen over de hele lijn langer en zorgt ervoor dat ze moeilijker te begrijpen zijn.
 
-\parbreak
+Sectie \ref{sec:semantics-gen} stelt dat een klassehi\"erarchie een attribuut met een bepaalde signatuur maar eenmaal mag defini\"eren. Verder mag een klasse een definitie van een operatie met een bepaalde signatuur overerven van slechts \'e\'en klassehi\"erarchie, tenzij de klasse de operatie herdefinieert door middel van \textit{overriding}. Voor eenvoud van implementatie controleert onze voorstellingswijze niet op herdefinities van attributen of operaties. Als een operatie wordt geherdefinieerd door \textit{overriding}, worden de oorspronkelijke operatie en de herdefinitie ervan behandeld als twee aparte operaties. Indien we toch zouden willen controleren op conflicterende definities en \textit{overriding} zouden willen modelleren, moeten we attributen en operaties \textbf{re\"ificeren}. Dit houdt in dat het vocabularium een logisch type bevat voor attributen en een logisch type voor operaties. Voor attributen moeten we dan functies defini\"eren voor elk aspect van de signatuur van het attribuut: naam, ondergrens van de multipliciteit, bovengrens van de multipliciteit en type van het attribuut. We moeten dan ook een binair predicaat defini\"eren dat voor elke klasse specificeert welke attributen ze defini\"eren. Analoog verkrijgen we voor operaties functies die de naam en resultaattype geven en een predicaat dat voor alle operaties definieert welke parameters ze hebben. Verder voegen we een binair predicaat toe dat attributen met equivalente definities met elkaar in verband brengt. Daarbij vergelijken we de attributen van een bepaalde klasse enkel met attributen van klasses die deel uitmaken van de klassehi\"erarchie\"en waar die klasse lid van is. We voegen ook zulk een predicaat toe voor operaties, met een analoge invulling. De uitvoertheorie stelt dan dat de interpretatie van het predicaat voor duplicate attributen leeg is en dat operaties enkel in verband mogen staan met elkaar als een klasse een operatie overerft van maar \'e\'en hi\"erarchie of als de subklasse de operatie herdefinieert door middel van \textit{overriding}.
 
-In hoofdstuk \ref{sec:rol-idp} wordt de logische theorie die automatisch gegenereerd werd volgens de regels opgelijst in dit hoofdstuk weergegeven en wordt ook uitgelegd hoe die theorie wordt gebruikt om de consistentie van het diagram te controleren.
+\section{Het verifi\"eren van consistentie en inconsistentie}
+
+Om consistentie van een klassediagram aan te tonen, is het voldoende om modelexpansie uit te voeren gegeven een theorie afgeleid volgens de regels beschreven in sectie \ref{sec:cd-rep-cons} en een niet-lege invoerstructuur die uitgebreid kan worden tot een model voor de theorie. Bijlage \ref{app:consistentie} bevat de theorie horend bij het diagram in figuur \ref{fig:diagram-voorbeeld} gegenereerd volgens de regels beschreven in dit hoofdstuk. Als we een structuur die \'e\'en directe instantie toekent aan elke klasse opgeven voor de theorie gegenereerd voor het klassediagram in figuur \ref{fig:diagram-voorbeeld}, breidt IDP ze uit tot een model voor de theorie. De conclusie is dus dat het diagram in figuur \ref{fig:diagram-voorbeeld} consistent is.
+
+Analoog kan men de consistentie van een klasse controleren door een invoerstructuur op te geven die mintens \'e\'en instantie toekent aan de klasse.
+
+Om te controleren op inconsistentie gebruiken we de functie \textit{entails(theory, structure)} aangeboden door IDP\cite{DeCatBroes2014PLaa}. We laten IDP gebruik maken van SPASS\cite{SPASS}. Aangezien het triviaal model voldoet aan elk klassediagram, proberen we in de plaats te controleren of elk niet-leeg model oneindig groot moet zijn. We proberen te verifi\"eren dat het klassediagram in figuur \ref{fig:incon-assoc-simple} inconsistent is. Om het triviaal model uit te sluiten, voegen we eerst het volgende toe aan de gegenereerde theorie:
+
+\begin{align*}
+	\exists{a}[A](A(a)).
+\end{align*}
+
+Noem deze theorie \textit{T}. We kijken eerst of de volgende theorie een logisch gevolg is van \textit{T}:
+
+\begin{align*}
+	\#\{a [A] : A(a)\} > 2.
+\end{align*}
+
+SPASS besluit dat deze theorie een logisch gevolg is van \textit{T}. We kijken vervolgens of deze theorie een logisch gevolg is van \textit{T}:
+
+\begin{align*}
+\#\{a [A] : A(a)\} > 3.
+\end{align*}
+
+SPASS geeft echter geen besluit binnen een redelijke tijdspanne. Controleren of modellen voor theorie\"en gegenereerd volgens de regels beschreven in sectie \ref{sec:cd-rep-cons} noodzakelijk oneindig groot zijn is dus een mogelijke piste voor verder onderzoek.

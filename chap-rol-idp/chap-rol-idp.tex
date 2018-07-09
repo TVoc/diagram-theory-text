@@ -1,5 +1,5 @@
 \chapter{Het kennisbanksysteem IDP}\label{sec:rol-idp}
-\section{Inleiding tot IDP}
+\subsection{Inleiding tot IDP}
 IDP is een kennisbanksysteem\cite{DeCatBroes2014PLaa}. Deze kennisbanken zijn opgesteld in FO($\cdot$), een uitbreiding van predicatenlogica.
 
 IDP bouwt verder op eerder werk in het onderzoeksdomein van het logisch programmeren. Het ondersteunt constructies gebaseerd op logisch programmeren, in het bijzonder inductieve definities, maar breekt ook met enkele fundamentele idee\"en uit dat paradigma. Logische theorie\"en opgesteld in FO($\cdot$) zijn geen uitvoerbare programma's---ze zijn beschrijvingen van mogelijke toestanden in het beschouwde probleemdomein. De fundamentele oplossingsstrategie voor problemen in een toepassingsdomein waar IDP zich op richt is het specificeren van informatie over het domein in logica. De gebruiker past dan een vorm van inferentie toe om een antwoord te krijgen op concrete vragen geformuleerd in termen van het toepassingsdomein.
@@ -26,13 +26,3 @@ De basisblokken van een specificatie in IDP zijn als volgt:
 De ontwerper kan meerdere vocabularia, theorie\"en en structuren neerschrijven. Elke theorie en structuur kan wel maar de symbolen van \'e\'en vocabularium gebruiken.
 
 Broes De Cat et al.\cite{DeCatBroes2014PLaa} geven een uitgebreidere inleiding tot IDP.
-
-\section{Gebruik van modeluitbreiding}
-We beschrijven kort hoe we modelexpansie gebruiken om, gegeven de theorie\"en opgesteld volgens de regels beschreven in hoofdstukken \ref{sec:consistentie} en \ref{app:kwaliteitsgebrek}, te bepalen of een klassediagram consistent is en of er kwaliteitsgebreken aanwezig zijn. 
-
-
-\subsection{Controleren van consistentie}
-In bijlage \ref{app:consistentie} staat de logische theorie die werd gegenereerd volgens de regels uitgelijnd in hoofdstuk \ref{sec:consistentie}. Als men dit geeft als invoer aan IDP samen met een structuur die bepaalt welke objecten er bestaan voor de gegeven klasses, is het besluit dat er een model bestaat voor de theorie en dat het diagram inderdaad consistent is.
-
-\subsection{Detecteren van kwaliteitsgebreken}
-In bijlage \ref{app:kwaliteitsgebrek} staat de logische theorie die werd gegenereerd uit een combinatie van de diagrammen uit figuren \ref{fig:diagram-voorbeeld} en \ref{fig:hierarchie} volgens de regels uitgelijnd in hoofdstuk \ref{sec:kwaliteitsgebrek}. IDP vindt alle \textit{many-to-many} associaties, besluit dat \textit{Loose} een losstaande klasse is en dat de associatie \textit{Bob}---\textit{David} overbodig is door de samenloop van de klassehi\"erarchie en de opgelegde multipliciteiten.
