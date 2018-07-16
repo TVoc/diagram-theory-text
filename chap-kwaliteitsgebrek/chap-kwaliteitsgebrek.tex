@@ -22,7 +22,7 @@ Er zijn drie kwaliteitsgebreken waarnaar wordt gezocht in de resulterende theori
 	
 	\item \textbf{Losstaande klasse}: Concreet is een losstaande klasse een klasse die geen associatie heeft met een andere klasse in het ontwerp. Zulk een klasse is nutteloos en moet ofwel verbonden worden met een andere klasse of verwijderd worden.
 	
-	\item \textbf{Overbodige associaties in een klassehi\"erarchie}\cite{Balaban2015}: Beschouw figuur \ref{fig:hierarchie}. Daar is te zien dat de grenzen van de multipliciteiten in de associatie \textit{Alice}---\textit{Charlie} strengere voorwaarden opleggen dan die van de associatie \textit{Bob}---\textit{David}, en dat daarom de associatie \textit{Bob}---\textit{David} overbodig is. Om de verstaanbaarheid van het diagram te verbeteren, wordt die associatie best verwijderd.
+	\item \textbf{Overbodige associaties in een klassehi\"erarchie}\cite{Balaban2015}: Beschouw figuur \ref{fig:hierarchie}. De associatie \textit{Alice}---\textit{Bob} heeft tot gevolg dat er exact even veel instanties van \textit{Alice} zijn als instanties van \textit{Bob}. De associatie \textit{Charlie}---\textit{David} stelt echter dat elke instantie van \textit{David} in verband staat met hoogstens vijf instanties van \textit{Charlie}. In een correct model voor dit diagram staat elke instantie van \textit{David} in verband met exact \'e\'en instantie van \textit{Charlie}. De bovengrens van vijf op het uiteinde \textit{Charlie} is dus niet precies genoeg en zou moeten gelijkgesteld worden aan \'e\'en om de verstaanbaarheid van het diagram te verbeteren.
 \end{itemize}
 
 We defini\"eren deze respectievelijke gebreken in de logische theorie door middel van de volgende logische zinnen:
@@ -35,23 +35,36 @@ We defini\"eren deze respectievelijke gebreken in de logische theorie door midde
 	\nonumber \forall{x}[ClassObject](LooseClass(x) \Leftrightarrow \lnot(\exists{y}[ClassObject](\lnot(x = y) \land (BiAssoc(x,y) \\ \lor \exists{s}[ClassObject]\exists{y}[ClassObject](\mathit{IsSupertypeOf}(s,x) \land BiAssoc(s,y)))))).\label{form:loose}
 \end{align}
 
+\begin{align}
+	&\nonumber\forall{x}[ClassObject]\forall{y}[ClassObject](SubclassImpreciseUpperBound(x, y, x) \Leftrightarrow \\
+	&\nonumber\exists{sx}[ClassObject]\exists{sy}[ClassObject]
+	(((sx = x \land IsSupertypeOf(sy, y)) \lor \\
+	&\nonumber(IsSupertypeOf(sx, x) \land sy = y) \lor \\
+	&\nonumber(IsSupertypeOf(sx, x) \land IsSupertypeOf(sx, y))) \\
+	&\nonumber\land BiAssoc(x, y) \\
+	&\nonumber\land BiAssoc(sx, sy) \\
+	&\nonumber\land BiAssocLow(sx, sy, sx) = BiAssocLow(sx, sy, sy) = BiAssocHigh(sx, sy, sx) = \\
+	&\nonumber{}BiAssocHigh(sx, sy, sy) \\ 
+	&\land BiAssocHigh(x, y, x) > BiAssocLow(sx, sy, sx))\label{form:imprecise-bound}.
+\end{align}
+
 \begin{figure}
 	\centering
 	\includegraphics{chap-kwaliteitsgebrek/hierarchy.png}
-	\caption{Voorbeeld van meer permissieve multipliciteiten in een klassehi\"erarchie en van een losstaande klasse (zijnde \textit{Loose})}
+	\caption{Voorbeeld van een onvoldoende precieze bovengrens in een klassehi\"erarchie en van een losstaande klasse (zijnde \textit{Loose})}
 	\label{fig:hierarchie}
 \end{figure}
 
-Zin \ref{form:manytomany} controleert of voor beide rollen van een associatie geldt dat bovengrens * is. Zin \ref{form:loose} controleert of klasse \textit{x} rechtstreeks geassocieerd is met een andere klasse, en zoniet, of klasse \textit{x} een subklasse is van een andere klasse en of die superklasse geassocieerd is met nog een andere klasse.
+Zin \ref{form:manytomany} controleert of voor beide rollen van een associatie geldt dat de bovengrens * is.
 
-De zin die overbodige associaties opspoort is te uitgebreid om op een duidelijke manier in deze tekst neer te zetten. Hij is terug te vinden in bijlage \ref{app:kwaliteitsgebrek}.
-Deze zin onderscheidt drie gevallen:
+Zin \ref{form:loose} controleert of klasse \textit{x} rechtstreeks geassocieerd is met een andere klasse, en zoniet, of klasse \textit{x} een subklasse is van een andere klasse en of die superklasse geassocieerd is met nog een andere klasse.
+
+Zin \ref{form:imprecise-bound} controleert op patronen van klassehi\"erarchie\"en en associaties zoals in diagram \ref{fig:hierarchie}. Daarbij worden gevallen waar het equivalent van \textit{Alice} ontbreekt en gevallen waar het equivalent van \textit{Bob} ontbreekt ook opgespoord. De zin controleert of er een associatie bestaat tussen de subklasses en of er een associatie bestaat tussen de superklasses. Zo ja, dan wordt de bovengrens op een uiteinde in een associatie tussen de subklasses aangeduid als onvoldoende precies indien:
 
 \begin{itemize}
-	\item Klasse \textit{x} en klasse \textit{y} zijn geassocieerd. Er bestaat een klasse \textit{Sx} die een superklasse is van \textit{x} en ook geassocieerd is met \textit{y}. De associatie \textit{x}---\textit{y} heeft aan het uiteinde \textit{x} ofwel een lagere ondergrens dan de associatie \textit{Sx}---\textit{y} aan uiteinde \textit{Sx} of een grotere bovengrens.
-	\item Klasse \textit{x} en klasse \textit{y} zijn geassocieerd. Er bestaat een klasse \textit{Sy} die een superklasse is van \textit{y} en ook geassocieerd is met \textit{x}. De associatie \textit{x}---\textit{y} heeft aan het uiteinde \textit{x} ofwel een lagere ondergrens dan de associatie \textit{x}---\textit{Sy} aan uiteinde \textit{x} of een grotere bovengrens.
-	\item Klasse \textit{x} en klasse \textit{y} zijn geassocieerd. Er bestaat de klasse \textit{Sx} die een superklasse is van \textit{x} en een klasse \textit{Sy} die een superklasse is van \textit{y}. De associatie \textit{x}---\textit{y} heeft aan het uiteinde \textit{x} ofwel een lagere ondergrens dan de associatie \textit{Sx}---\textit{Sy} aan uiteinde \textit{Sx} of een grotere bovengrens.
+	\item Beide uiteindes van de associatie tussen de superklasses hebben een multipliciteit van de vorm $n..n$.
+	\item De bovengrens op het uiteinde in een associatie tussen de subklasses is groter dan $n$.
 \end{itemize}
 
 Bijlage \ref{app:kwaliteitsgebrek} bevat de theorie die werd gegenereerd uit een combinatie van diagrammen \ref{fig:diagram-voorbeeld} en \ref{fig:hierarchie}. IDP
-vindt alle \textit{many-to-many} associaties, besluit dat \textit{Loose} een losstaande klasse is en dat de associatie Bob---David overbodig is door de samenloop van de klassehi\"erarchie en de opgelegde multipliciteiten.
+vindt alle \textit{many-to-many} associaties, besluit dat \textit{Loose} een losstaande klasse is en dat de bovengrens op \textit{Charlie} in de associatie \textit{Charlie}---\textit{David} onvoldoende precies is.

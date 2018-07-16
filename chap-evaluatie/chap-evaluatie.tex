@@ -1,4 +1,4 @@
-\chapter{Evaluatie}\label{sec:evaluatie}
+\chapter{Evaluatie van de voorgestelde voorstellingsmethodes voor klassediagrammen en sequentiediagrammen}\label{sec:evaluatie}
 We hebben software ontworpen die een interne voorstelling heeft voor de informatie bevat in een klassediagram en een stel bijhorende sequentiediagrammen. De software kan die interne voorstelling vertalen naar een FO($\cdot$)-theorie opgesteld volgens de regels bekomen in hoofdstukken \ref{sec:consistentie} en \ref{sec:gedrag}. Het was ook gepland om voor voorstellingen van klassediagrammen en sequentiediagrammen in XML een vertaler naar onze interne voorstelling te voorzien, maar door tijdsgebrek is deze vertaler niet ge\"implementeerd.
 
 In dit hoofdstuk ontwerpen we een klassediagram en sequentiediagrammen waarmee we het spel Nim modelleren zonder gebruik te maken van de nieuwe instructies uit sectie \ref{sec:newlang}. We vertalen die diagrammen dan manueel naar onze interne voorstelling en laten een FO($\cdot$)-theorie genereren. Voor de uitvoertheorie beoordelen we de volgende zaken:
@@ -185,7 +185,7 @@ Beide zinnen moeten leiden tot een vervulbare theorie.
 
 We voeren IDP viermaal uit met de voorgaande zinnen om de beurt toegevoegd aan de invoertheorie. Voor de twee eerste zinnen krijgen we inderdaad als antwoord dat de theorie onvervulbaar is. Voor zin \ref{form:ie_cempty} krijgen we een uniek model dat overeenkomt met een lege stapel. Voor zin \ref{form:ie_cnonempty} krijgen we alle modellen met een stapel die niet leeg is.
 
-Er is een gelijkaardig tijdsverloop en \textit{grounding}-grootte voor alle vier de uitvoeringen. Het duurt ongeveer 29 seconden en de \textit{grounding}-grootte is 578 306. We duiden deze cijfers in de volgende sectie.
+Er is een gelijkaardig tijdsverloop en \textit{grounding}-grootte voor alle vier de uitvoeringen. Het duurt ongeveer 29 seconden en de \textit{grounding}-grootte is 578 306.
 
 We merken op dat het relatief lang duurt om modelexpansie uit te voeren voor dit diagram. De \textit{grounding} is ook omvangrijk.
 
@@ -216,17 +216,58 @@ Zin \ref{form:ahe_cnonempty} stelt voor dat het antwoord negatief is en dat er e
 
 De conclusie moet hier zijn dat de theorie vervulbaar is.
 
-Wanneer we IDP viermaal runnen met deze vier zinnen om de beurt toegevoegd aan de uitvoertheorie, is de theorie inderdaad onvervulbaar voor de eerste twee zinnen. Zin \ref{form:ahe_cempty} leidt tot een uniek model dat overeenkomt met het geval dat alle stapels leeg zijn. Zin \ref{form:ahe_cnonempty} geeft alle modellen waar minstens \'e\'en stapel meer dan nul objecten heeft.
+Wanneer we IDP viermaal uitvoeren met deze vier zinnen om de beurt toegevoegd aan de uitvoertheorie, is de theorie inderdaad onvervulbaar voor de eerste twee zinnen. Zin \ref{form:ahe_cempty} leidt tot een uniek model dat overeenkomt met het geval dat alle stapels leeg zijn. Zin \ref{form:ahe_cnonempty} geeft alle modellen waar minstens \'e\'en stapel meer dan nul objecten heeft.
 
 De uitvoeringstijd en \textit{grounding}-grootte zijn gelijkaardig voor alle vier uitvoeringen. De uitvoering duurt ongeveer 1 minuut en 28 seconden en de \textit{grounding}-grootte is 2 249 098.
 
-Ter vergelijking duurt het voor de theorie in bijlage \ref{app:new-nim} dat overeenkomt met het diagram in figuur \ref{fig:new-nim} ongeveer 31,6 seconden om alle modellen te vinden voor een volledig spelverloop met twee stapels, waarbij \'e\'en stapel twee objecten heeft en de andere drie. De \textit{grounding}-grootte is daarbij 142 510. De invoerstructuur voor deze uitvoering specificeert dat er in totaal 100 tijdstappen zijn.
+\section{Correct verloop van een beurt controleren}
 
-\subsection{Samenvatting van de bevindingen}
+De vorige twee secties bewezen dat het mogelijk is om voorwaardes op de uitvoer van een sequentiediagram te controleren. In deze sectie proberen we te controleren of de veranderingen aan de toestand van het spel die gebeuren tijdens een beurt volgens de spelregels verlopen.
+
+Een beurt verloopt correct indien aan de volgende twee voorwaardes is voldaan:
+
+\begin{itemize}
+	\item Als minstens \'e\'en stapel niet leeg is, moet minstens \'e\'en stapel minder objecten bevatten aan het einde van de beurt dan aan het begin van de beurt.
+	\item Als minstens \'e\'en stapel niet leeg is, mag ten hoogste \'e\'en stapel minder objecten bevatten aan het einde van de beurt dan aan het begin van de beurt.
+\end{itemize}
+
+Om dit te controleren, voegen we extra zinnen toe aan de gegenereerde theorie. We defini\"eren eerst twee hulppredicaten:
+
+\begin{itemize}
+	\item \textit{Empty(Time, Heap)}: De stapel is leeg op een bepaald tijdstip.
+	\item \textit{LosesObject(Time, Heap)}: De stapel bevat aan het einde van de beurt minstens \'e\'en object minder.
+\end{itemize}
+
+Diagram \ref{fig:nim-takeTurn} modelleert het gedrag van een beurt. We willen controleren of een beurt voldoet aan de twee genoemde voorwaardes. Om deze controle eenvoudiger te maken, wordt verondersteld dat de uitvoering wordt beperkt tot \'e\'en uitvoering van \textit{takeTurn()}.
+We voegen de volgende zinnen toe aan de theorie:
+
+\begin{align}
+	&\forall{t}[Time]\forall{h}[Heap](Empty(t, h) \Leftrightarrow HeapamountObjects(t, h, 0)).\label{form:heapempty} \\
+	&\nonumber \forall{t}[Time]\forall{h}[Heap](LosesObject(t, h) \Leftrightarrow (SDPointAt(t, finished) \\ &\nonumber \land \exists{n_1}[LimitedInt]\exists{n_2}[LimitedInt](HeapamountObjects(Start, h, n_1) \\ &\land HeapamountObjects(t, h, n_2) \land n_2 < n_1))).\label{form:losesobject} \\
+	&\nonumber \exists{h}[Heap](\lnot{}Empty(Start, h)) \Rightarrow \forall{t}[Time](SDPointAt(t, finished) \\ &\Rightarrow \exists!{h}[Heap](LosesObject(t, h)))\label{form:turncondition}.
+\end{align}
+
+Zin \ref{form:heapempty} stelt dat een stapel leeg is als het geen objecten bevat.
+
+Zin \ref{form:losesobject} stelt dat alle stapels die strikt minder objecten bevatten aan het einde van de beurt dan aan het begin van de beurt lid moeten zijn van de interpretatie van \textit{LosesObject/2} wanneer de uitvoering het einde van het diagram heeft bereikt.
+
+Zin \ref{form:turncondition} stelt dat als minstens \'e\'en stapel niet leeg is aan het begin van de beurt, dat exact \'e\'en stapel lid mag zijn van de interpretatie van \textit{LosesObject/2}.
+
+We defini\"eren twee stapels in de invoerstructuur en zetten de initi\"ele \textit{SDPoint} naar de eerste instructie van \textit{takeTurn()}. Het duurt 24 tijdstappen om \textit{takeTurn()} volledig uit te voeren als meteen een niet-lege stapel wordt gekozen in instructie 3. Daarom defini\"eren we 24 tijdstappen.
+
+Modelexpansie geeft 40 modellen. Voor al de modellen waar \'e\'en van de twee stapels aan het begin minstens \'e\'en object heeft, zien we inderdaad dat exact \'e\'en stapel minstens \'e\'en object verliest. Voor al de modellen waar beide stapels geen objecten bevatten, merken we dat de uitvoering het lusfragment nooit verlaat.
+
+Het besluit is dat de toestand van het spel op een correcte manier verandert in de loop van \'e\'en beurt. Dit heeft tot gevolg dat de toestand correct verandert over alle beurten heen voor alle mogelijke spelverlopen.
+
+De \textit{grounding}-grootte voor deze uitvoering van modelexpansie is 1 596 587. De uitvoering duurt ongeveer 1 minuut en 16 seconden. 
+
+We duiden de resultaten rond rekentijd en geheugengebruik in deze sectie en de vorigen door de metrieken gebruikt in dit hoofdstuk ook te gebruiken in hoofdstuk \ref{sec:decl-seq}. Daar introduceren we nieuwe soorten instructies voor de ontwerptaal die men gebruikt bij het opstellen van sequentiediagrammen. Met deze instructies kunnen we het spelverloop van Nim volledig specificeren in \'e\'en diagram.
+
+\section{Samenvatting van de bevindingen}
 Men kan Nim spelen met de theorie die automatisch werd gegenereerd uit de gegeven diagrammen. Tussen elke beurt is er wel een wachttijd van ongeveer vijf minuten, met twee en een halve minuut voordat de eerste beurt gespeeld kan worden.
 
-Het is mogelijk om voor een diagram bepaalde gewenste eigenschappen te controleren. Dit gaat echter gepaard met grote \textit{groundings} en een lange uitvoeringstijd. Bijgevolg konden we niet controleren welke uitvoerpaden er bestaan die ertoe leiden dat een bepaalde speler wint beginnend van een bepaald scenario.
+Het is mogelijk om voor een diagram bepaalde gewenste eigenschappen te controleren. Dit gaat echter gepaard met grote \textit{groundings} en een lange uitvoeringstijd. Bijgevolg konden we niet controleren welke uitvoerpaden er bestaan die ertoe leiden dat een bepaalde speler wint beginnend van een bepaald scenario. We konden wel verifi\"eren dat de toestand van het spel op een correcte manier verandert bij het spelen van een beurt.
 
-Dit leidde er ook toe dat we ons initieel evaluatiescenario niet konden uitvoeren. Hierbij keken we naar het spel Reversi, wat een bordspel voor twee spelers is. E\'en speler is wit en de andere speler is zwart. Wanneer het spel begint, liggen er al twee witte schijven en twee zwarte schijven. Zwart begint. De spelers leggen om de beurt een schijf op een lege plek. Alle schijven van de tegenspeler die tussen de pas gelegde schijf en een andere schijf van de speler die aan zet is liggen, veranderen van kleur. Als de speler geen zet kan doen waardoor er minstens \'e\'en schijf van de tegenspeler van kleur verandert, slaat hij zijn beurt over. Het spel eindigt als er twee beurten moeten overgeslagen worden. De speler met de meeste schijven op het veld die zijn kleur hebben wint.
+De bevinding is dat modelexpansie en progressie\"inferentie voor theorie\"en gegenereerd volgens de regels in hoofdstukken \ref{sec:consistentie} en \ref{sec:gedrag} zeer veel tijd en geheugen vragen. Als gevolg hiervan konden we ons initieel evaluatiescenario niet uitvoeren. Hierbij keken we naar het spel Reversi, wat een bordspel voor twee spelers is. E\'en speler is wit en de andere speler is zwart. Wanneer het spel begint, liggen er al twee witte schijven en twee zwarte schijven. Zwart begint. De spelers leggen om de beurt een schijf op een lege plek. Alle schijven van de tegenspeler die tussen de pas gelegde schijf en een andere schijf van de speler die aan zet is liggen, veranderen van kleur. Als de speler geen zet kan doen waardoor er minstens \'e\'en schijf van de tegenspeler van kleur verandert, slaat hij zijn beurt over. Het spel eindigt als er twee beurten moeten overgeslagen worden. De speler met de meeste schijven op het veld die zijn kleur hebben wint.
 
 We hebben voor dit spel ook een klassediagram en een stel van elf sequentiediagrammen ontworpen. Onze software kon deze diagrammen vertalen naar een FO($\cdot$)-theorie, maar de rekentijd en het geheugengebruik waren zo groot dat het niet lukte om \'e\'en beurt te simuleren.

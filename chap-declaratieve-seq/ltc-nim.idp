@@ -1,0 +1,68 @@
+include<LTC>
+
+LTCvocabulary V {
+	type Time isa nat
+	partial Next(Time) : Time
+	Start : Time
+	
+	type Heap
+	type Size isa nat
+	
+	NumObj(Time, Heap) : Size	
+	I_NumObj(Heap) : Size
+	C_NumObj(Time, Heap, Size)
+	
+	type Player = { 0; 1 } isa nat
+	
+	PlayerTurn(Time) : Player
+	I_PlayerTurn : Player
+	C_PlayerTurn(Time, Player)
+	
+	type Action constructed from { Take(Heap,Size) }
+	partial ActionAt(Time) : Action
+}
+
+theory T:V {
+	// ACTION CONDITIONS
+	! t [Time] h [Heap] s [Size] : ActionAt(t) =  Take(h, s) => NumObj(t, h) > 0.
+	! t [Time] h [Heap] s [Size] : ActionAt(t) = Take(h, s) => 0 < s =< NumObj(t, h).
+	! t [Time] : (? a [Action] : ActionAt(t) = a) <=> ( ? h [Heap] : NumObj(t, h) > 0).
+	
+	// HEAP CAUSATIONS
+	{
+		! t [Time] h [Heap] s [Size] : C_NumObj(Next(t), h, s) <- ( ? s1 [Size] : ActionAt(t) = Take(h, s1) & s = NumObj(t, h) - s1).
+	}
+	
+	// PLAYER CAUSATIONS
+	{
+		! t [Time] p [Player] : C_PlayerTurn(Next(t), p) <- p = (PlayerTurn(t) + 1) % 2.
+	}
+	
+	// STATE FORMULAS
+	{
+		! h [Heap] s [Size] : NumObj(Start, h) = s <- I_NumObj(h) = s.
+		! t [Time] h [Heap] s [Size] : NumObj(t, h) = s <- C_NumObj(t, h, s).
+		! t [Time] h [Heap] s [Size] : NumObj(Next(t), h) = s <- NumObj(t, h) = s & ~( ? s1 [Size] : C_NumObj(Next(t), h, s1)).
+		
+		! p [Player] : PlayerTurn(Start) = p <- I_PlayerTurn = p.
+		! t [Time] p [Player] : PlayerTurn(t) = p <- C_PlayerTurn(t, p).
+		! t [Time] p [Player] : PlayerTurn(Next(t)) = p <- PlayerTurn(t) = p & ~( ? p1 [Player] : C_PlayerTurn(Next(t), p1)).
+	}
+}
+
+structure S:V {
+	Time = { 0..5 }
+	Start = 0
+	Next = { 0->1;1->2;2->3;3->4;4->5 }
+
+	Size = { 0..5 }
+	
+	Heap = { h1; h2 }
+	I_NumObj = { h1,3; h2,5 }
+	I_PlayerTurn = 0
+}
+
+procedure main() {
+	stdoptions.nbmodels = 0
+	simulate_interactive(T,S)
+}

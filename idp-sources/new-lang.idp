@@ -177,15 +177,12 @@ structure S:V {
     NextSD = { play_1->play_2; play_2->play_3; play_3->play_4; play_4->play_5; play_5->play_6; play_7->finished  }
     
     Game = { Game1 }
-    //Heap = { Heap1; Heap2; Heap3; Heap4; Heap5; Heap6; Heap7; Heap8; Heap9; Heap10}
     Heap = { Heap1; Heap2 }
-    //GameandHeap = { Game1,Heap1; Game1,Heap2; Game1,Heap3; Game1,Heap4; Game1,Heap5; Game1,Heap6; Game1,Heap7; Game1,Heap8; Game1,Heap9; Game1,Heap10 }
     GameandHeap = { Game1,Heap1; Game1,Heap2 }
     GameFirstHeap = { Game1->Heap1 }
     GameNextHeap = { Game1,Heap1->Heap2 }
     
-    //I_HeapamountObjects = { Heap1,10; Heap2,10; Heap3,10; Heap4,10; Heap5,10; Heap6,10; Heap7,10; Heap8,10; Heap9,10; Heap10,10 }
-    I_HeapamountObjects = { Heap1,2; Heap2,2 }
+    I_HeapamountObjects = { Heap1,2; Heap2,3 }
     
     I_GameT = { 1,Game1 }
     I_Gamefinished = { Game1,F }
