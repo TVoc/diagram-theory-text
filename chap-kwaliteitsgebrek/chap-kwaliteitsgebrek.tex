@@ -21,7 +21,7 @@ Verder defini\"eren we een hulppredicaat \textit{EqualNbInstances(ClassObject, C
 	\}
 \end{align*}
 
-Het basisgeval stelt dat twee klasses even veel instanties bevatten als ze aan elkaar gerelateerd zijn in een associatie en als de grenzen op beide uiteindes dezelfde zijn. De transitieve sluiting over de bekomen paren vult dan de interpretatie van \textit{EqualNbInstances/2} in. Op deze manier 
+Het basisgeval stelt dat twee klasses even veel instanties bevatten als ze aan elkaar gerelateerd zijn in een associatie en als de grenzen op beide uiteindes dezelfde zijn. De transitieve sluiting over de bekomen paren vult dan de interpretatie van \textit{EqualNbInstances/2} in.
 
 \section{Kwaliteitsgebreken detecteren}
 Er zijn drie kwaliteitsgebreken waarnaar wordt gezocht in de resulterende theorie:
@@ -75,4 +75,4 @@ Zin \ref{form:imprecise-bound} controleert op patronen van associaties zoals in 
 \end{itemize}
 
 Bijlage \ref{app:kwaliteitsgebrek} bevat de theorie die werd gegenereerd uit een combinatie van diagrammen \ref{fig:diagram-voorbeeld} en \ref{fig:cycle}. IDP
-vindt alle \textit{many-to-many} associaties, besluit dat \textit{Loose} een losstaande klasse is en dat de bovengrens op \textit{Alice} in de associatie \textit{Charlie}---\textit{Alice} onvoldoende precies is.
+vindt alle \textit{many-to-many} associaties en besluit dat \textit{Loose} een losstaande klasse is en verder dat de bovengrens op \textit{Alice} in de associatie \textit{Charlie}---\textit{Alice} onvoldoende precies is.
