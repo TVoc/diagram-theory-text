@@ -9,12 +9,21 @@ vocabulary V {
     partial BiAssocLow(ClassObject, ClassObject, ClassObject) : LimitedInt
     partial BiAssocHigh(ClassObject, ClassObject, ClassObject) : LimitedInt
     
+	EqualNbInstances(ClassObject, ClassObject)
+	
     ManyToMany(ClassObject, ClassObject)
     LooseClass(ClassObject)
-    SubclassImpreciseUpperBound(ClassObject, ClassObject, ClassObject)
+    CycleImpreciseUpperBound(ClassObject, ClassObject, ClassObject)
 }
 
 theory T:V {
+
+	// ------- DEFINITION OF EqualNbInstances/2 -------
+	
+	{
+		! x [ClassObject] y [ClassObject] : EqualNbInstances(x, y) <- BiAssoc(x, y) & BiAssocLow(x, y, x) = BiAssocLow(x, y, y) = BiAssocHigh(x, y, x) = BiAssocHigh(x, y, y).
+		! x [ClassObject] y [ClassObject] : EqualNbInstances(x, y) <- (? z [ClassObject] : EqualNbInstances(x, z) & EqualNbInstances(z, y)).
+	}
     
     // ------- BAD DESIGN THAT MAY OCCUR IN UML -------
     
@@ -23,20 +32,9 @@ theory T:V {
     
     // classes that are not associated with any other class
     ! x [ClassObject] : LooseClass(x) <=> ~((? y [ClassObject] : ~(x = y) & (BiAssoc(x, y))) | (? s [ClassObject] y [ClassObject] : IsSupertypeOf(s, x) & (BiAssoc(s, y)))).
-    
-	// multiplicity bounds on association between superclasses make upper bound on association between subclasses not precise enough
-	! x [ClassObject] y [ClassObject] : SubclassImpreciseUpperBound(x, y, x) <=>
-		(? sx [ClassObject] sy [ClassObject] :
-			((sx = x & IsSupertypeOf(sy, y))
-			|
-			(IsSupertypeOf(sx, x) & sy = y)
-			|
-			(IsSupertypeOf(sx, x) & IsSupertypeOf(sy, y)))
-		& BiAssoc(x, y)
-		& BiAssoc(sx, sy)
-		& BiAssocLow(sx, sy, sx) = BiAssocLow(sx, sy, sy) = BiAssocHigh(sx, sy, sx) = BiAssocHigh(sx, sy, sy)
-		& BiAssocHigh(x, y, x) > BiAssocLow(sx, sy, sx)
-		).
+	
+	// upper bound on association end is insufficiently precise due to equality constraints
+	! x [ClassObject] y [ClassObject] : CycleImpreciseUpperBound(x, y, x) <=> EqualNbInstances(x, y) & BiAssocLow(x, y, x) = BiAssocHigh(x, y, y) = BiAssocLow(x, y, y) & BiAssocHigh(x, y, x) > BiAssocLow(x, y, x).
 	
     // ------- INFORMATION FROM DIAGRAM -------
     
@@ -51,17 +49,23 @@ theory T:V {
     
     // associations between classes
     { 
-        BiAssoc(A, C) <- .
-        BiAssocLow(A, C, A) = 1 <- .
-        BiAssocHigh(A, C, A) = 1 <- .
-        BiAssocLow(A, C, C) = 1 <- .
-        BiAssocHigh(A, C, C) = 1 <- .
+        BiAssoc(A, B) <- .
+        BiAssocLow(A, B, A) = 1 <- .
+        BiAssocHigh(A, B, A) = 1 <- .
+        BiAssocLow(A, B, B) = 1 <- .
+        BiAssocHigh(A, B, B) = 1 <- .
         
-        BiAssoc(B, D) <- .
-        BiAssocLow(B, D, B) = 1 <- .
-        BiAssocHigh(B, D, B) = 5 <- .
-        BiAssocLow(B, D, D) = 1 <- .
-        BiAssocHigh(B, D, D) = 1 <- .
+        BiAssoc(B, C) <- .
+        BiAssocLow(B, C, B) = 1 <- .
+        BiAssocHigh(B, C, B) = 1 <- .
+        BiAssocLow(B, C, C) = 1 <- .
+        BiAssocHigh(B, C, C) = 1 <- .
+		
+		BiAssoc(C, A) <- .
+		BiAssocLow(C, A, C) = 1 <- .
+		BiAssocHigh(C, A, C) = 1 <- .
+		BiAssocLow(C, A, A) = 1 <- .
+		BiAssocHigh(C, A, A) = 1 <- .
         
         BiAssoc(Statistic, CharacterClass) <- .
         BiAssocLow(Statistic, CharacterClass, Statistic) = 1 <- .

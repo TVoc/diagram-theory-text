@@ -2,9 +2,25 @@
 
 \section{Situering}\label{sec:situering}
 
-UML\cite{RumbaughJames2005Tuml} is een visuele modelleertaal geschikt voor algemene doeleinden. Men gebruikt het om artefacten van een softwaresysteem te specificeren, te visualiseren, te construeren en te documenteren. Deze artefacten bekijken een softwaresysteem vanuit verscheidene oogpunten, en het is de ambitie van UML om genoeg soorten artefacten aan te bieden om een volledige beschrijving te geven van een softwaresysteem. Met behulp van deze artefacten kan men een softwaresysteem ontwerpen, begrijpen, configureren en onderhouden.
+UML\cite{RumbaughJames2005Tuml} is een visuele modelleertaal geschikt voor algemene doeleinden. Men gebruikt het om artefacten van een softwaresysteem te specificeren en te visualiseren. Deze artefacten bekijken een softwaresysteem vanuit verscheidene oogpunten, en het is de ambitie van UML om genoeg soorten artefacten aan te bieden om een volledige beschrijving te geven van een softwaresysteem. Met behulp van deze artefacten kan men een softwaresysteem ontwerpen en begrijpen.
 
-Wanneer tijdens het modelleerproces het aantal artefacten toeneemt en als individuele artefacten complex worden, wordt het echter moeilijk om een overzicht te behouden van de structuur van het systeem en hoe de componenten van het systeem zich gedragen. Het kan dat men moeilijk die structuur en dat gedrag begrijpt en dat men tijdens het modelleren beslissingen neemt die ervoor zorgen dat het systeem onmogelijk kan werken als het wordt ge\"implementeerd zoals beschreven in de artefacten of dat het ongewenst gedrag vertoont. Daarom bekijken we in deze masterproef of we voor enkele soorten artefacten, met name klassediagrammen en sequentiediagrammen, gereedschap kunnen aanbieden die de modelleerder helpt om beter inzicht te verkrijgen in wat hij modelleert. Langs de ene kant willen we kijken of de structuur van een klassediagram niet zo is dat het eigenlijk onmogelijk is om te implementeren en of het redundante informatie bevat die het moeilijker maakt om het diagram te begrijpen. Langs de andere kant willen we kijken of we het gedrag beschreven in sequentiediagrammen kunnen simuleren en of we automatisch kunnen controleren of dat gedrag beantwoordt aan bepaalde functionele eisen op het softwaresysteem. We bouwen zulk een gereedschap op door klassediagrammen en sequentiediagrammen te representeren in FO($\cdot$), een uitbreiding van eerste-orde-predicatenlogica.
+Wanneer tijdens het modelleerproces het aantal artefacten toeneemt en als individuele artefacten complex worden, wordt het echter moeilijk om een overzicht te behouden van de structuur van het systeem en hoe de componenten van het systeem zich gedragen. Het kan dat men moeilijk die structuur en dat gedrag begrijpt. Tijdens het modelleren kunnen er ook beslissingen worden genomen die ervoor zorgen dat het systeem onmogelijk kan werken als het wordt ge\"implementeerd zoals beschreven in de artefacten. Een beslissing kan er ook toe leiden dat een systeem ongewenst gedrag vertoont. Daarom bekijken we in deze masterproef of we voor enkele soorten artefacten, met name klassediagrammen en sequentiediagrammen, gereedschap kunnen aanbieden die de modelleerder helpt om beter inzicht te verkrijgen in wat hij modelleert.
+
+Voor klassediagrammen willen we nagaan:
+
+\begin{itemize}
+	\item Of de structuur van een klassediagram niet zo is dat het eigenlijk onmogelijk is om te implementeren.
+	\item Of een klassediagram redundante informatie bevat of op zulk een manier gestructureerd is die het moeilijker maakt om het diagram te begrijpen.
+\end{itemize}
+
+Voor sequentiediagrammen willen we nagaan:
+
+\begin{itemize}
+	\item Of we het gedrag beschreven in sequentiediagrammen kunnen simuleren.
+	\item Of we automatisch kunnen controleren of dat gedrag beantwoordt aan bepaalde functionele eisen op het softwaresysteem.
+\end{itemize} 
+
+We bouwen zulk een gereedschap op door klassediagrammen en sequentiediagrammen te representeren in FO($\cdot$), een uitbreiding van eerste-orde-predicatenlogica.
 
 Sectie \ref{sec:uml-artifacts} geeft een overzicht van de artefacten die UML aanbiedt. Sectie \ref{sec:intro-idp} geeft een inleiding tot IDP\cite{DeCatBroes2014PLaa}, een kennisbanksysteem voor FO($\cdot$). Sectie \ref{sec:research-q} overloopt de probleemstellingen die we bekijken in deze masterproef. Sectie \ref{sec:text-structure} geeft het verdere verloop van deze tekst en beschrijft de bijdragen geleverd in deze masterproef.
 
@@ -22,9 +38,9 @@ Artefacten in het structureel domein bekijken het softwaresysteem vanuit de volg
 	\begin{itemize}
 		\item Interne structuurdiagrammen beschrijven voor een bepaalde klasse gedefinieerd in een klassediagram de interne structuur in meer detail.
 		\item Collaboratiediagrammen geven weer hoe individuele objecten kunnen samenwerken om een deel van de functionaliteit van de software te bewerkstelligen.
-		\item Componentdiagrammen handelen over componenten, welke modulaire delen van een systeem voorstellen die extern zichtbare stukken hebben. Deze extern zichtbare stukken zijn ofwel stukken functionaliteit die de component aanbiedt gelabeld met een naam, genaamd \textit{interfaces}, ofwel een poort gelabeld met de naam van een \textit{interface}, wat betekent dat het component verwacht dat het verbonden wordt met een corresponderende \textit{interface} van een andere component. Componentdiagrammen geven weer hoe componenten met elkaar worden verbonden om op hoog niveau het gedrag van een deel van het systeem te specificeren.
+		\item Componentdiagrammen handelen over componenten. Componenten stellen modulaire delen van een systeem voor die extern zichtbare stukken hebben. Deze stukken zijn ofwel functionaliteit die de component aanbiedt gelabeld met een naam, genaamd \textit{interfaces}, ofwel een poort gelabeld met de naam van een \textit{interface}. Een poort kan verbonden worden met een corresponderende \textit{interface} van een andere component. Componentdiagrammen geven weer hoe componenten met elkaar worden verbonden om op hoog niveau het gedrag van een deel van het systeem te specificeren.
 	\end{itemize}
-	\item Het \textit{use case} oogpunt: Hieronden vallen \textit{use case} diagrammen. Deze diagrammen benoemen verscheidene actoren, die concrete personen of externe systemen kunnen zijn, en geven grafisch weer welke actoren een rol spelen bij welke \textit{use cases}. De verwachting is dat er elders een tekstuele beschrijving wordt gegeven voor elke \textit{use case}. Een \textit{use case} is een beschrijving van een concrete dienst die een systeem aanbiedt en benoemt de actoren die gebruik willen maken van de dienst, de actoren die betrokken zijn bij het aanleveren van de dienst, en een geordend stappenplan om de dienst aan te leveren.
+	\item Het \textit{use case} oogpunt: Hieronden vallen \textit{use case} diagrammen. Deze diagrammen benoemen verscheidene actoren, die concrete personen of externe systemen kunnen zijn, en geven grafisch weer welke actoren een rol spelen bij welke \textit{use cases}. De ontwerper geeft elders een tekstuele beschrijving voor elke \textit{use case}. Een \textit{use case} beschrijft een concrete dienst die een systeem aanbiedt en benoemt de relevante actoren.
 \end{itemize}
 
 Aangezien deze masterproef onder andere handelt over klassediagrammen, geven we hier een klein voorbeeld. Beschouw volgend klassediagram:
@@ -43,8 +59,8 @@ Dit klassediagram drukt uit dat er twee klasses bestaan: \textit{C} en \textit{D
 Artefacten in het dynamisch domein bekijken het softwaresysteem vanuit de volgende oogpunten:
 
 \begin{itemize}
-	\item Het toestandsautomaatoogpunt: Hieronder vallen toestandsautomaatdiagrammen. Deze diagrammen benoemen toestanden waarin het systeem zich kan bevinden. Deze toestanden worden mogelijks zelf gespecificeerd in een ander toestandsautomaatdiagram. Het diagram beschrijft hoe een systeem van een bepaalde toestand kan overgaan naar een andere toestanden onder bepaalde voorwaarden.
-	\item Het activiteitsoogpunt: Hieronder vallen activiteitsdiagrammen. Deze diagrammen beschrijven hoe de besturingsstroom van het systeem kan verlopen tussen activiteiten, welke een voorstelling zijn van een proces dat bestaat binnen het systeem. Men specificeert tussen welke processen het systeem transitioneert onder welke voorwaarden.
+	\item Het toestandsautomaatoogpunt: Hieronder vallen toestandsautomaatdiagrammen. Deze diagrammen benoemen toestanden waarin het systeem zich kan bevinden en de mogelijke overgangen tussen de toestanden.
+	\item Het activiteitsoogpunt: Hieronder vallen activiteitsdiagrammen. Deze diagrammen beschrijven hoe de besturingsstroom van het systeem kan verlopen tussen activiteiten. Activiteiten zijn processen die bestaan in het systeem.
 	\item Het interactieoogpunt: Hieronder vallen sequentiediagrammen en communicatiediagrammen.
 	\begin{itemize}
 		\item Sequentiediagrammen beschrijven een tijdverloop van een interactie tussen objecten die instanties zijn van klasses gedefinieerd in een klassediagram. Deze diagrammen beschrijven hoe de toestand van \'e\'en of meerdere objecten verandert ten gevolge van een oproep van een methode gedefinieerd voor de klasse waar een bepaald object een instantie van is. Indien de operatie een resultaat heeft, wordt ook getoond hoe het resultaat wordt berekend.
@@ -73,9 +89,11 @@ In dit domein beoogt men het beheer van de modellering van het systeem zelf. Tot
 
 \section{Het kennisbanksysteem IDP}\label{sec:intro-idp}
 
-IDP is een kennisbanksysteem\cite{DeCatBroes2014PLaa}. Deze kennisbanken zijn opgesteld in FO($\cdot$), een uitbreiding van predicatenlogica.
+Kennisbanksystemen\cite{1999XKSS} beogen het modelleren van kennis over een probleemdomein op een gestructureerde manier in een kennisbank. Ze bieden inferentiemethodes aan waarmee geredeneerd kan worden op die kennis. Zo kan een kennisbanksysteem nieuwe, meer precieze kennis afleiden. Ze laten ook het oplossen van concrete instanties van een probleem binnen het probleemdomein toe.
 
-IDP bouwt verder op eerder werk in het onderzoeksdomein van het logisch programmeren. Het ondersteunt constructies gebaseerd op logisch programmeren, in het bijzonder inductieve definities, maar breekt ook met enkele fundamentele idee\"en uit dat paradigma. Logische theorie\"en opgesteld in FO($\cdot$) zijn geen uitvoerbare programma's---ze zijn beschrijvingen van mogelijke toestanden in het beschouwde probleemdomein. De fundamentele oplossingsstrategie voor problemen in een toepassingsdomein waar IDP zich op richt is het specificeren van informatie over het domein in logica. De gebruiker past dan een vorm van inferentie toe om een antwoord te krijgen op concrete vragen geformuleerd in termen van het toepassingsdomein.
+In deze masterproef gebruiken we IDP\cite{DeCatBroes2014PLaa}. In IDP zijn kennisbanken opgesteld in FO($\cdot$), een uitbreiding van predicatenlogica.
+
+IDP bouwt verder op eerder werk in het onderzoeksdomein van het logisch programmeren. Het ondersteunt constructies gebaseerd op logisch programmeren, in het bijzonder inductieve definities, maar breekt ook met enkele fundamentele idee\"en uit dat paradigma. Logische theorie\"en opgesteld in FO($\cdot$) zijn geen uitvoerbare programma's---ze zijn beschrijvingen van kennis in het beschouwde probleemdomein. In IDP bestaat de fundamentele oplossingsstrategie voor problemen in een toepassingsdomein uit het specificeren van informatie over het domein in logica. De gebruiker past dan een vorm van inferentie toe om een antwoord te krijgen op concrete vragen geformuleerd in termen van het toepassingsdomein.
 
 Bij het opstellen van logische theorie\"en ondersteunt IDP alle concepten uit de klassieke eerste-orde-predicatenlogica: Constanten, variabelen, predicaten, functies en existenti\"ele en universele kwantoren. IDP ondersteunt ook concepten die eerste-orde-predicantelogica uitbreiden. Concreet gaat het over de volgende vier concepten:
 
@@ -86,7 +104,7 @@ Bij het opstellen van logische theorie\"en ondersteunt IDP alle concepten uit de
 	\item \textbf{Parti\"ele functies}: IDP laat toe om een functie te specificeren als \textit{partieel}. Dit betekent dat niet alle elementen van het domein noodzakelijk worden afgebeeld op een element uit het codomein.
 \end{itemize}
 
-De inferentievormen die IDP ondersteunt zijn: Modelexpansie gegeven een deels ingevulde structuur; bepalen of een structuur een model is voor een theorie en/of bepalen of een structuur kan uitgebreid worden tot een model voor de theorie; het vinden van optimale modellen gegeven een aggregate term; propagatie, wat gegeven een structuur en een theorie een preciezere structuur geeft die alle oplossingen behoudt; \textit{query}-inferentie, wat alle objecten die beantwoorden aan een bepaalde \textit{query} ophaalt uit een gegeven structuur; deductie; en, gegeven een deels ingevulde structuur en theorie, het berekenen van symmetrische structuren over de theorie.
+De inferentievormen die IDP ondersteunt zijn: Modelexpansie gegeven een deels ingevulde structuur; bepalen of een structuur een model is voor een theorie en/of bepalen of een structuur kan uitgebreid worden tot een model voor de theorie; het vinden van optimale modellen gegeven een aggregate term; propagatie, wat gegeven een structuur en een theorie een preciezere structuur geeft die alle oplossingen behoudt; \textit{query}-inferentie, wat alle objecten die beantwoorden aan een bepaalde \textit{query} ophaalt uit een gegeven structuur; deductie; en symmetriedetectie. Symmetriedetectie is niet expliciet beschikbaar als een procedure, maar kan wel ingezet worden om de zoekruimte te verkleinen indien er symmetrie\"en aanwezig zijn in een theorie.
 
 De basisblokken van een specificatie in IDP zijn als volgt:
 
@@ -102,7 +120,11 @@ Broes De Cat et al.\cite{DeCatBroes2014PLaa} geven een uitgebreidere inleiding t
 
 \section{Probleemstellingen}\label{sec:research-q}
 
-Met de mogelijke problemen genoemd in sectie \ref{sec:situering} in het achterhoofd beschouwen we in deze masterproef twee categorie\"en van gebreken in een klassediagram:
+Zoals aangehaald in sectie \ref{sec:situering}, kunnen er inconsistenties of onduidelijkheden sluipen in een klassediagram. Het kan ook dat het gedrag gemodelleerd in een sequentiediagram ingaat tegen bepaalde functionele eisen op het softwaresysteem.
+
+\subsection{Probleemstellingen omtrent klassediagrammen}
+
+We beschouwen twee categorie\"en van gebreken in een klassediagram:
 
 \begin{itemize}
 	\item \textbf{Inconsistenties:} Het klassediagram is zo opgebouwd dat geen enkele mogelijke toestand van de software kan beantwoorden aan de voorwaarden die worden opgelegd. Dit betekent dat het stuk van de software dat wordt beschreven in het diagram onmogelijk kan werken.
@@ -111,7 +133,17 @@ Met de mogelijke problemen genoemd in sectie \ref{sec:situering} in het achterho
 
 We onderzoeken hoe we klassediagrammen kunnen vertalen naar een voorstelling die ons toelaat om automatisch de consistentie van het diagram te controleren en om bepaalde soorten kwaliteitsgebreken op te sporen.
 
-Verder onderzoeken we hoe we sequentiediagrammen kunnen vertalen naar een voorstelling die een uitvoering van het systeem kan simuleren. We kijken ook of we kunnen verifi\"eren of de uitvoer van een sequentiediagram beantwoordt aan de vereisten opgelegd op de methode die dat sequentiediagram modelleert. Het kan immers voorkomen dat een ontwerper een bug introduceert die ervoor zorgt dat uitvoerpaden die verlopen zoals de sequentiediagrammen voorschrijven ongewenste wendingen nemen of zelfs in een oneindige lus terechtkomen. Het kan ook voorkomen dat een sequentiediagram bepaalde controles of bewerkingen mist die ervoor zorgen dat \'e\'en of meerdere eisen ten aanzien van het gedrag van het sequentiediagram niet vervuld zijn.
+\subsection{Probleemstellingen omtrent sequentiediagrammen}
+
+We willen het volgende uitvoeren voor sequentiediagrammen:
+
+\begin{itemize}
+	\item Het simuleren van het gedrag gemodelleerd in een bepaald stel sequentiediagrammen.
+	\item Het verifi\"eren of de uitvoer van een sequentiediagram beantwoordt aan de vereisten opgelegd op de methode die dat sequentiediagram modelleert.
+	\item Het verifi\"eren of het gedrag gemodelleerd in een stel sequentiediagrammen overeenkomt met gewenst gedrag in het beoogd softwaresysteem. Een voorbeeld van gewenst gedrag is dat een speler in een schaakspel maar \'e\'en stuk van zijn kleur mag bewegen per beurt.
+\end{itemize}
+
+We onderzoeken hoe we sequentiediagrammen kunnen vertalen naar een voorstelling die een uitvoering van het systeem kan simuleren. Met die voorstelling verifi\"eren we ook de uitvoer en het gedrag van sequentiediagrammen.
 
 \section{Verdere verloop van deze tekst}\label{sec:text-structure}
 
@@ -121,8 +153,10 @@ Hoofdstuk \ref{sec:consistentie} beschrijft hoe we FO($\cdot$) gebruiken om klas
 
 Hoofdstuk \ref{sec:kwaliteitsgebrek} beschrijft een alternatieve voorstellingswijze die we gebruiken om bepaalde kwaliteitsgebreken op te sporen. We tonen aan dat we de aanwezigheid van losstaande klasses, \textit{many-to-many} associaties en onvoldoende nauw gespecificeerde bovengrenzen op een uiteinde van een associatie kunnen detecteren.
 
-In hoofdstuk \ref{sec:gedrag} beschrijven we hoe sequentiediagrammen voor te stellen in lineaire tijdscalculus\cite{BogaertsBart2014Sdsu}, een methode om in FO($\cdot$) dynamische systemen te modelleren. We geven ook een aanzet om de ontwerptaal beschikbaar voor sequentiediagrammen uit te breiden met declaratieve constructies. Het doel is om ervoor te zorgen dat er significant minder berichten nodig zijn in een sequentiediagram om het gedrag van een methode te specificeren. We gebruiken deze nieuwe constructies om een sequentiediagram te ontwerpen dat het spel Nim modelleert.
+In hoofdstuk \ref{sec:gedrag} beschrijven we hoe sequentiediagrammen voor te stellen in lineaire tijdscalculus\cite{BogaertsBart2014Sdsu}, een methode om in FO($\cdot$) dynamische systemen te modelleren.
 
-In hoofdstuk \ref{sec:evaluatie} evalueren we ons vertalingsproces door een spel te modelleren in een klassediagram en een stel sequentiediagrammen en die diagrammen enerzijds te gebruiken voor een simulatie van het spel en anderzijds om verificaties van gewenste eigenschappen uit te voeren. Daarbij letten we op rekentijd en geheugengebruik. We tonen aan dat we het spel Nim kunnen modelleren in een klassediagram en een stel sequentiediagrammen en dat we met de theorie opgesteld volgens de regels beschreven in hoofdstukken \ref{sec:consistentie} en \ref{sec:gedrag} het verloop van een spel kunnen simuleren. We nemen waar dat er relatief veel tijd en geheugen nodig is om deze simulaties uit te voeren. De resultaten omtrent rekentijd en geheugengebruik duiden we door te vergelijken met een simulatie van het diagram gegeven in hoofdstuk \ref{sec:gedrag} dat gebruik maakt van de nieuwe declaratieve constructies. De conclusie is dat simulatie voor de theorie horend bij dat diagram significant performanter is. Verder tonen we aan dat we kunnen verifi\"eren of de uitvoer van een sequentiediagram voldoet aan bepaalde eisen op de methode gemodelleerd in dat sequentiediagram.
+In hoofdstuk \ref{sec:evaluatie} evalueren we ons vertalingsproces. We modelleren een spel in een klassediagram en een stel sequentiediagramme. Die diagrammen gebruiken we enerzijds voor een simulatie van het spel en anderzijds om verificaties van gewenste eigenschappen uit te voeren. Daarbij letten we op rekentijd en geheugengebruik. We tonen aan dat we het spel Nim kunnen modelleren in een klassediagram en een stel sequentiediagrammen en dat we met de theorie opgesteld volgens de regels beschreven in hoofdstukken \ref{sec:consistentie} en \ref{sec:gedrag} het verloop van een spel kunnen simuleren. We nemen waar dat er relatief veel tijd en geheugen nodig is om deze simulaties uit te voeren. Verder tonen we aan dat we kunnen verifi\"eren of de uitvoer van een sequentiediagram voldoet aan bepaalde eisen op de methode gemodelleerd in dat sequentiediagram. Als laatste tonen we aan dat we kunnen controleren of de sequentiediagrammen garanderen dat een spelbeurt altijd verloopt zoals voorgeschreven door de spelregels van Nim.
+
+Hoofdstuk \ref{sec:decl-seq} geeft een aanzet om de ontwerptaal beschikbaar voor sequentiediagrammen uit te breiden met declaratieve constructies. Het doel is om ervoor te zorgen dat er significant minder berichten nodig zijn in een sequentiediagram om het gedrag van een methode te specificeren. We modelleren Nim opnieuw met deze constructies en tonen aan dat er significant minder rekentijd en geheugen nodig is om het gedrag in het bekomen sequentiediagram te simuleren.
 
 Hoofdstuk \ref{sec:conclusie} geeft een besluit en geeft een aanzet tot verder onderzoek.

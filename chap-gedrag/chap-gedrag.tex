@@ -56,8 +56,10 @@ UML-diagrammen schrijven mogelijke toestanden van softwaresystemen en acties op 
 
 In de volgende secties werken we deze uitbreiding uit voor het sequentiediagram in figuur \ref{fig:seq-diagram-game}.
 
-\section{Uitbreiding van het vocabularium}
-In LTC is tijd een centraal concept, dus daarom introduceren we allereerst een logisch type $Time \subset \mathbb{N}$. Verder defini\"eren we een parti\"ele functie \textit{Next(Time)} dat voor alle tijdpunten het volgende tijdpunt geeft behalve voor het laatst mogelijke tijdpunt. We defini\"eren ook een constante \textit{Start}, wat het eerst mogelijke tijdpunt aanduidt.
+\section{Veranderingen aan het vocabularium}
+Allereerst verwijderen we alle predicaten omtrent methodes gegenereerd volgens de regels in sectie \ref{sec:cons-method}. Sequentiediagrammen modelleren immers het gedrag van methodes gedefinieerd in een bijhorend klassediagram, dus zijn deze predicaten nu overbodig.
+
+In LTC is tijd een centraal concept, dus daarom introduceren we een logisch type $Time \subset \mathbb{N}$. Verder defini\"eren we een parti\"ele functie \textit{Next(Time)} dat voor alle tijdpunten het volgende tijdpunt geeft behalve voor het laatst mogelijke tijdpunt. We defini\"eren ook een constante \textit{Start}, wat het eerst mogelijke tijdpunt aanduidt.
 
 Voor elk tijdpunt is het mogelijk dat er een bepaalde instructie van het sequentiediagram wordt uitgevoerd. We duiden deze instructie aan met zijn volgnummer.
 Deze volgnummers gebruiken we als instructieteller, en daarvoor defini\"eren we een logisch type $SDPoint \subset \mathbb{N}$.
