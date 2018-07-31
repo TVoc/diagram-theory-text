@@ -14,13 +14,111 @@
 
 \lstinputlisting[title=Modellering van het gedrag van de sequentiediagrammen in figuren \ref{fig:methodOne} en \ref{fig:methodtwo}]{idp-sources/recursion.idp}\label{code:seq-recursion}
 
+\chapter{Diagrammen voor het ontwerp van Nim}\label{app:design-nim}
+
+\begin{figure}[htp]
+	\centering
+	\includegraphics[width=0.75\textwidth]{chap-evaluatie/ClassDiagram1.png}
+	\caption{Klassediagram voor Nim}
+	\label{fig:nim-cd}
+\end{figure}
+
+%\afterpage{
+	\begin{landscape}
+		\newpage
+		\thispagestyle{empty}
+		\begin{figure}
+			%\vspace*{-0.5cm}
+			\begin{subfigure}{\textwidth}
+				\includegraphics[width=0.8\textwidth]{chap-evaluatie/play.png}
+				\caption{Sequentiediagram voor \textit{play(boolean)}}
+				\label{fig:nim-play}
+			\end{subfigure}%
+			\begin{subfigure}{\textwidth}
+				\includegraphics[width=0.8\textwidth]{chap-evaluatie/allHeapsEmpty.png}
+				\caption{Sequentiediagram voor \textit{allHeapsEmpty()}}
+				\label{fig:nim-allHeapsEmpty}
+			\end{subfigure}
+			\caption{Sequentiediagrammen voor \textit{play(boolean)} en \textit{allHeapsEmpty()}}
+			\label{fig:nim-play-ahe}
+		\end{figure}
+	\end{landscape}
+%}
+%\afterpage{
+%	\clearpage
+	\begin{landscape}
+		\newpage
+		\thispagestyle{empty}
+		
+		\begin{figure}
+			\begin{subfigure}{\textwidth}
+				\includegraphics[width=0.75\textwidth]{chap-evaluatie/isEmpty.png}
+				\caption{Sequentiediagram voor \textit{isEmpty()}}
+				\label{fig:nim-isEmpty}
+			\end{subfigure}%
+			\begin{subfigure}{\textwidth}
+				\includegraphics[width=0.8\textwidth]{chap-evaluatie/takeTurn.png}
+				\caption{Sequentiediagram voor \textit{takeTurn()}}
+				\label{fig:nim-takeTurn}
+			\end{subfigure}
+			\caption{Sequentiediagrammen voor \textit{isEmpty()} en \textit{takeTurn()}}
+			\label{fig:nim-isempty-tt}
+		\end{figure}
+	\end{landscape}
+%}
+
+\begin{figure}[htp]
+	\includegraphics[width=0.8\textwidth]{chap-evaluatie/take.png}
+	\caption{Sequentiediagram voor \textit{take(int)}}
+	\label{fig:nim-take}
+\end{figure}
+
+\chapter{IDP-bestand voor het ontwerp van Nim}\label{app:nim-eval}
+
+\lstinputlisting[title=Modellering van Nim voor hoofdstuk \ref{sec:evaluatie}]{chap-evaluatie/nimmodel.idp}\label{code:nim-eval}
+
+\chapter{IDP-bestand voor het ontwerp van Reversi}\label{app:reversi-eval}
+
+\lstinputlisting[title=Modellering van Reversi voor hoofdstuk \ref{sec:evaluatie}]{chap-evaluatie/reversimodel.idp}\label{code:reversi-eval}
+
+%\chapter{Diagrammen voor het ontwerp van Reversi}
+%
+%\begin{figure}[htp]
+%	\centering
+%	\includegraphics[width=0.77\textwidth]{chap-evaluatie/reversi-cd.png}
+%	\caption{Klassediagram voor Reversi}
+%	\label{fig:reversi-cd}
+%\end{figure}
+%
+%\begin{figure}[htp]
+%	\centering
+%	\includegraphics[width=0.825\textwidth]{chap-evaluatie/play-reversi.png}
+%	\caption{Sequentiediagram voor \textit{play()}}
+%	\label{fig:reversi-play}
+%\end{figure}
+
+%\begin{landscape}
+%	\thispagestyle{empty}
+%	\begin{figure}
+%		\begin{subfigure}{\textwidth}
+%			\includegraphics[width=0.6\textwidth]{chap-evaluatie/play-reversi.png}
+%			\caption{Sequentiediagram voor \textit{play()}}
+%			\label{fig:reversi-play}
+%		\end{subfigure}
+%		\begin{subfigure}{\textwidth}
+%			\includegraphics[width=0.9\textwidth]{chap-evaluatie/canPlay.png}
+%			\caption{Sequentiediagram voor \textit{canPlay(boolean)}}
+%			\label{fig:reversi-canplay}
+%		\end{subfigure}
+%		\caption{Sequentiediagrammen voor \textit{play()} en \textit{canPlay(boolean)}}
+%		\label{fig:reversi-play-canplay}
+%	\end{figure}
+%\end{landscape}
+
 \chapter{IDP-bestand voor sequentiediagram voor het voorbeeld over extra instructies}\label{app:new-nim}
 
 \lstinputlisting[title=Modellering van Nim gebruikmakend van nieuwe soorten instructies]{idp-sources/new-lang.idp}\label{code:new-nim}
 
-\chapter{IDP-bestand voor het ontwerp van Nim}
-
-\lstinputlisting[title=Modellering van Nim voor hoofdstuk \ref{sec:evaluatie}]{chap-evaluatie/nimmodel.idp}\label{code:nim-eval}
 
 %\chapter{Wetenschappelijk artikel}
 %
