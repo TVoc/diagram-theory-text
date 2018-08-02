@@ -5,7 +5,7 @@ UML is een modelleertaal die wordt gebruikt ter ondersteuning van softwareontwer
 
 We modelleren eerst Nim rechtstreeks in lineaire tijdcalculus en vergelijken de resulterende theorie met de theorie gegenereerd volgens de regels in hoofdstuk \ref{sec:gedrag}. Het volgende codefragment bevat een LTC-theorie die Nim modelleert. 
 
-\lstinputlisting[title=Nim gemodelleerd in lineaire tijdcalculus]{chap-declaratieve-seq/ltc-nim.idp}\label{code:ltc-nim}
+\lstinputlisting[caption=Nim gemodelleerd in lineaire tijdcalculus]{chap-declaratieve-seq/ltc-nim.idp}\label{code:ltc-nim}
 
 Bij het opstellen van deze theorie werden de volgende stappen gevolgd:
 
@@ -21,7 +21,12 @@ Het meest opmerkelijk verschil tussen deze logische specificatie en de specifica
 
 We merken op dat een belangrijk nadeel dat sequentiediagrammen hebben ten opzichte van rechtstreekse LTC is dat de toestand van maar \'e\'en variabele kan opgevraagd of aangepast worden. De LTC-theorie heeft bijvoorbeeld \'e\'en zin nodig om te verzekeren dat het spel voorbij is indien alle stapels leeg zijn. Er is echter een heel diagram nodig om voor elke stapel om de beurt te controleren of die leeg is.
 
-Verder kan de LTC-theorie ook meteen alle lege stapels uitsluiten wanneer de speler moet kiezen van welke stapel hij objecten neemt. In figuur \ref{fig:nim-takeTurn} moet eerst gecontroleerd worden of de stapel die de speler kiest effectief leeg is. De aanwezigheid van lussen die een berekening implementeren in plaats van dat ze iteratief proces in het probleemdomein voorstellen zorgt er dus voor dat modelexpansie voor de resulterende theorie minder performant is. Dit leidt namelijk tot logische symbolen die de variabelen betrokken bij de berekening voorstellen en zinnen in de theorie die overeenkomen met instructies op die variabelen. In de context van Nim is de beurtenwissel wanneer nog niet alle stapels leeg zijn een voorbeeld van een iteratief proces binnen het probleemdomein. De lus in diagram \ref{fig:nim-takeTurn} waar de speler opnieuw gevraagd wordt om te kiezen als hij een lege stapel selecteert is echter een voorbeeld van een berekening die niet aanwezig is in de LTC-theorie.
+Verder kan de LTC-theorie ook meteen alle lege stapels uitsluiten wanneer de speler moet kiezen van welke stapel hij objecten neemt. In figuur \ref{fig:nim-takeTurn} moet eerst gecontroleerd worden of de stapel die de speler kiest effectief leeg is. De aanwezigheid van lussen die een berekening implementeren in plaats van dat ze iteratief proces in het probleemdomein voorstellen zorgt er dus voor dat modelexpansie voor de resulterende theorie minder performant is. Dit leidt namelijk tot logische symbolen die de variabelen betrokken bij de berekening voorstellen en zinnen in de theorie die overeenkomen met instructies op die variabelen. In de context van Nim is de beurtenwissel wanneer nog niet alle stapels leeg zijn een voorbeeld van een iteratief proces binnen het probleemdomein. In het ontwerp gepresenteerd in sectie \ref{sec:nim-design} zijn er echter meerdere lussen aanwezig die geen iteratief proces in het probleemdomein voorstellen:
+
+\begin{itemize}
+	\item De lus in diagram \ref{fig:nim-allHeapsEmpty} die voor elke stapel nagaat of hij leeg is.
+	\item De lus in diagram \ref{fig:nim-takeTurn} die de speler een stapel laat selecteren tot hij een niet-lege stapel kiest.
+\end{itemize}
 
 Deze observaties leiden ertoe dat we nieuwe soorten instructies voor sequentiediagrammen beschikbaar willen stellen met het oog op deze doelen:
 
@@ -59,6 +64,19 @@ We laten op variabelen die een verzameling voorstellen enkele nieuwe instructies
 	\item $SET <klassevariabele> TO <waarde>$: Voor alle leden van de verzameling wordt de waarde van de genoemde klassevariabele veranderd naar de genoemde waarde.
 \end{itemize}
 
+In een \textit{query} mogen er geen methodes voorkomen waarvan het gedrag gespecificeerd wordt in een sequentiediagram.
+
+Vergelijk de \textit{CHOOSE}-instructies met de $\pi$-operator van GOLOG\cite{levesque1997golog}. GOLOG is een logische programmeertaal gebaseerd op de situatiecalculus. Net zoals de lineaire tijdscalculus is de situatiecalculus een formalisme binnen de eerste-orde-predicatenlogica om dynamische systemen te modelleren. De basisblokken van de situatiecalculus zijn:
+
+\begin{itemize}
+	\item De acties die uitgevoerd kunnen worden in het systeem.
+	\item De \textit{fluents} die de toestand van het systeem beschrijven.
+	\item De situaties. Een situatie is een geschiedenis van uitgevoerde acties.
+	
+\end{itemize}
+
+De $pi$-operator is de non-deterministische keuzeoperator, gebruikt als $(\pi{}x)[\delta{}(x)]$, waar $\delta{}(x)$ \'e\'en of meerdere acties die de variabele $x$ gebruiken voorstelt. De $pi$-operator bepaalt non-deterministisch de waarde van het invoerargument voor de acties waar het op wordt toegepast. De \textit{CHOOSE}-instructies bepalen daarentegen non-deterministsch de waarde van een variabele.
+
 We illustreren het gebruik van deze nieuwe instructies door middel van het voorbeeld van figuur \ref{fig:new-nim}, dat Nim volledig modelleert. De beurt gaat eerst naar de gekozen speler. Dan wordt gecontroleerd of alle stapels leeg zijn. Als dat niet het geval is, kiest de speler eerst een stapel en neemt dan minstens \'e\'en object weg van die stapel. Daarna wordt de beurt gegeven aan de volgende speler. Als alle stapels leeg zijn, is de huidige speler de winnaar.
 
 \begin{figure}[H]
@@ -95,13 +113,60 @@ Voor instructie 4 introduceren we op een soortgelijke manier een open predicaat 
 
 Bijlage \ref{code:new-nim} bevat de vertaling van het diagram in figuur \ref{fig:new-nim}.
 
-\section{Performantie van modelexpansie en progressie\"inferentie}
+\section{Performantie van modelexpansie en progressie\"inferentie}\label{sec:dec-performance}
 
 We beoordelen voor de theorie in bijlage \ref{code:new-nim} de rekentijd en het geheugengebruik voor modelexpansie en progressie\"inferentie.
 
-Voor modelexpansie specificeren we in de invoerstructuur \'e\'en stapel met twee objecten en \'e\'en stapel met drie objecten. Het scenario is dus analoog aan die in hoofdstuk \ref{sec:evaluatie}. Verder defini\"eren we 11 tijdstappen, wat genoeg is voor twee beurten. Het duurt ongeveer 5,8 seconden om een volledig spelverloop te berekenen, met een \textit{grounding}-grootte van 15 249. Modelexpansie is dus significant performanter voor deze theorie dan voor de theorie ge\"evalueerd in hoofdstuk \ref{sec:evaluatie}.
+Voor modelexpansie specificeren we in de invoerstructuur \'e\'en stapel met twee objecten en \'e\'en stapel met drie objecten. Het scenario is dus analoog aan die in hoofdstuk \ref{sec:evaluatie}. Verder defini\"eren we 11 tijdstappen, wat genoeg is voor twee beurten. Het duurt ongeveer 5,8 seconden om een volledig spelverloop te berekenen, met een \textit{grounding}-grootte van 15 249 en virtueel geheugengebruik van 71,18 MB. Modelexpansie is dus significant performanter voor deze theorie dan voor de theorie ge\"evalueerd in hoofdstuk \ref{sec:evaluatie}.
 
 We simuleren weer een spelverloop waar de eerste speler alle drie objecten van de tweede stapel neemt, dan de tweede speler \'e\'en object van de eerste stapel, en dan de eerste speler het laatste object. In totaal is de simulatie 16 tijdstappen lang, met een totale simulatietijd van 93,11 seconden en een totaal geheugengebruik van 242,3 MB. Als we dit vergelijken met de resultaten in tabel \ref{tab:sim-mem}, zien we dat zowel de simulatietijd als het geheugengebruik significant kleiner zijn.
+
+\section{Variabele associaties}
+
+Sectie \ref{sec:eval-design} beschouwde hoe het feit dat de invulling van een associatie niet kan veranderen over de tijd ontwerpen onintu\"itief maakt. Deze sectie onderzoekt de impact op de performantie in termen van rekentijd en geheugengebruik als dat nu wel toegelaten is.
+
+Associaties defini\"eren nu impliciet twee operaties. Voor een associatie \textit{X}---\textit{Y} wordt voor de klasse \textit{X} de operatie \textit{setY(Y)} en de operatie \textit{unset(Y)} gedefinieerd. \textit{setY(Y)} relateert het object van klasse \textit{X} tot het gegeven object van klasse \textit{Y}. \textit{unsetY(Y)} zorgt ervoor dat het object niet meer gerelateerd is aan het gegeven object.
+
+We maken weer een nieuw ontwerp voor Nim.
+
+Figuur \ref{fig:nim-assoc-cd} toont het klassediagram. Er is een nieuwe klasse vergeleken met het ontwerp in sectie \ref{sec:nim-design}, namelijk \textit{Player}. De associatie \textit{Game}---\textit{Player} duidt de winnaar aan.
+
+Figuur \ref{fig:nim-assoc-play} geeft het sequentiediagram voor \textit{play(Player, Player)}. De lus wordt uitgevoerd zolang nog niet alle stapels leeg zijn. Eerst krijgt \textit{player1} de beurt en daarna \textit{player2} als er nog een niet-lege stapel is. Instructie 3 markeert \textit{player2} als de winnaar indien \textit{player1} het laatste object neemt. Instructie 5 doet hetzelfde voor \textit{player1}.
+
+Figuur \ref{fig:nim-assoc-taketurn} toont het sequentiediagram voor \textit{takeTurn(Game)}. De speler kiest een niet-lege stapel en neemt minstens \'e\'en object ervan weg.
+
+Bijlage \ref{app:nim-assoc} bevat het IDP-bestand dat deze diagrammen modelleert. De predicaten die de associaties voorstellen, namelijk \textit{GameandHeap} en \textit{GameandPlayer}, zijn inertieel. Zo laten we toe dat associaties variabel zijn over de tijd.
+
+\begin{figure}
+	\centering
+	\includegraphics[width=0.75\textwidth]{chap-declaratieve-seq/nim-assoc-cd.png}
+	\caption{Klassediagram voor Nim, met een extra klasse \textit{Player}}
+	\label{fig:nim-assoc-cd}
+\end{figure}
+
+\begin{figure}
+	\centering
+	\begin{subfigure}{\textwidth}
+		\includegraphics[width=\textwidth]{chap-declaratieve-seq/play.png}
+		\caption{Sequentiediagram voor \textit{play(Player, Player)}}
+		\label{fig:nim-assoc-play}
+	\end{subfigure}
+	\begin{subfigure}{\textwidth}
+		\includegraphics[width=\textwidth]{chap-declaratieve-seq/takeTurn.png}
+		\caption{Sequentiediagram voor \textit{takeTurn(Game)}}
+		\label{fig:nim-assoc-taketurn}
+	\end{subfigure}
+	\caption{Sequentiediagrammen voor \textit{play(Player, Player) en \textit{takeTurn(Game)}}}
+	\label{fig:nim-assoc-seq}
+\end{figure}
+
+We evalueren modelexpansie en progressie\"inferentie.
+
+In de invoerstructuur geven we twee stapels, \'e\'en van twee objecten en \'e\'en van drie objecten. We defini\"eren 21 tijdstappen, wat genoeg is om drie beurten te spelen. Modelexpansie vindt alle modellen na 15,58 seconden, met een \textit{grounding}-grootte van 424 682 en virtueel geheugengebruik van 592,55 GB.
+
+Via progressie\"inferentie spelen we het spel in drie beurten. De simulatie is 22 stappen lang. De simulatie duurt drie minuten en gebruikt 462,02 MB aan virtueel geheugen.
+
+Vergeleken met sectie \ref{sec:dec-performance} is er een aanzienlijke impact op performantie. Dit is niet enkel te wijten aan grotere zoekdomeinen omwille van de inerti\"ele predicaten voor associaties, maar ook aan de aanwezigheid van een groter aantal variabelen en aan de meer omvangrijke theorie. Toch blijft de performantie significant beter dan voor de theorie ge\"evalueerd in hoofdstuk \ref{sec:evaluatie}.
 
 \section{Verdere uitbreidingen aan sequentiediagrammen}
 
@@ -109,7 +174,7 @@ In principe is het in LTC mogelijk om meerdere acties tegelijk uit te voeren op 
 
 \subsection{Het parallel gecombineerd fragment}
 
-UML biedt het parallel gecombineerd fragment aan. Figuur \ref{fig:seq-par} bevat een voorbeeld. De streepjeslijn scheidt de twee delen van het fragment. Het is toegelaten om dat een parallel gecombineerd fragment meer dan twee delen heeft. Dit diagram specificeert dat \textit{m1()} wordt uitgevoerd v\'o\'or \textit{m2()} en dat \textit{m3()} wordt uitgevoerd v\'o\'or \textit{m4()}. Er zijn geen verdere voorwaarden op de uitvoeringsvolgorde van \textit{m1()}, \textit{m2()}, \textit{m3()} en \textit{m4()}. De uitvoering kan wel pas uit het fragment springen als zowel \textit{m3()} als \textit{m4()} zijn uitgevoerd.
+UML biedt het parallel gecombineerd fragment aan. Figuur \ref{fig:seq-par} bevat een voorbeeld. De streepjeslijn scheidt de twee delen van het fragment. Het is toegelaten dat een parallel gecombineerd fragment meer dan twee delen heeft. Dit diagram specificeert dat \textit{m1()} wordt uitgevoerd v\'o\'or \textit{m2()} en dat \textit{m3()} wordt uitgevoerd v\'o\'or \textit{m4()}. Er zijn geen verdere voorwaarden op de uitvoeringsvolgorde van \textit{m1()}, \textit{m2()}, \textit{m3()} en \textit{m4()}. De uitvoering kan wel pas uit het fragment springen als zowel \textit{m3()} als \textit{m4()} zijn uitgevoerd.
 
 \begin{figure}
 	\centering
@@ -122,7 +187,7 @@ Zulk een fragment zou dus kunnen toelaten dat meer dan \'e\'en instructie tegeli
 
 \subsection{Een methode oproepen op meerdere objecten tegelijk}
 
-Een andere denkpiste is het oproepen van een bepaalde methode op alle leden van een verzameling of de leden die aan een bepaald criterium voldoen. Zulke functionaliteit zou bijvoorbeeld toegepast kunnen worden om een booleaanse methode op te roepen op alle leden van een verzameling en om alle leden te selecteren waarvoor het resultaat \textit{true} is.
+Een andere denkpiste is het oproepen van een bepaalde methode op alle leden van een verzameling of de leden die aan een bepaald criterium voldoen. Zulke functionaliteit zou bijvoorbeeld toegepast kunnen worden om een sequentiediagram voor een booleaanse methode op te roepen op alle leden van een verzameling en om alle leden te selecteren waarvoor het resultaat \textit{true} is.
 
 Er zijn meerdere mogelijke aanpakken om zulke functionaliteit te modelleren in LTC:
 

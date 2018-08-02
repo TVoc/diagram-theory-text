@@ -1,0 +1,222 @@
+include<LTC>
+
+LTCvocabulary V {
+	type Time isa nat
+	Start : Time
+	partial Next(Time) : Time
+	
+	type SDPoint constructed from { play_1, play_2, play_2post, play_3, play_4, play_4post, play_5, play_6, takeTurn_1, takeTurn_2, takeTurn_3, takeTurn_4, finished }
+	partial NextSD(SDPoint) : SDPoint
+	
+	type Game
+    type Heap
+	type Player
+    
+    type LimitedInt isa int
+    type StackLevel = { 1..10 } isa nat
+    type boolean constructed from { T, F }
+    
+    SDPointAt(Time, SDPoint)
+    I_SDPointAt(SDPoint)
+    C_SDPointAt(Time, SDPoint)
+	
+	ReturnPoint(Time, StackLevel, SDPoint)
+	I_ReturnPoint(StackLevel, SDPoint)
+	C_ReturnPoint(Time, StackLevel, SDPoint)
+	Cn_ReturnPoint(Time, StackLevel, SDPoint)
+	
+	GamePT(Time, StackLevel, Game)
+	I_GamePT(StackLevel, Game)
+	C_GamePT(Time, StackLevel, Game)
+	
+	Player1T(Time, StackLevel, Player)
+	I_Player1T(StackLevel, Player)
+	C_Player1T(Time, StackLevel, Player)
+	
+	Player2T(Time, StackLevel, Player)
+	I_Player2T(StackLevel, Player)
+	C_Player2T(Time, StackLevel, Player)
+	
+	GameTTT(Time, StackLevel, Game)
+	I_GameTTT(StackLevel, Game)
+	C_GameTTT(Time, StackLevel, Game)
+	
+	PlayerTTT(Time, StackLevel, Player)
+	I_PlayerTTT(StackLevel, Player)
+	C_PlayerTTT(Time, StackLevel, Player)
+	
+	HeapTTT(Time, StackLevel, Heap)
+	I_HeapTTT(StackLevel, Heap)
+	C_HeapTTT(Time, StackLevel, Heap)
+	
+	TakeNumT(Time, StackLevel, LimitedInt)
+	I_TakeNumT(StackLevel, LimitedInt)
+	C_TakeNumT(Time, StackLevel, LimitedInt)
+	
+	HeapamountObjects(Time, Heap, LimitedInt)
+    I_HeapamountObjects(Heap, LimitedInt)
+    C_HeapamountObjects(Time, Heap, LimitedInt)
+    Cn_HeapamountObjects(Time, Heap, LimitedInt)
+    
+    CurrentStackLevel(Time) : StackLevel
+    I_CurrentStackLevel : StackLevel
+    C_CurrentStackLevel(Time, StackLevel)
+    
+    GameandHeap(Time, Game, Heap)
+	I_GameandHeap(Game, Heap)
+	C_GameandHeap(Time, Game, Heap)
+	Cn_GameandHeap(Time, Game, Heap)
+    
+	GameandPlayer(Time, Game, Player)
+	I_GameandPlayer(Game, Player)
+	C_GameandPlayer(Time, Game, Player)
+	Cn_GameandPlayer(Time, Game, Player)
+	
+    ChosenHeap(Time, Heap)
+    ChosenTake(Time, LimitedInt)
+}
+
+theory T:V {
+	{
+		! t [Time] st [StackLevel] g [Game] : C_GamePT(t, st, g) <- false.
+        ! t [Time] st [StackLevel] p [Player] : C_Player1T(t, st, p) <- false.
+        ! t [Time] st [StackLevel] p [Player] : C_Player2T(t, st, p) <- false.
+		
+		! t [Time] st [StackLevel] g [Game] : C_GameTTT(Next(t), st, g) <- (CurrentStackLevel(t) = (st-1)) & SDPointAt(t, play_2) & GamePT(t, (st-1), g).
+		! t [Time] st [StackLevel] p [Player] : C_PlayerTTT(Next(t), st, p) <- (CurrentStackLevel(t) = (st-1)) & SDPointAt(t, play_2) & Player1T(t, (st-1), p).
+		! t [Time] st [StackLevel] g [Game] : C_GameTTT(Next(t), st, g) <- (CurrentStackLevel(t) = (st-1)) & SDPointAt(t, play_4) & GamePT(t, (st-1), g).
+		! t [Time] st [StackLevel] p [Player] : C_PlayerTTT(Next(t), st, p) <- (CurrentStackLevel(t) = (st-1)) & SDPointAt(t, play_4) & Player2T(t, (st-1), p).
+ 	
+		! t [Time] st [StackLevel] h [Heap] : C_HeapTTT(Next(t), st, h) <- (CurrentStackLevel(t) = st) & SDPointAt(t, takeTurn_2) & ChosenHeap(t, h).
+		! t [Time] st [StackLevel] n [LimitedInt] : C_TakeNumT(Next(t), st, n) <- (CurrentStackLevel(t) = st) & SDPointAt(t, takeTurn_3) & ChosenTake(t, n).
+	
+        ! t [Time] st [StackLevel] h [Heap] n [LimitedInt] : C_HeapamountObjects(Next(t), h, n) <- (CurrentStackLevel(t) = st) & SDPointAt(t, takeTurn_4) & HeapTTT(t, st, h) & ( ? n1 [LimitedInt] n2 [LimitedInt] : HeapamountObjects(t, h, n1) & TakeNumT(t, st, n2) & n = n1 - n2).
+        ! t [Time] st [StackLevel] h [Heap] n [LimitedInt] : Cn_HeapamountObjects(Next(t), h, n) <- (CurrentStackLevel(t) = st) & SDPointAt(t, takeTurn_4) & HeapTTT(t, st, h) & HeapamountObjects(t, h, n) & ~( ? n1 [LimitedInt] n2 [LimitedInt] : HeapamountObjects(t, h, n1) & TakeNumT(t, st, n2) & n = n1 - n2).
+		
+		! t [Time] g [Game] h [Heap] : C_GameandHeap(t, g, h) <- false.
+		! t [Time] g [Game] h [Heap] : Cn_GameandHeap(t, g, h) <- false.
+		
+		! t [Time] g [Game] p [Player] : C_GameandPlayer(Next(t), g, p) <- SDPointAt(t, play_3) & Player2T(t, CurrentStackLevel(t), p).
+		! t [Time] g [Game] p [Player] : C_GameandPlayer(Next(t), g, p) <- SDPointAt(t, play_5) & Player1T(t, CurrentStackLevel(t), p).
+		! t [Time] g [Game] p [Player] : Cn_GameandPlayer(t, g, p) <- false.
+		
+		! t [Time] sd [SDPoint] : C_SDPointAt(Next(t), NextSD(sd)) <- SDPointAt(t, sd) & ~((sd = play_1) | (sd = play_2) | (sd = play_2post) | (sd = play_3) | (sd = play_4) | (sd = play_4post) | (sd = play_5) | (sd = play_6) | (sd = takeTurn_4)).
+		! t [Time] st [StackLevel] : C_SDPointAt(Next(t), play_2) <- (CurrentStackLevel(t) = st) & (SDPointAt(t, play_1) | SDPointAt(t, play_3) | SDPointAt(t, play_5) | SDPointAt(t, play_6)) & ~( ? g [Game] : GamePT(t, st, g) & ( ! h [Heap] : GameandHeap(t, g, h) => ( ? n [LimitedInt] : HeapamountObjects(t, h, n) & n = 0))).
+		! t [Time] st [StackLevel] : C_SDPointAt(Next(t), play_3) <- (CurrentStackLevel(t) = st) & SDPointAt(t, play_2post) & ( ? g [Game] : GamePT(t, st, g) & ( ! h [Heap] : GameandHeap(t, g, h) => ( ? n [LimitedInt] : HeapamountObjects(t, h, n) & n = 0))).
+		! t [Time] st [StackLevel] : C_SDPointAt(Next(t), play_4) <- (CurrentStackLevel(t) = st) & SDPointAt(t, play_2post) & ~( ? g [Game] : GamePT(t, st, g) & ( ! h [Heap] : GameandHeap(t, g, h) => ( ? n [LimitedInt] : HeapamountObjects(t, h, n) & n = 0))).
+		! t [Time] st [StackLevel] : C_SDPointAt(Next(t), play_5) <- (CurrentStackLevel(t) = st) & SDPointAt(t, play_4post) & ( ? g [Game] : GamePT(t, st, g) & ( ! h [Heap] : GameandHeap(t, g, h) => ( ? n [LimitedInt] : HeapamountObjects(t, h, n) & n = 0))).
+		! t [Time] st [StackLevel] : C_SDPointAt(Next(t), play_6) <- (CurrentStackLevel(t) = st) & SDPointAt(t, play_4post) & ~( ? g [Game] : GamePT(t, st, g) & ( ! h [Heap] : GameandHeap(t, g, h) => ( ? n [LimitedInt] : HeapamountObjects(t, h, n) & n = 0))).
+		
+		! t [Time] : C_SDPointAt(Next(t), takeTurn_1) <- SDPointAt(t, play_2) | SDPointAt(t, play_4).
+		! t [Time] s [SDPoint] : C_SDPointAt(Next(t), s) <- ReturnPoint(t, CurrentStackLevel(t), s) & (SDPointAt(t, play_1) | SDPointAt(t, play_3) | SDPointAt(t, play_5) | SDPointAt(t, play_6)) & ( ? g [Game] : GamePT(t, CurrentStackLevel(t), g) & ( ! h [Heap] : GameandHeap(t, g, h) => ( ? n [LimitedInt] : HeapamountObjects(t, h, n) & n = 0))).
+		! t [Time] s [SDPoint] : C_SDPointAt(Next(t), s) <- ReturnPoint(t, CurrentStackLevel(t), s) & SDPointAt(t, takeTurn_4).
+		
+		! t [Time] st [StackLevel] : C_ReturnPoint(Next(t), st, play_2post) <- (CurrentStackLevel(t) = (st-1)) & SDPointAt(t, play_2).
+		! t [Time] st [StackLevel] : C_ReturnPoint(Next(t), st, play_4post) <- (CurrentStackLevel(t) = (st-1)) & SDPointAt(t, play_4).
+		! t [Time] st [StackLevel] sd [SDPoint] : Cn_ReturnPoint(Next(t), st, sd) <- (CurrentStackLevel(t) = st) & ReturnPoint(t, st, sd) & (SDPointAt(t, play_1) | SDPointAt(t, play_3) | SDPointAt(t, play_5) | SDPointAt(t, play_6)) & ( ? g [Game] : GamePT(t, st, g) & ( ! h [Heap] : GameandHeap(t, g, h) => ( ? n [LimitedInt] : HeapamountObjects(t, h, n) & n = 0))).
+		! t [Time] st [StackLevel] sd [SDPoint] : Cn_ReturnPoint(Next(t), st, sd) <- (CurrentStackLevel(t) = st) & ReturnPoint(t, st, sd) & SDPointAt(t, takeTurn_4).
+		
+		! t [Time] st [StackLevel] : C_CurrentStackLevel(Next(t), st) <- (CurrentStackLevel(t) = (st-1)) & (SDPointAt(t, play_2) | SDPointAt(t, play_4)).
+		! t [Time] st [StackLevel] : C_CurrentStackLevel(Next(t), st) <- (CurrentStackLevel(t) = (st+1)) & (SDPointAt(t, play_1) | SDPointAt(t, play_3) | SDPointAt(t, play_5) | SDPointAt(t, play_6)) & ( ? g [Game] : GamePT(t, st, g) & ( ! h [Heap] : GameandHeap(t, g, h) => ( ? n [LimitedInt] : HeapamountObjects(t, h, n) & n = 0))).
+		! t [Time] st [StackLevel] : C_CurrentStackLevel(Next(t), st) <- (CurrentStackLevel(t) = (st+1)) & SDPointAt(t, takeTurn_4).
+	}
+	
+	{
+	    ! s [SDPoint] : SDPointAt(Start, s) <- I_SDPointAt(s).
+        ! t [Time] s [SDPoint] : SDPointAt(t, s) <- C_SDPointAt(t, s).
+        ! t [Time] s [SDPoint] : SDPointAt(Next(t), s) <- SDPointAt(t, s) & ~( ? s1 [SDPoint] : C_SDPointAt(Next(t), s1) & ~(s = s1)).
+
+        ! st [StackLevel] : CurrentStackLevel(Start) = st <- I_CurrentStackLevel = st.
+        ! t [Time] st [StackLevel] : CurrentStackLevel(t) = st <- C_CurrentStackLevel(t, st).
+        ! t [Time] st [StackLevel] : CurrentStackLevel(Next(t)) = st <- CurrentStackLevel(t) = st & ~(? st1 [StackLevel] : C_CurrentStackLevel(Next(t), st1)).
+            
+        ! st [StackLevel] sd [SDPoint] : ReturnPoint(Start, st, sd) <- I_ReturnPoint(st, sd).
+        ! t [Time] st [StackLevel] sd [SDPoint] : ReturnPoint(t, st, sd) <- C_ReturnPoint(t, st, sd).
+        ! t [Time] st [StackLevel] sd [SDPoint] : ReturnPoint(Next(t), st, sd) <- ReturnPoint(t, st, sd) & ~Cn_ReturnPoint(Next(t), st, sd).
+        
+        ! st [StackLevel] g [Game] : GamePT(Start, st, g) <- I_GamePT(st, g).
+        ! t [Time] st [StackLevel] g [Game] : GamePT(t, st, g) <- C_GamePT(t, st, g).
+        ! t [Time] st [StackLevel] g [Game] : GamePT(Next(t), st, g) <- GamePT(t, st, g) & ~( ? g1 [Game] : C_GamePT(t, st, g1) & ~(g = g1)).
+		
+        ! st [StackLevel] g [Game] : GameTTT(Start, st, g) <- I_GameTTT(st, g).
+        ! t [Time] st [StackLevel] g [Game] : GameTTT(t, st, g) <- C_GameTTT(t, st, g).
+        ! t [Time] st [StackLevel] g [Game] : GameTTT(Next(t), st, g) <- GameTTT(t, st, g) & ~( ? g1 [Game] : C_GameTTT(t, st, g1) & ~(g = g1)).
+		
+		! st [StackLevel] p [Player] : Player1T(Start, st, p) <- I_Player1T(st, p).
+		! t [Time] st [StackLevel] p [Player] : Player1T(t, st, p) <- C_Player1T(t, st, p).
+		! t [Time] st [StackLevel] p [Player] : Player1T(Next(t), st, p) <- Player1T(t, st, p) & ~( ? p1 [Player] : C_Player1T(Next(t), st, p1) & ~(p = p1)).
+		
+		! st [StackLevel] p [Player] : Player2T(Start, st, p) <- I_Player2T(st, p).
+		! t [Time] st [StackLevel] p [Player] : Player2T(t, st, p) <- C_Player2T(t, st, p).
+		! t [Time] st [StackLevel] p [Player] : Player2T(Next(t), st, p) <- Player2T(t, st, p) & ~( ? p1 [Player] : C_Player2T(Next(t), st, p1) & ~(p = p1)).
+		
+		! st [StackLevel] p [Player] : PlayerTTT(Start, st, p) <- I_PlayerTTT(st, p).
+		! t [Time] st [StackLevel] p [Player] : PlayerTTT(t, st, p) <- C_PlayerTTT(t, st, p).
+		! t [Time] st [StackLevel] p [Player] : PlayerTTT(Next(t), st, p) <- PlayerTTT(t, st, p) & ~( ? p1 [Player] : C_PlayerTTT(Next(t), st, p1) & ~(p = p1)).
+		
+		! st [StackLevel] h [Heap] : HeapTTT(Start, st, h) <- I_HeapTTT(st, h).
+        ! t [Time] st [StackLevel] h [Heap] : HeapTTT(t, st, h) <- C_HeapTTT(t, st, h).
+        ! t [Time] st [StackLevel] h [Heap] : HeapTTT(Next(t), st, h) <- HeapTTT(t, st, h) & ~( ? h1 [Heap] : C_HeapTTT(Next(t), st, h1) & ~(h = h1)).
+		
+		! st [StackLevel] n [LimitedInt] : TakeNumT(Start, st, n) <- I_TakeNumT(st, n).
+        ! t [Time] st [StackLevel] n [LimitedInt] : TakeNumT(t, st, n) <- C_TakeNumT(t, st, n).
+        ! t [Time] st [StackLevel] n [LimitedInt] : TakeNumT(Next(t), st, n) <- TakeNumT(t, st, n) & ~( ? n1 [LimitedInt] : C_TakeNumT(Next(t), st, n1) & ~(n = n1)).
+		
+		! g [Game] h [Heap] : GameandHeap(Start, g, h) <- I_GameandHeap(g, h).
+		! t [Time] g [Game] h [Heap] : GameandHeap(t, g, h) <- C_GameandHeap(t, g, h).
+		! t [Time] g [Game] h [Heap] : GameandHeap(Next(t), g, h) <- GameandHeap(t, g, h) & ~Cn_GameandHeap(Next(t), g, h).
+		
+		! g [Game] p [Player] : GameandPlayer(Start, g, p) <- I_GameandPlayer(g, p).
+		! t [Time] g [Game] p [Player] : GameandPlayer(t, g, p) <- C_GameandPlayer(t, g, p).
+		! t [Time] g [Game] p [Player] : GameandPlayer(Next(t), g, p) <- GameandPlayer(t, g, p) & ~Cn_GameandPlayer(Next(t), g, p).
+		
+		! h [Heap] n [LimitedInt] : HeapamountObjects(Start, h, n) <- I_HeapamountObjects(h, n).
+        ! t [Time] h [Heap] n [LimitedInt] : HeapamountObjects(t, h, n) <- C_HeapamountObjects(t, h, n).
+        ! t [Time] h [Heap] n [LimitedInt] : HeapamountObjects(Next(t), h, n) <- HeapamountObjects(t, h, n) & ~Cn_HeapamountObjects(Next(t), h, n).
+	}
+	
+	! t [Time] : SDPointAt(t, takeTurn_2) => ( ?1 h [Heap] : ChosenHeap(t, h)).
+    ! t [Time] h [Heap] : ChosenHeap(t, h) => (SDPointAt(t, takeTurn_2) & ( ? g [Game] st [StackLevel] n [LimitedInt] : (CurrentStackLevel(t) = st) & GameTTT(t, st, g) & GameandHeap(t, g, h) & HeapamountObjects(t, h, n) & ~(n = 0))).
+    
+    ! t [Time] : SDPointAt(t, takeTurn_3) => ( ?1 n [LimitedInt] : ChosenTake(t, n)).
+    ! t [Time] n [LimitedInt] : ChosenTake(t, n) => (SDPointAt(t, takeTurn_3) & ( ? st [StackLevel] h [Heap] n1 [LimitedInt] : (CurrentStackLevel(t) = st) & HeapTTT(t, st, h) & HeapamountObjects(t, h, n1) & n >= 1 & n =< n1)).
+	
+	! t [Time] h [Heap] : ?1 g [Game] : GameandHeap(t, g, h).
+    ! t [Time] g [Game] : ?>=1 h [Heap] : GameandHeap(t, g, h).
+	
+	! t [Time] p [Player] : ?=<1 g [Game] : GameandPlayer(t, g, p).
+    ! t [Time] g [Game] : ?=<1 p [Player] : GameandPlayer(t, g, p).
+}
+
+structure S:V {
+	Time = { 0..21 }
+	Next = { 0->1; 1->2; 2->3; 3->4; 4->5; 5->6; 6->7; 7->8; 8->9; 9->10; 10->11; 11->12; 12->13; 13->14; 14->15; 15->16; 16->17; 17->18; 18->19; 19->20; 20->21 }
+	Start = 0
+    I_CurrentStackLevel = 1
+	
+	LimitedInt = { 0..3 }
+	
+	NextSD = { play_1->play_2; play_2->play_3; play_3->play_4; play_4->play_5; play_5->play_6; takeTurn_1->takeTurn_2; takeTurn_2->takeTurn_3; takeTurn_3->takeTurn_4  }
+	
+	Game = { Game1 }
+	Heap = { Heap1; Heap2 }
+	Player = { Player1; Player2 }
+	
+	I_HeapamountObjects = { Heap1,2; Heap2,3 }
+	I_GameandHeap = { Game1,Heap1; Game1,Heap2 }
+	I_GameandPlayer = {}
+	I_GamePT = { 1,Game1 }
+	I_Player1T = { 1,Player1 }
+	I_Player2T = { 1,Player2 }
+	I_GameTTT = {}
+	I_PlayerTTT = {}
+	I_HeapTTT = {}
+	I_TakeNumT = {}
+	
+	I_SDPointAt = { play_1 }
+	I_ReturnPoint = { 1,finished }
+}
+
+procedure main() {
+	printmodels(modelexpand(T,S))
+}
