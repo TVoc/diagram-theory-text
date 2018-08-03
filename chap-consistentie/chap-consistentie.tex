@@ -37,6 +37,8 @@ Klassediagrammen laten toe om directe overervingsrelaties te defini\"eren tussen
 
 We kunnen nu volledig het concept van \textbf{instantie} defini\"eren. Een instantie is een object dat beantwoordt aan de structuur opgelegd door een klasse. Die structuur bestaat uit de attributen en operaties gedefinieerd voor de klasse.
 
+De \textbf{instantiatie} van een klasse is de verzameling van alle instanties van die klasse.
+
 Een object kan een instantie zijn van meerdere klasses. In de eerste plaats is een object een directe instantie van een bepaalde klasse. Als die klasse deel uitmaakt van een klassehi\"erarchie, betekent dit dat het object een indirecte instantie is van alle superklasses van de klasse. Beschouw het diagram in figuur \ref{fig:multi-inheritance}. Het duidt directe overervingsrelaties aan door pijlen met een leeg hoofd. De klasse van waaruit de pijl vertrekt is de subklasse terwijl de klasse waarnaar de pijl wijst de superklasse is.
 
 Een klasse kan betrokken zijn bij meerdere directe overervingsrelaties. De klasse kan een superklasse zijn van meerdere klasses. De klasse kan ook de subklasse zijn van meerdere klasses; dit noemen we \textit{meervoudige overerving}.
@@ -103,7 +105,7 @@ Ook meervoudige associaties zijn navigeerbaar. Voor associaties met een ariteit 
 
 Subklasses nemen deel aan alle associaties gedefinieerd voor alle superklasses. Beschouw figuur \ref{fig:assoc-hier}. De klasse \textit{N} neemt deel aan zowel de associatie \textit{L}---\textit{M} als de associatie \textit{N}---\textit{O}. Het is niet zo dat een tupel dat behoort tot de associatie \textit{N}---\textit{O} behoort tot de associatie \textit{L}---\textit{M}. Associaties die een subklasse overerft en associaties die direct zijn gedefinieerd voor een subklasse zijn onafhankelijk van elkaar.
 
-UML laat wel toe dat de ontwerper een associatie specialiseert\cite{RumbaughJames2005Tuml}. Beschouw figuur \ref{fig:assoc-gen}. De associatie \textit{J}---\textit{K} specialiseert de associatie \textit{H}---\textit{I}. Hierbij is het verplicht dat de klasses verbonden in de specialiserende associatie subklasses zijn van de klasses verbonden in de de associatie die gespecialiseerd wordt. Figuur \ref{fig:assoc-gen} stelt dat alle tupels die behoren tot de associatie \textit{J}---\textit{K} ook behoren tot de associatie \textit{H}---\textit{I}, maar niet omgekeerd. We beschouwen specialisatie van associaties verder niet.
+UML laat wel toe dat de ontwerper een associatie specialiseert\cite{RumbaughJames2005Tuml}. Beschouw figuur \ref{fig:assoc-gen}. De associatie \textit{J}---\textit{K} specialiseert de associatie \textit{H}---\textit{I}. Hierbij is het verplicht dat de klasses verbonden in de specialiserende associatie subklasses zijn van de klasses verbonden in de associatie die gespecialiseerd wordt. Figuur \ref{fig:assoc-gen} stelt dat alle tupels die behoren tot de associatie \textit{J}---\textit{K} ook behoren tot de associatie \textit{H}---\textit{I}, maar niet omgekeerd.
 
 \begin{figure}
 	\centering
@@ -132,7 +134,7 @@ Met de \textbf{instantiatie} van een klasse bedoelen we de verzameling van alle 
 Een model is een verzameling van de volgende delen:
 
 \begin{itemize}
-	\item Voor elke klasse de corresponderende instantie.
+	\item Voor elke klasse de corresponderende instantiatie.
 	\item Voor elke attribuut een verzameling van paren. Aan de linkerkant bevindt zich een instantie van de klasse waarvoor het attribuut gedefinieerd is en aan de rechterkant bevindt zich een waarde van het attribuut die hoort bij die instantie.
 	\item Voor elke operatie een totale functie van $(m+1)$ argumenten, waar $m$ gelijk is aan het aantal parameters van de operatie. De functie specificeert voor elke mogelijke combinatie van instantie en invoerargumenten een uniek resultaat.
 	\item Voor elke associatie een verzameling van $n$-aire tupels, waar $n$ de ariteit van de associatie.
@@ -183,7 +185,7 @@ Een klasse in een klassediagram is consistent als en slechts als er een eindig m
 
 Definitie 1 sluit het triviaal model uit.
 
-Als gevolg van de eerder gedefinieerde semantiek voor de beschikbare componenten voor klassediagrammen in deze masterproef kan een klassediagram of een klasse inconsistent zijn ten gevolge van de aanwezige associaties en overervingsrelaties. We illustreren hoe dit kan gebeuren aan de hand van figuren \ref{fig:incon-assoc-simple}, \ref{fig:incon-assoc-multi} en \ref{fig:incon-gen-assoc}.
+Als gevolg van de eerder gedefinieerde semantiek voor de beschikbare componenten voor klassediagrammen in deze masterproef kan een klassediagram of een klasse inconsistent zijn ten gevolge van de aanwezige associaties en overervingsrelaties. We illustreren hoe dit kan gebeuren aan de hand van figuren \ref{fig:incon-assoc-simple}, \ref{fig:incon-assoc-multi}, \ref{fig:incon-gen-assoc} en \ref{fig:incon-assoc-spec}.
 
 \begin{figure}
 	%\vspace*{-0.5cm}
@@ -210,11 +212,20 @@ Als gevolg van de eerder gedefinieerde semantiek voor de beschikbare componenten
 	\label{fig:incon-gen-assoc}
 \end{figure}
 
+\begin{figure}
+	\centering
+	\includegraphics[width=0.30\textwidth]{chap-consistentie/assoc-incon.png}
+	\caption{Voorbeeld van lege klasses ten gevolge van een gespecialiseerde associatie}
+	\label{fig:incon-assoc-spec}
+\end{figure}
+
 Beschouw het diagram in figuur \ref{fig:incon-assoc-simple}. Stel dat de klasse \textit{U} twee instanties \textit{u1} en \textit{u2} bevat. We proberen de associatie in te vullen als volgt: $\{(u1, u1); (u1, u2)\}$. Om \textit{u2} twee gerelateerde objecten aan de rechterkant te geven, zouden we allereerst $(u2, u1)$ moeten toevoegen, maar dit zou ingaan tegen de multipliciteit van 1 aan de linkerkant voor \textit{u1}. Voor een gelijkaardige reden kan $(u2, u2)$ ook niet toegevoegd worden. Zo wordt er afgedwongen dat er twee extra instanties moeten toegevoegd worden: \textit{u3} en \textit{u4}. Zo kunnen we $(u2, u3)$ en $(u2, u4)$ toevoegen. Wanneer we \textit{u3} en \textit{u4} allebei twee gerelateerde objecten aan de rechterkant willen geven, doet zich echter een gelijkaardig probleem als voor \textit{u2} voor waardoor de toevoeging van \textit{u3} en \textit{u4} nodig was in de eerste plaats. Dit zorgt ervoor dat een geldig niet-leeg model voor dit diagram oneindig groot zou moeten zijn en dat de klasse \textit{U} inconsistent is.
 
 Beschouw het diagram in figuur \ref{fig:incon-assoc-multi}. De associaties \textit{J}---\textit{K} en \textit{K}---\textit{L} hebben tot gevolg dat \textit{J}, \textit{K} en \textit{L} exact even veel instanties moeten bevatten. De associatie \textit{J}---\textit{L} stelt echter dat alle instanties van klasse \textit{L} in verband moeten staan met twee instanties van klasse \textit{J}. Dit zorgt ook voor oneindig grote niet-lege modellen en dus inconsistentie van het diagram.
 
 Beschouw het diagram in figuur \ref{fig:incon-gen-assoc}. Stel dat klasse \textit{V} als directe instantie \textit{v} heeft en klasse \textit{W} als directe instanties \textit{w1} en \textit{w2}. We stellen $\{(v, w1); (v, w2)\}$. \textit{w1} en \textit{w2} zijn echter ook instanties van klasse \textit{V}, waardoor er vier nieuwe objecten nodig zijn om de associatie voor beide objecten te vervullen. Het probleem zet zich voor de vier objecten verder. Dit zorgt weer voor oneindig grote niet-lege modellen en inconsistentie van het diagram.
+
+Beschouw het diagram in figuur \ref{fig:incon-assoc-spec}. Een instantie van klasse \textit{C} moet gerelateerd zijn aan twee instanties van klasse \textit{D}. Deze tupels moeten ook lid zijn van de associatie \textit{A}---\textit{B}, maar de multipliciteiten op die associatie beletten dat beide tupels tegelijkertijd lid zijn. De voorwaarde dat alle tupels in de associatie \textit{C}---\textit{D} lid moeten zijn van de associatie \textit{A}---\textbf{B} is dus geschonden. Dit zorgt ervoor dat klasse \textit{C} inconsistent is. Een gelijkaardige redenering geldt voor klasse \textit{D}.
 
 \section{Voorstellingswijze van klassediagrammen in FO($\cdot$) volgens de voorgestelde semantiek}\label{sec:cd-rep-cons}
 
@@ -344,9 +355,28 @@ In een aparte definitie lijsten we de invulling voor \textit{IsDirectSupertype/2
 \}
 \end{align*}
 
-We hebben echter niet voor deze voorstellingswijze gekozen voor twee redenen.
-Attribuutpredicaten, operatiepredicaten en associatiepredicaten zouden logisch type \textit{Object} als argumenten moeten hebben. Dit betekent dat er nieuwe regels nodig zijn die afdwingen dat die objecten van het juiste type zijn. Grotere theorie\"en leiden tot een grotere rekentijd en geheugengebruik bij de uitvoering van redeneertaken.
-De multipliciteitsregels zouden ook herschreven moeten worden om gebruik te maken van \textit{StaticClass}. Dit maakt zinnen over de hele lijn langer en zorgt ervoor dat ze moeilijker te begrijpen zijn.
+We hebben echter niet voor deze voorstellingswijze gekozen om twee redenen:
+
+\begin{enumerate}
+	\item Attribuutpredicaten, operatiepredicaten en associatiepredicaten zouden logisch type \textit{Object} als argumenten moeten hebben. Dit betekent dat er nieuwe regels nodig zijn die afdwingen dat die objecten van het juiste type zijn. Grotere theorie\"en leiden tot een grotere rekentijd en geheugengebruik bij de uitvoering van redeneertaken.
+	\item De multipliciteitsregels zouden ook herschreven moeten worden om gebruik te maken van \textit{StaticClass}. Dit maakt zinnen over de hele lijn langer en zorgt ervoor dat ze moeilijker te begrijpen zijn.
+\end{enumerate}
+
+\subsubsection{Voorstellen van gespecialiseerde associaties}
+
+Stel dat een associatie \textit{Y}---\textit{Z} een specialisatie is van de associatie \textit{W}---\textit{X}. \textit{Y} is een subklasse van \textit{W} en \textit{Z} is een subklasse van \textit{X}. Omdat we klassehi\"erarchie\"en voorstellen door subtypering van logische types, is het voldoende om een zin toe te voegen van de vorm:
+ 
+\begin{align*}
+	\forall{y}[Y]\forall{z}[Z](YandZ(y, z) \Rightarrow WandX(y, z)).
+\end{align*}
+
+Dit dwingt af dat alle tupels in de associatie \textit{Y}---\textit{Z} lid zijn van de associatie \textit{W}---\textit{X}.
+
+Voor de associatie \textit{J}---\textit{K} in diagram \ref{fig:assoc-gen} krijgen we dus:
+
+\begin{align*}
+	\forall{j}[J]\forall{k}[K](JandK(j, k) \Rightarrow HandI(j, k)).
+\end{align*}
 
 \subsubsection{Herdefinities van attributen en operaties}
 
@@ -358,7 +388,18 @@ Consistentie van een klassediagram kan aangetoond worden door, gegeven een theor
 
 Analoog kan men de consistentie van een klasse controleren door een invoerstructuur op te geven die mintens \'e\'en instantie toekent aan de klasse.
 
-Om te controleren op inconsistentie gebruiken we de functie \textit{entails(theory, structure)} aangeboden door IDP\cite{DeCatBroes2014PLaa}. We laten IDP gebruik maken van SPASS\cite{SPASS}. Aangezien het triviaal model voldoet aan elk klassediagram, proberen we in de plaats te controleren of elk niet-leeg model oneindig groot moet zijn. We proberen te verifi\"eren dat het klassediagram in figuur \ref{fig:incon-assoc-simple} inconsistent is. Om het triviaal model uit te sluiten, voegen we eerst het volgende toe aan de gegenereerde theorie:
+Om te controleren op inconsistentie gebruiken we de functie \textit{entails(theory, theory)} aangeboden door IDP\cite{DeCatBroes2014PLaa}. We laten IDP gebruik maken van SPASS\cite{SPASS}.
+
+Eerst verifi\"eren we de inconsistentie van de klasses \textit{C} en \textit{D} in diagram \ref{fig:incon-assoc-spec}. De vraag is of de instantiaties voor die klasses noodzakelijk leeg zijn. Noem $T$ de theorie gegenereerd uit diagram \ref{fig:incon-assoc-spec} en noem de volgende theorie $T1$:
+
+\begin{align*}
+	\lnot{}\exists{c}[C](C(c)). \\
+	\lnot{}\exists{d}[D](D(d)).
+\end{align*}
+
+SPASS antwoordt dat $T1$ een logisch gevolg is van $T$. Klasses \textit{C} en \textit{D} zijn dus inconsistent.
+
+Vervolgens verifi\"eren we de inconsistentie van diagram \ref{fig:incon-assoc-simple}. Aangezien het triviaal model voldoet aan elk klassediagram, proberen we in de plaats te controleren of elk niet-leeg model oneindig groot moet zijn. Om het triviaal model uit te sluiten, voegen we eerst het volgende toe aan de gegenereerde theorie:
 
 \begin{align*}
 	\exists{a}[A](A(a)).
