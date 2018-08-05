@@ -4,31 +4,43 @@ We hebben software ontworpen die een interne voorstelling heeft voor de informat
 In dit hoofdstuk ontwerpen we klassediagrammen en sequentiediagrammen waarmee we de spellen Nim en Reversi modelleren. We vertalen die diagrammen dan manueel naar onze interne voorstelling en laten FO($\cdot$)-theorie\"en genereren: een theorie voor Nim en een theorie voor Reversi. We beoordelen de volgende criteria:
 
 \begin{enumerate}
-	\item Hoe gemakkelijk het is om tot een ontwerp te komen en hoe omvangrijk de uitvoertheorie is.\label{crit:design}
-	\item Of we het spel kunnen spelen met de uitvoertheorie.\label{crit:simulation}
-	\item Of we kunnen verifi\"eren of de uitvoer van bepaalde diagrammen correct is en hoe performant de verificatie is in termen van rekentijd en geheugengebruik.\label{crit:output}
-	\item Of we kunnen verifi\"eren of het systeem als geheel beantwoordt aan bepaalde gewenste eigenschappen.\label{crit:properties}
+	\item Hoe gemakkelijk is het om tot een ontwerp te komen en hoe omvangrijk is de uitvoertheorie?\label{crit:design}
+	\item Kunnen we het spel spelen met de uitvoertheorie?\label{crit:simulation}
+	\item Kunnen we verifi\"eren of de uitvoer van bepaalde diagrammen correct is?\label{crit:output}
+	\item Kunnen we verifi\"eren of het systeem \textbf{als geheel} beantwoordt aan bepaalde gewenste eigenschappen?\label{crit:properties}
 \end{enumerate}
 
-Bij criterium \ref{crit:simulation} beoordelen de performantie van het spelproces in termen van rekentijd en geheugengebruik. Bij criteria \ref{crit:output} en \ref{crit:properties} doen we dat ook voor de verificatie.
+Bij criterium \ref{crit:simulation} beoordelen we de performantie van het spelproces in termen van rekentijd en geheugengebruik. Bij criteria \ref{crit:output} en \ref{crit:properties} doen we dat ook voor de verificatie.
 
 \section{Ontwerp}\label{sec:eval-design}
 
 \subsection{Ontwerp voor Nim}\label{sec:nim-design}
 
-Nim is een spel voor twee spelers. Er zijn een aantal stapels van elk een aantal objecten. De spelers kiezen om de beurt een bepaalde stapel en nemen minstens \'e\'en object van de stapel. De speler die het laatste object neemt, verliest.
-
-Bijlage \ref{app:design-nim} bevat de diagrammen die dit spel modelleren.
+Nim is een spel voor twee spelers. Er zijn een aantal stapels met in elke stapel een aantal objecten. De spelers kiezen om de beurt een bepaalde stapel en nemen minstens \'e\'en object van de stapel. De speler die het laatste object neemt, verliest.
 
 Figuur \ref{fig:nim-cd} bevat het klassediagram voor ons ontwerp van Nim.
+
+\begin{figure}[htp]
+	\centering
+	\includegraphics[width=0.75\textwidth]{chap-evaluatie/ClassDiagram1.png}
+	\caption{Klassediagram voor Nim}
+	\label{fig:nim-cd}
+\end{figure}
 
 De klasse \textit{Game} stelt het concept van een spel voor. \textit{p1Win} geeft aan of speler 1 heeft gewonnen en \textit{gameFinished} geeft aan of het spel volledig gespeeld is. \textit{allHeapsEmpty()} vraagt op of alle \textit{Heap}s leeg zijn. \textit{takeTurn()} doet een speler zijn beurt spelen. \textit{play(boolean)} is de methode die het verloop van het spel regelt.
 
 De klasse \textit{Heap} stelt stapels van objecten voor. \textit{numObjects} is het aantal objecten dat een stapel bevat. \textit{isEmpty()} geeft aan of de stapel leeg is en \textit{take(int)} neemt een aantal objecten weg van een stapel.
 
-Figuren \ref{fig:nim-take}, \ref{fig:nim-play}, \ref{fig:nim-allHeapsEmpty}, \ref{fig:nim-isEmpty} en \ref{fig:nim-takeTurn} bevatten de sequentiediagrammen die het gedrag van hun bijhorende methodes modelleren.
+Naast het klassediagram, dat de structuur van het spel modelleert, stellen we ook een aantal sequentiediagrammen op die het verloop van het spel regelen.
 
-Diagram \ref{fig:nim-take} berekent hoeveel objecten er nog overblijven op een stapel gegeven een aantal objecten om weg te nemen van de stapel. Als het verschil kleiner is dan nul, wordt de teller op nul gezet.
+We tonen hier het centrale sequentiediagram. De anderen zijn beschikbaar in bijlage \ref{app:design-nim}.
+
+\begin{figure}
+	\centering
+	\includegraphics[width=0.8\textwidth]{chap-evaluatie/play.png}
+	\caption{Sequentiediagram voor \textit{play(boolean)}}
+	\label{fig:nim-play}
+\end{figure}
 
 Diagram \ref{fig:nim-play} bepaalt eerst of alle stapels leeg zijn. Zo ja, is het spel voorbij en is de speler die nu aan beurt is de winnaar. Zo nee, speelt de huidige speler een ronde en geeft de beurt door aan de andere speler.
 
@@ -36,7 +48,9 @@ Diagram \ref{fig:nim-allHeapsEmpty} vraagt aan alle stapels om de beurt of ze le
 
 Diagram \ref{fig:nim-isEmpty} antwoordt ja als de stapel leeg is en nee als de stapel niet leeg is.
 
-Diagram \ref{fig:nim-takeTurn} vraagt aan de speler van welke stapel hij objecten wil nemen. Er wordt vanaf nul geteld, dus moet hij nul antwoorden als hij de eerste stapel wil selecteren. Als de geselecteerde stapel leeg is, wordt er opnieuw gevraagd om een stapel te selecteren. Als de speler een stapel heeft gekozen die niet leeg is, moet hij kiezen om minstens \'e\'en en maximaal het aantal objecten dat nog overblijft op de stapel weg te nemen.
+Diagram \ref{fig:nim-takeTurn} vraagt aan de speler van welke stapel hij objecten wil nemen. Als de geselecteerde stapel leeg is, wordt er opnieuw gevraagd om een stapel te selecteren. Als de speler een stapel heeft gekozen die niet leeg is, moet hij kiezen om minstens \'e\'en en maximaal het aantal objecten dat nog overblijft op de stapel weg te nemen.
+
+Diagram \ref{fig:nim-take} berekent hoeveel objecten er nog overblijven op een stapel gegeven een aantal objecten om weg te nemen van de stapel. Als het verschil kleiner is dan nul, wordt de teller op nul gezet.
 
 Bijlage \ref{app:nim-eval} bevat het IDP-bestand met de automatisch gegenereerde uitvoertheorie voor deze diagrammen.
 
@@ -60,15 +74,22 @@ Bijlage \ref{app:nim-eval} bevat het IDP-bestand met de automatisch gegenereerde
 
 Reversi is een spel voor twee spelers. Ze spelen op een rechthoekig bord verdeeld in even grote vakken. Er liggen al in het begin stenen op het bord. De spelers leggen om de beurt een steen van hun kleur op het bord. Een steen mag enkel gelegd worden indien minstens \'e\'en steen van de tegenspeler ligt tussen de nieuwe steen en een steen van de eigen kleur die al op het bord ligt. Noem alle zulke stenen van de tegenspeler de gepakte stenen. Na het neerleggen van de nieuwe steen draait de speler de gepakte stenen om naar zijn kleur. Als geen enkele zet leidt tot minstens \'e\'en gepakte steen, slaat de speler zijn beurt over. Als de beurt twee keer na elkaar wordt overgeslagen, stopt het spel. De speler met het grootste aantal stenen van zijn kleur wint.
 
-Een aantal van deze diagrammen zijn te omvangrijk om op een overzichtelijke manier in deze tekst weer te geven. Het ontwerp staat daarom op deze locatie: \url{https://imgur.com/a/kgVg4dv}
+Figuur \ref{fig:reversi-cd} bevat het klassediagram. Het toont twee klasses: \textit{Board} en \textit{Position}. \textit{Board} houdt bij wat de grootst mogelijke x- en y-co\"ordinaten zijn, of het spel voorbij is, of zwart de winnaar is en of het gelijkspel is. \textit{Position} houdt bij wat de co\"ordinaten zijn, of het vak bezet is en of er een zwarte steen op ligt.
 
-Het klassediagram toont twee klasses: \textit{Board} en \textit{Position}. \textit{Board} houdt bij wat de grootst mogelijke x- en y-co\"ordinaten zijn, of het spel voorbij is, of zwart de winnaar is en of het gelijkspel is. \textit{Position} houdt bij wat de co\"ordinaten zijn, of het vak bezet is en of er een zwarte steen op ligt.
+\begin{figure}
+	\centering
+	\includegraphics[width=\textwidth]{chap-evaluatie/reversi-cd.png}
+	\caption{Het klassediagram voor Reversi}
+	\label{fig:reversi-cd}
+\end{figure}
+
+De sequentiediagrammen zijn beschikbaar op deze locatie: \url{https://imgur.com/a/kgVg4dv} 
 
 \textit{play()} regelt het spelverloop. Aan het begin van elke beurt wordt er gecontroleerd of de huidige speler een zet kan doen. Zo ja, kiest de speler een positie en legt er een steen. Zo nee slaat de speler zijn beurt over. Als de beurt twee keer wordt overgeslagen, wordt voor beide spelers het aantal stenen geteld en wordt de winnaar aangeduid, tenzij het gelijkspel is.
 
 \textit{canPlay(boolean)} controleert voor elk vak om de beurt of de gegeven speler een steen op dat vak kan leggen. Het antwoordt ja zodra het een geldig vak vindt. Als geen enkel vak geldig is, antwoordt het nee.
 
-\textit{isPlayable(Position, boolean)} gaat voor de gegeven positie in elke richting na hoeveel stenen de speler zou pakken indien hij daar een steen legde. Zodra het een richting vindt waar minstens \'e\'en steen gepakt zou worden, antwoordt het ja. Als zulk een richting niet bestaat, antwoordt het nee.
+\textit{isPlayable(Position, boolean)} gaat voor de gegeven positie na of het een geldige zet zou zijn om daar een steen te leggen. De methode controleert voor elke richting om de beurt of minstens \'e\'en steen van de tegenspeler omgedraaid zou worden. Het antwoord is ja als en slechts als zulk een richting bestaat. 
 
 \textit{calcNumTrapped(Position, boolean, int, int)} berekent voor de gegeven positie, speler en richting hoeveel stenen hij zou pakken als hij daar een steen legde. Het houdt een teller bij van het aantal gepakte stenen. De methode bekijkt telkens de buurpositie in de gegeven richting. Als er een steen van de tegenspeler ligt, wordt de teller verhoogd met \'e\'en. Als er geen steen ligt, wordt de teller op nul gezet en stopt de uitvoering van de lus. Als er een steen ligt van de eigen kleur, is het correcte aantal gepakte stenen berekend en stopt de uitvoering van de lus ook. Het antwoord is de uiteindelijke waarde van de teller.
 
@@ -123,7 +144,9 @@ Deze sectie evalueert criterium \ref{crit:simulation}.
 
 Alle testen worden uitgevoerd op een machine die Ubuntu 16.04.3 LTS draait. Deze machine heeft als CPU de Intel(R) Core(TM)2 CPU 6600 en heeft 3969 MB aan geheugen beschikbaar. We gebruiken versie 3.7.0 van IDP.
 
-Bij de uitvoering van IDP gebruiken we de optie \textit{stdoptions.verbosity.groundingstats}. Deze zetten naar 1 leidt ertoe dat IDP informatie geeft over de uitvoeringstijd en het geheugengebruik in termen van de grootte van de \textit{grounding}\cite{DeCatBroes2014PLaa}. Voor progressie\"inferentie geeft IDP echter geen zinnige gegevens voor de \textit{grounding}-grootte---daarom rapporteert deze sectie in de plaats het virtueel geheugengebruik.
+We gebruiken de optie \textit{stdoptions.verbosity.groundingstats} om IDP te laten rapporteren over de rekentijd en het geheugengebruik in termen van de grootte van de \textit{grounding}\cite{DeCatBroes2014PLaa}. Daarnaast geven we ook het virtueel geheugengebruik.
+
+IDP geeft voor progressie\"inferentie geen gegevens over de \textit{grounding}-grootte. Daarom rapporteren we in deze sectie enkel het virtueel geheugengebruik.
 
 \subsection{Evaluatie van simulatie van Nim}
 
@@ -131,7 +154,7 @@ We spelen een spel met twee stapels. E\'en stapel bevat twee objecten en de ande
 
 De eerste speler neemt tijdens zijn beurt alle drie de objecten van de stapel met drie objecten. Vervolgens neemt de tweede speler \'e\'en object van de andere stapel. Nu heeft de eerste speler geen keuze en moet hij het overblijvend object nemen, waardoor hij het spel verliest.
 
-Figuur \ref{fig:ms} bevat een boxplot van de rekentijd per simulatiestap, en figuur \ref{fig:ms-nooutliers} bevat een boxplot van dezelfde gegevens zonder de uitschieters. We zien dat voor ongeveer de helft van de tijdstappen de rekentijd tussen ongeveer 6,65 seconden en 6,9 seconden ligt. Globaal gezien is de rekentijd gespreid tussen ongeveer 6,5 seconden en 7,15 seconden. Dit zorgt er echter voor dat het ongeveer negentien minuten duurt om het spel volledig uit te spelen, aangezien de simulatie in totaal 116 tijdstappen lang was. Stap 23, 67 en 111 waren de stappen wanneer de speler een stapel kon kiezen. Het duurde ongeveer twee en een halve minuut om stap 23 te bereiken. Tussen stap 23 en 67 en tussen stap 67 en 111 was er telkens een tijdspanne van ongeveer vijf minuten.
+Figuur \ref{fig:ms} bevat een boxplot van de rekentijd per simulatiestap, en figuur \ref{fig:ms-nooutliers} bevat een boxplot van dezelfde gegevens zonder de uitschieters. We zien dat voor ongeveer de helft van de tijdstappen de rekentijd tussen ongeveer 6,65 seconden en 6,9 seconden ligt. Globaal gezien is de rekentijd gespreid tussen ongeveer 6,5 seconden en 7,15 seconden. Omdat een procedurale modellering een groot aantal stappen tot gevolg heeft, duurt het ongeveer negentien minuten om het spel volledig te spelen. Van de 116 tijdstappen waren er vijf stappen waar de gebruiker het proces kon be\"invloeden, namelijk stappen 23, 34, 67, 78 en 111. De rekentijd tussen deze vijf stappen komt overeen met de verwachting die voortkomt uit de gemiddelde rekentijd.
 
 \begin{figure}
 	\includegraphics[width=1.05\textwidth]{chap-evaluatie/boxplot.png}
@@ -216,9 +239,7 @@ Deze resultaten zijn te verklaren door:
 
 Deze sectie evalueert criterium \ref{crit:output}.
 
-Omdat IDP wel zinnige gegevens rapporteert voor de \textit{grounding}-grootte bij modelexpansie, gebruiken we vanaf dit punt de \textit{grounding}-grootte om geheugengebruik te evalueren.
-
-We controleren de correctheid van de uitvoer van een diagram als volgt. Eerst stellen we zinnen op die ofwel correcte uitvoer ofwel incorrecte uitvoer beschrijven. Daarna voeren we voor elke zin modelexpansie uit. Daarbij voegen we de zin toe aan de uitvoertheorie en controleren we of we het verwachte resultaat krijgen. We geven telkens een invoerstructuur op van een beperkte grootte, maar die wel genoeg variatie toelaat om de uitvoering van een diagram te testen voor alle mogelijke invoerargumenten binnen een bepaald domein. In feite steunen we op de \textit{small-scope} hypothese\cite{andoni2003evaluating}, die stelt dat een groot aantal aan bugs in een programma ontdekt kan worden door het te testen voor alle mogelijke invoerargumenten binnen een beperkt domein.
+We controleren de correctheid van de uitvoer van een diagram als volgt. Eerst stellen we zinnen op die ofwel correcte uitvoer ofwel incorrecte uitvoer beschrijven. Daarna voeren we voor elke zin modelexpansie uit. Daarbij voegen we de zin toe aan de uitvoertheorie en controleren we of we het verwachte resultaat krijgen. We geven telkens een invoerstructuur op van een beperkte grootte, maar die wel genoeg variatie toelaat om de uitvoering van een diagram te testen voor alle mogelijke invoerargumenten binnen een bepaald domein. Hierbij steunen we op de \textit{small-scope} hypothese\cite{andoni2003evaluating}, die stelt dat een groot aantal aan bugs in een programma ontdekt kan worden door het te testen voor alle mogelijke invoerargumenten binnen een beperkt domein.
 
 \subsection{Verificatie van de correctheid van \textit{isEmpty()}}
 
@@ -247,13 +268,13 @@ Beide zinnen moeten leiden tot een vervulbare theorie.
 
 We voeren IDP viermaal uit met de voorgaande zinnen om de beurt toegevoegd aan de invoertheorie. Voor de twee eerste zinnen krijgen we inderdaad als antwoord dat de theorie onvervulbaar is. Voor zin \ref{form:ie_cempty} krijgen we een uniek model dat overeenkomt met een lege stapel. Voor zin \ref{form:ie_cnonempty} krijgen we alle modellen met een stapel die niet leeg is.
 
-Er is een gelijkaardig tijdsverloop en \textit{grounding}-grootte voor alle vier de uitvoeringen. Het duurt ongeveer 29 seconden en de \textit{grounding}-grootte is 578 306.
+Er is een gelijkaardig tijdsverloop, \textit{grounding}-grootte en virtueel geheugengebruik voor alle vier de uitvoeringen. Het duurt ongeveer 40 seconden, de \textit{grounding}-grootte is 578 306 en het virtueel geheugengebruik is 2,14 GB.
 
-We merken op dat het relatief lang duurt om modelexpansie uit te voeren voor dit diagram. De \textit{grounding} is ook omvangrijk.
+We merken op dat het relatief lang duurt om modelexpansie uit te voeren voor dit diagram. De \textit{grounding} en het virtueel geheugengebruik zijn ook omvangrijk.
 
 \subsection{Verificatie van de correctheid van \textit{allHeapsEmpty()}}\label{sec:verify-ahe}
 
-We willen controleren of het diagram in figuur \ref{fig:nim-allHeapsEmpty} een positief antwoord geeft als alle stapels leeg zijn en een negatief antwoord als minstens \'e\'en stapel niet leeg is. We werken met een invoerstructuur die aangeeft dat de uitvoering begint met de eerste instructie van \textit{allHeapsEmpty} en eindigt na de laatste instructie van dat diagram. De invoerstructuur specificeert dat er in totaal 25 tijdstappen en twee stapels zijn. Elke stapel kan nul tot vijf objecten bevatten.
+We willen controleren of de functie zoals gemodelleerd in diagram \ref{fig:nim-allHeapsEmpty} een positief antwoord geeft als alle stapels leeg zijn en een negatief antwoord als minstens \'e\'en stapel niet leeg is. We werken met een invoerstructuur die aangeeft dat de uitvoering begint met de eerste instructie van \textit{allHeapsEmpty} en eindigt na de laatste instructie van dat diagram. De invoerstructuur specificeert dat er in totaal 25 tijdstappen en twee stapels zijn. Elke stapel kan nul tot vijf objecten bevatten.
 
 We stellen vier zinnen op:
 
@@ -278,7 +299,7 @@ De conclusie moet hier zijn dat de theorie vervulbaar is.
 
 Wanneer we IDP viermaal uitvoeren met deze vier zinnen om de beurt toegevoegd aan de uitvoertheorie, is de theorie inderdaad onvervulbaar voor de eerste twee zinnen. Zin \ref{form:ahe_cempty} leidt tot een uniek model dat overeenkomt met het geval dat alle stapels leeg zijn. Zin \ref{form:ahe_cnonempty} geeft alle modellen waar minstens \'e\'en stapel meer dan nul objecten heeft.
 
-De uitvoeringstijd en \textit{grounding}-grootte zijn gelijkaardig voor alle vier uitvoeringen. De uitvoering duurt ongeveer 42,47 seconden en de \textit{grounding}-grootte is 366 643.
+De uitvoeringstijd en \textit{grounding}-grootte zijn gelijkaardig voor alle vier uitvoeringen. De uitvoering duurt ongeveer 43,29 seconden, de \textit{grounding}-grootte is 366 643 en het virtueel geheugengebruik is 1,63 GB.
 
 \subsection{Verificatie van een incorrecte modelling van allHeapsEmpty()}
 
@@ -305,13 +326,13 @@ Wanneer we modelexpansie uitvoeren voor deze twee zinnen, kan IDP echter niet to
 
 \subsection{Conclusie}
 
-Het is mogelijk om voor diagrammen \ref{fig:nim-isEmpty} en \ref{fig:nim-allHeapsEmpty} te verifi\"eren dat de uitvoer correct is. Dit duurde telkens minder dan een minuut met een \textit{grounding}-grootte van enkele honderduizenden.
+Het is mogelijk om voor diagrammen \ref{fig:nim-isEmpty} en \ref{fig:nim-allHeapsEmpty} te verifi\"eren dat de uitvoer correct is. Dit duurde telkens minder dan een minuut met een \textit{grounding}-grootte van enkele honderduizenden. Het virtueel geheugengebruik voor \textit{isEmpty()} was 2,14 GB en voor \textit{allHeapsEmpty()} 1,62 GB.
 
 Het geheugen raakte uitgeput bij het verifi\"eren van de uitvoer van het diagram voor \textit{calcNeighbor(Position, int, int)}. De verificatie kon niet succesvol uitgevoerd worden.
 
 \section{Controleren op gewenste eigenschappen van het systeem als geheel}
 
-Deze sectie evalueert criterium \ref{crit:properties}. We controleren of na de uitvoering van het systeem vanaf een bepaald startpunt tot aan een bepaald stoppunt een gewenste eigenschap van het systeem als geheel bewaard blijft. Dit doen we door zinnen op te stellen die deze voorwaarde uitdrukken en dan modelexpansie uit te voeren op de theorie met die zinnen eraan toegevoegd. De invoerstructuur bepaalt dat de uitvoering begint met het startpunt. De zinnen die de eigenschap modelleren zorgen er dan voor dat de uitvoering stopt aan het stoppunt. Zoals in sectie \ref{sec:verify-output} maken we weer gebruik van de \textit{small-scope} hypothese, dus is de invoerstructuur van beperkte grootte. Als modelexpansie alle modellen vindt die overeenkomen met een geldig uitvoeringspad, is de conclusie dat de gewenste eigenschap geldt in het ontwerp.
+Deze sectie evalueert criterium \ref{crit:properties}. We controleren of na de uitvoering van het systeem vanaf een bepaald startpunt tot aan een bepaald stoppunt een gewenste eigenschap van het systeem als geheel bewaard blijft. Dit doen we door zinnen op te stellen die deze voorwaarde uitdrukken en dan modelexpansie uit te voeren op de theorie met die zinnen eraan toegevoegd. De invoerstructuur bepaalt dat de uitvoering begint met het startpunt. De zinnen die de eigenschap modelleren zorgen er dan voor dat de uitvoering stopt aan het stoppunt. Zoals in sectie \ref{sec:verify-output} maken we weer gebruik van de \textit{small-scope} hypothese. Deze suggereert dat de meeste fouten in een modellering gevonden kunnen worden met een invoerstructuur van een beperkte grootte. Als de nieuwe zinnen bij modelexpansie geen modellen uitsluiten die wel geldig zijn voor de theorie zonder de nieuwe zinnen, is er een grote zekerheid dat de gewenste eigenschap geldt in het ontwerp.
 
 \subsection{Correct verloop van een beurt in Nim controleren}
 
@@ -373,7 +394,7 @@ Modelexpansie op de theorie waar zinnen \ref{form:heapempty}, \ref{form:losesobj
 
 Het besluit is dat de toestand van het spel op een correcte manier verandert in de loop van \'e\'en beurt. Dit heeft tot gevolg dat de toestand correct verandert over alle beurten heen voor alle mogelijke spelverlopen.
 
-De \textit{grounding}-grootte voor deze uitvoering van modelexpansie is 1 596 587. De uitvoering duurt ongeveer 1 minuut en 16 seconden. 
+De \textit{grounding}-grootte voor deze uitvoering van modelexpansie is 1 596 587. De uitvoering duurt ongeveer 1 minuut en 16 seconden en het virtueel geheugengebruik is 5,19 GB.
 
 \subsection{Correct verloop van een beurt in Reversi controleren}
 
@@ -394,17 +415,17 @@ We kunnen deze eigenschap niet verifi\"eren voor dit ontwerp voor Reversi.
 
 \subsection{Conclusie}
 
-Voor Nim konden we nagaan dat een speler minstens \'e\'en object van exact \'e\'en stapel neemt als minstens \'e\'en stapel niet leeg is. Deze controle duurde langer dan een minuut, met een \textit{grounding}-grootte van ongeveer 1,6 miljoen.
+Voor Nim konden we nagaan dat een speler minstens \'e\'en object van exact \'e\'en stapel neemt als minstens \'e\'en stapel niet leeg is. Deze controle duurde langer dan een minuut, met een \textit{grounding}-grootte van ongeveer 1,6 miljoen en een virtueel geheugengebruik van 5,19 GB.
 
 Het geheugen raakte uitgeput bij de controle of in ons ontwerp voor Reversi een speler exact \'e\'en steen op het bord legt indien het mogelijk is om een zet te doen.
 
 \section{Samenvatting van de bevindingen}
-We hebben ontwerpen voor Nim en Reversi gemaakt en ze kunnen vertalen naar FO($cdot$)-theorie\"en. Dit was relatief eenvoudig, maar door de vele benodigde instructies duurde het relatief lang om de diagrammen te maken. Daarbij merkten we op dat een aantal factoren ervoor zorgen dat de resulterende vocabularia en theorie\"en een grote omvang aannemen.
+We hebben ontwerpen voor Nim en Reversi gemaakt en ze kunnen vertalen naar FO($\cdot$)-theorie\"en. Dit was relatief eenvoudig, maar door de vele benodigde instructies duurde het relatief lang om de diagrammen te maken. Daarbij merkten we op dat een aantal factoren ervoor zorgen dat de resulterende vocabularia en theorie\"en een grote omvang aannemen.
 
-We konden de uitvoertheorie voor Nim gebruiken om een spelverloop te simuleren. Dit duurde echter ongeveer negentien minuten en kostte enkele gigabytes aan geheugen. We konden Reversi maar deels simuleren omwege van een fout intern aan IDP. Daarbij kunnen we wel voorspellen dat het enkele uren zou duren om een beurt te spelen met een kost van enkele tientallen aan gigabytes aan geheugen.
+We konden de uitvoertheorie voor Nim gebruiken om een spelverloop te simuleren. Dit duurde negentien minuten en kostte 4,84 GB aan geheugen. We konden Reversi maar deels simuleren omwege van een fout intern aan IDP. Daarbij kunnen we wel voorspellen dat het enkele uren zou duren om een beurt te spelen met een kost van enkele tientallen aan gigabytes aan geheugen.
 
-Voor diagrammen \ref{fig:nim-isEmpty} en \ref{fig:nim-allHeapsEmpty} konden we verifi\"eren dat de uitvoer correct was. Modelexpansie duurde telkens minder dan een minuut, met een \textit{grounding}-grootte van enkele honderdduizenden. We probeerden de uitvoer van \textit{calcNeighbor(Position, int, int)} te verifi\"eren, maar het geheugen raakte uitgeput voordat IDP een antwoord kon geven.
+Voor diagrammen \ref{fig:nim-isEmpty} en \ref{fig:nim-allHeapsEmpty} konden we verifi\"eren dat de uitvoer correct was. Modelexpansie duurde telkens minder dan een minuut, met een \textit{grounding}-grootte van enkele honderdduizenden en een maximaal virtueel geheugengebruik van 2,14 GB. We probeerden de uitvoer van \textit{calcNeighbor(Position, int, int)} te verifi\"eren, maar het geheugen raakte uitgeput voordat IDP een antwoord kon geven.
 
-Voor het ontwerp voor Nim konden we nagaan dat als minstens \'e\'en stapel niet leeg is, dat de speler dan telkens van exact \'e\'en stapel minstens \'e\'en object wegneemt. Deze controle duurde ongeveer 1 minuut en 16 seconden, met een \textit{grounding}-grootte van ongeveer 1,6 miljoen. We probeerden na te gaan voor Reversi dat exact \'e\'en positie wordt ingenomen als een speler een zet kan doen. Ook hier raakte het geheugen echter uitgeput.
+Voor het ontwerp voor Nim konden we nagaan dat als minstens \'e\'en stapel niet leeg is, dat de speler dan telkens van exact \'e\'en stapel minstens \'e\'en object wegneemt. Deze controle duurde ongeveer 1 minuut en 16 seconden, met een \textit{grounding}-grootte van ongeveer 1,6 miljoen en een virtueel geheugengebruik van 5,19 GB. We probeerden na te gaan voor Reversi dat exact \'e\'en positie wordt ingenomen als een speler een zet kan doen. Ook hier raakte het geheugen echter uitgeput.
 
 Zowel voor Nim als Reversi merken we dat de rekentijd en het geheugengebruik voor modelexpansie en progressie\"inferentie groot zijn. Het is dus interessant om te onderzoeken welke mogelijkheden er bestaan om sequentiediagrammen compacter te maken en zo ook de resulterende vocabularia en theorie\"en.
