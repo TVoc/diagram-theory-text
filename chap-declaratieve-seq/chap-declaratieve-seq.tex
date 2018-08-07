@@ -17,7 +17,7 @@ Bij het opstellen van deze theorie werden de volgende stappen gevolgd:
 	\item Schrijf de toestandzinnen. Deze hebben een vast patroon voor elk inertieel logisch symbool.
 \end{enumerate}
 
-Het meest opmerkelijk verschil tussen deze logische specificatie en de specificatie in bijlage \ref{code:nim-eval} is dat zowel het vocabularium en de theorie significant compacter zijn. De combinatie van kleinere zoekruimte en minder zinnen om rekening mee te houden zorgt ervoor dat zowel rekentijd als geheugengebruik sterk verkleinen. Inderdaad, voor een spel met een stapel met twee objecten en een stapel met drie objecten duurt het iets meer dan twee seconden om alle 37 mogelijke spelverlopen te vinden. Daarbij is de \textit{grounding}-grootte 3855. Vergelijk met de verificatie van \textit{allHeapsEmpty} in hoofdstuk \ref{sec:evaluatie}, waar de rekentijd 31,6 seconden was en de \textit{grounding}-grootte 142 510.
+Het meest opmerkelijk verschil tussen deze logische specificatie en de specificatie in bijlage \ref{code:nim-eval} is dat zowel het vocabularium en de theorie significant compacter zijn. De combinatie van kleinere zoekruimte en minder zinnen om rekening mee te houden zorgt ervoor dat zowel rekentijd als geheugengebruik sterk verkleinen. Inderdaad, voor een spel met een stapel met twee objecten en een stapel met drie objecten duurt het iets meer dan twee seconden om alle 37 mogelijke spelverlopen te vinden. Daarbij is de \textit{grounding}-grootte 3855 en het virtueel geheugengebruik 40,59 MB. Vergelijk met de verificatie van \textit{allHeapsEmpty} in hoofdstuk \ref{sec:evaluatie}, waar de rekentijd 43,29 seconden was, de \textit{grounding}-grootte 366 643 en het virtueel geheugengebruik 1,63 GB.
 
 We merken op dat een belangrijk nadeel dat sequentiediagrammen hebben ten opzichte van rechtstreekse LTC is dat de toestand van maar \'e\'en variabele kan opgevraagd of aangepast worden. De LTC-theorie heeft bijvoorbeeld \'e\'en zin nodig om te verzekeren dat het spel voorbij is indien alle stapels leeg zijn. Er is echter een heel diagram nodig om voor elke stapel om de beurt te controleren of die leeg is.
 
@@ -39,16 +39,9 @@ Concreet willen we instructies die ons toelaten om de toestand van alle objecten
 
 \section{Nieuwe soorten instructies}
 
-Voorheen kon een variabele maar \'e\'en object of waarde van een primitief type voorstellen. Nu laten we toe dat een variabele een verzameling kan voorstellen. In een sequentiediagram wordt dit voorgesteld als een multi-object zoals in figuur \ref{fig:multi-object}. In de theorie behouden we voor namen het patroon $<variabelenaam>T/3$.
+Voorheen kon een variabele maar \'e\'en object of waarde van een primitief type voorstellen. Nu laten we toe dat een variabele een verzameling kan voorstellen. In de theorie behouden we voor namen het patroon $<variabelenaam>T/3$.
 
 We laten op variabelen die een verzameling voorstellen enkele nieuwe instructies toe:
-
-\begin{figure}
-	\includegraphics{chap-gedrag/seq-multi-object.png}
-	\centering
-	\caption{Een multi-object}
-	\label{fig:multi-object}
-\end{figure}
 
 \begin{itemize}
 	\item Voor alle leden van een verzameling tegelijkertijd kan een associatie genavigeerd worden. Als op een verzameling S van objecten van klasse X \textit{getY()} wordt uitgevoerd waar Y de naam is van een klasse geassocieerd met X, dan is het resultaat een verzameling van objecten van klasse Y. Die verzameling bestaat uit alle objecten die in verband staan met minstens \'e\'en object uit S.
@@ -192,7 +185,7 @@ Een andere denkpiste is het oproepen van een bepaalde methode op alle leden van 
 Er zijn meerdere mogelijke aanpakken om zulke functionaliteit te modelleren in LTC:
 
 \begin{itemize}
-	\item Laat toe dat alle methodes parallel kunnen worden uitgevoerd. Hiervoor is het echter noodzakelijk om objecten bij te houden als eigenaar van een bepaalde oproep aangezien de resultaten van een parallele oproep enkel betekenis hebben binnen de context waarin de parallele oproep gebeurt. Dit kan men doen door instanties een extra argument te maken van \textit{SDPointAt} en een nieuw predicaat te introduceren dat voor alle objecten betrokken in een parallele oproep bijhoudt welk object de eigenaar is van de oproep die de bron is van die parallele oproep. Op die manier worden de resultaten van een parallele oproep steeds doorgegeven aan het juiste object. Men moet er echter voor zorgen dat de uitvoering niet springt naar de instructie direct na de parallelle oproep totdat de parallele oproep een resultaat heeft voor alle betrokken objecten. Deze aanpak zal waarschijnlijk een grote impact hebben op rekentijd en ruimtegebruik, maar het biedt de meest ruime mogelijkheden bij het ontwerpen van sequentiediagrammen.
+	\item Laat toe dat alle methodes parallel kunnen worden uitgevoerd. Hiervoor is het echter noodzakelijk om objecten bij te houden als eigenaar van een bepaalde oproep aangezien de resultaten van een parallele oproep enkel betekenis hebben binnen de context waarin de parallele oproep gebeurt. Dit kan men doen door instanties een extra argument te maken van \textit{SDPointAt} en een nieuw predicaat te introduceren dat voor alle objecten betrokken in een parallele oproep bijhoudt welk object de eigenaar is van de oproep die de bron is van die parallele oproep. De predicaten voor diagramvariabelen, het predicaat \textit{ReturnPoint} en de functie \textit{CurrentStackLevel} moeten ook bijhouden voor welke oproep een bepaalde waarde geldt. Op die manier worden de resultaten van een parallele oproep steeds doorgegeven aan het juiste object. Men moet er echter voor zorgen dat de uitvoering niet springt naar de instructie direct na de parallelle oproep totdat de parallele oproep een resultaat heeft voor alle betrokken objecten. Deze aanpak zal waarschijnlijk een grote impact hebben op rekentijd en ruimtegebruik, maar het biedt de meest ruime mogelijkheden bij het ontwerpen van sequentiediagrammen.
 	\item Markeer een methode expliciet als parallel uitvoerbaar en laat niet toe dat er een tijdens een parallele oproep een andere parallelle oproep gebeurt. Op deze manier vermijdt men de toevoeging van een extra argument aan \textit{SDPointAt/2} en extra predicaten die eigenaarschap van een oproep bijhouden. Men moet er enkel voor zorgen dat de resultaten van een parallele oproep hun juiste bestemming bereiken, bijvoorbeeld als er leden van een verzameling worden geselecteerd op basis van het resultaat van een booleaanse oproep of het toekennen van resultaten van een oproep van een methode die \textit{int} als resultaat heeft op alle leden van een verzameling aan een nieuwe verzameling. Deze aanpak zal waarschijnlijk een minder grote impact hebben op rekentijd en ruimtegebruik, maar dit beperkt de mogelijkheden bij het ontwerpen van sequentiediagrammen.
 \end{itemize}
 

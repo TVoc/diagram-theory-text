@@ -1,16 +1,16 @@
 \chapter{Simuleren van gedrag op basis van een sequentiediagram}\label{sec:gedrag}
 Een ander populair type van UML-diagram is het sequentiediagram\cite{RumbaughJames2005Tuml}. Waar klassediagrammen de informatie bevat in klasses en de verbanden tussen klasses benoemen, beschrijven sequentiediagrammen het gedrag van methodes gedefinieerd voor deze klasses. In deze diagrammen communiceren instanties van klasses via berichten. Doorgaans zijn deze berichten een oproep van een methode, of een toekenning aan een variabele intern aan het diagram of een instantiatie van een nieuwe instantie. De berichten zijn genummerd volgens een bepaalde volgorde en samen modelleren ze het gedrag van een stuk van de software.
 
-In dit hoofdstuk beschouwen we hoe we vocabularia en logische theorie\"en gegenereerd volgens de regels beschreven in sectie \ref{sec:cd-rep-cons} kunnen uitbreiden om het gedrag voorgesteld in een sequentiediagram te modelleren.
+Dit hoofdstuk beschrijft hoe we vocabularia en logische theorie\"en gegenereerd volgens de regels beschreven in sectie \ref{sec:cd-rep-cons} kunnen uitbreiden om het gedrag voorgesteld in een sequentiediagram te modelleren.
 
 \section{Componenten van een sequentiediagram}
 
-In deze sectie beschrijven we welke componenten we beschouwen in deze masterproef.
+Deze sectie beschrijft welke componenten we beschouwen in deze masterproef. We beperken in bepaalde aspecten de mogelijkheden voor de ontwerptaal beschikbaar voor sequentiediagrammen. Dit doen we om bij inferentie op de theorie\"en resulterend uit het vertaalproces beschreven in dit hoofdstuk de rekentijd en het geheugengebruik binnen de perken te houden.
 
 Figuur \ref{fig:seq-diagram-game} geeft een voorbeeld van een sequentiediagram gebaseerd op het klassediagram voorgesteld in figuur \ref{fig:diagram-voorbeeld}.
 
 Een instantie wordt voorgesteld door een kader met daarin tekst volgens het patroon \textit{instantienaam : klassenaam}. Dit wil zeggen dat bijvoorbeeld \textit{attacker} een instantie is van de klasse \textit{Character}. Vanuit elk kader vertrekt ook een streepjeslijn: De \textbf{levenslijn}. Deze levenslijn kan ingevuld worden door gekleurde balken, welke de duur van een oproep van een methode aan een instantie voorstellen.
-Verder zijn er ook kaders die berichten omsluiten. Deze kaders duiden \textbf{gecombineerde fragmenten} aan, en in deze tekst beschouwen we twee soorten:
+Verder zijn er ook kaders die berichten omsluiten. Deze kaders duiden \textbf{gecombineerde fragmenten} aan, en deze tekst beschouwt twee soorten:
 
 \begin{enumerate}
 	\item Het \textbf{altfragment}: Deze soort duidt een \textit{if-else}-constructie aan. Het bestaat uit twee delen, namelijk het \textit{if}-deel en het \textit{else}-deel, en er staat aangeduid onder welke voorwaarden welk deel wordt uitgevoerd. Figuur \ref{fig:seq-diagram-game} bevat een voorbeeld van een altfragment.
@@ -19,9 +19,9 @@ Verder zijn er ook kaders die berichten omsluiten. Deze kaders duiden \textbf{ge
 
 Berichten worden voorgesteld door pijlhoofden aan ofwel een ononderbroken lijn ofwel een streepjeslijn. Ze kunnen verscheidene betekenissen hebben afhankelijk van de context.
 
-Allereerst zijn er berichten die een variabele defini\"eren en er een waarde aan toekennen. Die waarde kan direct berekend worden, zoals in instructie 12 in figuur \ref{fig:seq-diagram-game}. De waarde kan een directe waarde zijn zoals 3 of ``foo'', een variabele, of een bewerking op directe waarden of variabelen van primitieve types. Als de instructie een bewerking op waarden van een primitief type is, moeten de gebruikte waardes allemaal van hetzelfde type zijn en moet het type een geldig invoertype voor de bewerking zijn, anders is het sequentiediagram ongeldig. De toegekende waarde kan ook het resultaat zijn van een methodeoproep, zoals in instructie 3 in dezelfde figuur. Als de methode die wordt opgeroepen een methode is gedefinieerd voor een klasse door het klassediagram, wordt de waarde eerst berekend in een uitvoering van het bijhorend sequentiediagram voor het wordt toegekend aan de variabele.
+Allereerst zijn er berichten die een variabele defini\"eren en er een waarde aan toekennen. Die waarde kan direct berekend worden, zoals in instructie 12 in figuur \ref{fig:seq-diagram-game}. De waarde kan een directe waarde zijn zoals 3 of ``foo'', een variabele, of een bewerking op directe waarden of variabelen van primitieve types. Als de instructie een bewerking op waarden van een primitief type is, moeten de gebruikte waardes allemaal van hetzelfde type zijn en moet het type een geldig invoertype voor de bewerking zijn, anders is het sequentiediagram ongeldig. De toegekende waarde kan ook het resultaat zijn van een methodeoproep, zoals in instructie 3 in dezelfde figuur. Als de methode die wordt opgeroepen een methode is gedefinieerd voor een klasse door het klassediagram, wordt de waarde eerst berekend in een uitvoering van het bijhorend sequentiediagram v\'o\'or het wordt toegekend aan de variabele.
 
-Een numerieke variabele kan een waarde krijgen door middel van de functies \textit{chooseEx(lowerBound, upperBound)} en \textit{chooseIn(lowerBound, upperBound)}. Bij uitvoering van die functies geeft de gebruiker een getal $n$ op. Bij \textit{chooseEx} geldt dat $n \geq lowerBound$ en $n < upperBound$ en bij \textit{chooseIn} geldt dat $n \geq lowerBound$ en $n < upperBound$.
+Een numerieke variabele kan een waarde krijgen door middel van de functies \textit{chooseEx(lowerBound, upperBound)} en \textit{chooseIn(lowerBound, upperBound)}. Bij uitvoering van die functies geeft de gebruiker een getal $n$ op. Bij \textit{chooseEx} geldt dat $n \geq lowerBound$ en $n < upperBound$ en bij \textit{chooseIn} geldt dat $n \geq lowerBound$ en $n \leq upperBound$.
 
 Een variabele kan ook gedefinieerd worden door een paar van methodeoproep en terugkeerbericht. Instructies 6 en 7 in figuur \ref{fig:seq-diagram-game} zijn daar een voorbeeld van. Instructie 6 is een methodeoproep. Instructie 7 definieert impliciet de variabele \textit{defenceVal} en kent de waarde berekend in de oproep eraan toe.
 
@@ -193,7 +193,7 @@ Zie bijlage \ref{app:seq-diagram-game} voor het volledig model voor het gedrag v
 
 
 \section{Het uitvoeren van gecombineerde fragmenten}\label{sec:combined-fragment}
-Het opstellen van causatiezinnen voor \textit{SDPointAt/2} ten gevolge van gecombineerde fragmenten is niet vanzelfsprekend. In deze sectie beschrijven we onze methode om dit te bewerkstelligen.
+Het opstellen van causatiezinnen voor \textit{SDPointAt/2} ten gevolge van gecombineerde fragmenten is niet vanzelfsprekend. Deze sectie beschrijft onze methode om dit te bewerkstelligen.
 Bij de vertaling van sequentiediagrammen houden we in de interne voorstelling binnen onze vertaler van een gecombineerd fragment volgende zaken bij:
 
 \begin{itemize}
@@ -495,7 +495,7 @@ Dit betekent dat de uitvoering vanaf \fragmessage{$bericht_b$} springt naar \fra
 
 \subsubsection{De uitvoering van de voorgestelde algoritmes}
 
-In deze sectie gebruiken we figuur \ref{fig:seq-diagram-frag-ex} om een voorbeeld te geven van de vertaling van gecombineerde fragmenten volgens de algoritmes beschreven in secties \ref{sec:transition-to}, \ref{sec:transitions-out}, \ref{sec:loop-reentry} en \ref{sec:process-frag}.
+Deze sectie gebruikt figuur \ref{fig:seq-diagram-frag-ex} om een voorbeeld te geven van de vertaling van gecombineerde fragmenten volgens de algoritmes beschreven in secties \ref{sec:transition-to}, \ref{sec:transitions-out}, \ref{sec:loop-reentry} en \ref{sec:process-frag}.
 
 \begin{figure}
 	\includegraphics[width=1\textwidth]{chap-gedrag/seq-diagram-frag-ex.png}
@@ -683,7 +683,7 @@ De uitvoer van algoritme \ref{alg:processCombinedFragment} voor alle fragmenten 
 \end{align*}
 
 \section{Interactie tussen meerdere sequentiediagrammen}\label{sec:interaction}
-In een project stelt men doorgaans meerdere sequentiediagrammen op die elkaar ook kunnen oproepen. Men gebruikt soms ook recursie in deze diagrammen. In deze sectie beschrijven we hoe we het oproepen van andere sequentiediagrammen en een recursiemechanisme ondersteunen.
+In een project stelt men doorgaans meerdere sequentiediagrammen op die elkaar ook kunnen oproepen. Men gebruikt soms ook recursie in deze diagrammen. Deze sectie beschrijft hoe we het oproepen van andere sequentiediagrammen en een recursiemechanisme ondersteunen.
 
 \begin{figure}
 	\centering
@@ -817,7 +817,7 @@ Zin \ref{eq:mtwoarg-inc} demonstreert dat ook buiten oproepinstructies of een te
 Er zijn geen noemenswaardige veranderingen aan hoe we de toestandszinnen opstellen. Bijlage \ref{app:seq-recursion} bevat de uitkomst van de procedure die we hebben beschreven in deze sectie. 
 
 \section{Extra veronderstellingen over het ontwerp van sequentiediagrammen}\label{sec:beperkingen}
-Om de implementatie van theoriegeneratie zoals beschreven in dit hoofdstuk te vergemakkelijken, zijn er een aantal veronderstellingen ten aanzien van sequentiediagrammen die de gebruiker als invoer geeft. In deze subsectie sommen we deze op:
+Er zijn een aantal veronderstellingen ten aanzien van sequentiediagrammen die de gebruiker als invoer geeft. We maken deze veronderstellingen om bij inferentie op theorie\"en resulterend uit de regels van dit hoofdstuk de rekentijd en het geheugengebruik binnen de perken te houden. De veronderstellingen zijn als volgt:
 
 \begin{itemize}
 	\item Er wordt een logisch symbool voorzien voor elke variabele in een sequentiediagram. De naam van dat logisch symbool is gebaseerd op de naam van de variabele, en daarom moeten alle variabelen over alle diagrammen heen een unieke naam hebben. De naam van het diagram waarin de variabele voorkomt kan dienen als prefix om de naam van de variabele toch uniek te maken zonder dat tussenkomst van de ontwerper nodig is. Door tijdsgebrek is dit echter niet ge\"implementeerd.
