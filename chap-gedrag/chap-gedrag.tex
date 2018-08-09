@@ -827,7 +827,7 @@ Stel een diagram met als naam \textit{diagramA} een ander diagram oproept in ins
 
 De eigenlijke toekenning gebeurt dus in de virtuele instructie na een oproep. Deze instructie haalt de waarde van de resultaatvariabele voor de juist afgesloten stapeldiepte op en slaagt ze op in de juiste variabele.
 
-Voor instructie 3 in \textit{methodOne} krijgen we dus:
+Voor instructie 3 in \textit{methodOne} geeft dit:
 
 \begin{align*}
 &\forall{t}[Time]\forall{st}[StackLevel]\forall{n}[LimitedInt](C\_ResultT(t, st, n) \\ &\leftarrow (CurrentStackLevel(t) = st) \land SDPointAt(t, methodOne\_3post) \\ &\land MTwoArgT(t, (st+1), n)).
