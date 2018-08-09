@@ -3,11 +3,13 @@ Een ander populair type van UML-diagram is het sequentiediagram\cite{RumbaughJam
 
 Dit hoofdstuk beschrijft hoe we vocabularia en logische theorie\"en gegenereerd volgens de regels beschreven in sectie \ref{sec:cd-rep-cons} kunnen uitbreiden om het gedrag voorgesteld in een sequentiediagram te modelleren.
 
-\section{Componenten van een sequentiediagram}
+Sectie \ref{sec:sd-components} beschrijft de verscheidene componenten van een sequentiediagram en hun betekenis. Sectie \ref{sec:sd-ltc} benoemt het mechanisme dat we gebruiken om deze componenten voor te stellen in FO($\cdot$) en waarom we dat mechanisme gebruiken. Secties \ref{sec:sd-voc} tot en met \ref{sec:interaction} bouwen de regels voor onze voorstelling op. Ten slotte lijst sectie \ref{sec:beperkingen} de beperkingen op geldige sequentiediagrammen in de context van onze voorstelling op.
+
+\section{Componenten van een sequentiediagram}\label{sec:sd-components}
 
 Deze sectie beschrijft welke componenten we beschouwen in deze masterproef. We beperken in bepaalde aspecten de mogelijkheden voor de ontwerptaal beschikbaar voor sequentiediagrammen. Dit doen we om bij inferentie op de theorie\"en resulterend uit het vertaalproces beschreven in dit hoofdstuk de rekentijd en het geheugengebruik binnen de perken te houden.
 
-Figuur \ref{fig:seq-diagram-game} geeft een voorbeeld van een sequentiediagram gebaseerd op het klassediagram voorgesteld in figuur \ref{fig:diagram-voorbeeld}.
+Figuur \ref{fig:seq-diagram-game} geeft een voorbeeld van een sequentiediagram gebaseerd op het klassediagram voorgesteld in figuur \ref{fig:diagram-voorbeeld}. Het modelleert het gedrag van de methode \textit{attackWith(Character, Weapon)} gedefinieerd voor de klasse \textit{Character}.
 
 Een instantie wordt voorgesteld door een kader met daarin tekst volgens het patroon \textit{instantienaam : klassenaam}. Dit wil zeggen dat bijvoorbeeld \textit{attacker} een instantie is van de klasse \textit{Character}. Vanuit elk kader vertrekt ook een streepjeslijn: De \textbf{levenslijn}. Deze levenslijn kan ingevuld worden door gekleurde balken, welke de duur van een oproep van een methode aan een instantie voorstellen.
 Verder zijn er ook kaders die berichten omsluiten. Deze kaders duiden \textbf{gecombineerde fragmenten} aan, en deze tekst beschouwt twee soorten:
@@ -19,7 +21,7 @@ Verder zijn er ook kaders die berichten omsluiten. Deze kaders duiden \textbf{ge
 
 Berichten worden voorgesteld door pijlhoofden aan ofwel een ononderbroken lijn ofwel een streepjeslijn. Ze kunnen verscheidene betekenissen hebben afhankelijk van de context.
 
-Allereerst zijn er berichten die een variabele defini\"eren en er een waarde aan toekennen. Die waarde kan direct berekend worden, zoals in instructie 12 in figuur \ref{fig:seq-diagram-game}. De waarde kan een directe waarde zijn zoals 3 of ``foo'', een variabele, of een bewerking op directe waarden of variabelen van primitieve types. Als de instructie een bewerking op waarden van een primitief type is, moeten de gebruikte waardes allemaal van hetzelfde type zijn en moet het type een geldig invoertype voor de bewerking zijn, anders is het sequentiediagram ongeldig. De toegekende waarde kan ook het resultaat zijn van een methodeoproep, zoals in instructie 3 in dezelfde figuur. Als de methode die wordt opgeroepen een methode is gedefinieerd voor een klasse door het klassediagram, wordt de waarde eerst berekend in een uitvoering van het bijhorend sequentiediagram v\'o\'or het wordt toegekend aan de variabele.
+Er zijn berichten die een variabele defini\"eren en er een waarde aan toekennen. Die waarde kan direct berekend worden, zoals in instructie 12 in figuur \ref{fig:seq-diagram-game}. De waarde kan een directe waarde zijn zoals 3 of ``foo'', een variabele, of een bewerking op directe waarden of variabelen van primitieve types. Als de instructie een bewerking op waarden van een primitief type is, moeten de gebruikte waardes allemaal van hetzelfde type zijn en moet het type een geldig invoertype voor de bewerking zijn, anders is het sequentiediagram ongeldig. De toegekende waarde kan ook het resultaat zijn van een methodeoproep, zoals in instructie 3 in dezelfde figuur. Als de methode die wordt opgeroepen een methode is gedefinieerd voor een klasse door het klassediagram, wordt de waarde eerst berekend in een uitvoering van het bijhorend sequentiediagram v\'o\'or het wordt toegekend aan de variabele.
 
 Een numerieke variabele kan een waarde krijgen door middel van de functies \textit{chooseEx(lowerBound, upperBound)} en \textit{chooseIn(lowerBound, upperBound)}. Bij uitvoering van die functies geeft de gebruiker een getal $n$ op. Bij \textit{chooseEx} geldt dat $n \geq lowerBound$ en $n < upperBound$ en bij \textit{chooseIn} geldt dat $n \geq lowerBound$ en $n \leq upperBound$.
 
@@ -51,12 +53,12 @@ Wat betreft associaties beschouwen we enkel binaire associaties. Ze defini\"eren
 %}
 %\end{landscape}
 
-\section{De keuze voor lineaire tijdscalculus}
+\section{De keuze voor lineaire tijdscalculus}\label{sec:sd-ltc}
 UML-diagrammen schrijven mogelijke toestanden van softwaresystemen en acties op deze voor. Die systemen kunnen van toestand veranderen tussen tijdstappen. Sequentiediagrammen zijn een manier om te beschrijven hoe zulke veranderingen teweeggebracht kunnen worden. Tijdens de uitvoering van een sequentiediagram mag het systeem enkel veranderen zoals beschreven door de huidige actie. Daarom hebben we een mechanisme nodig binnen FO($\cdot$) dat dynamische systemen en bewerkingen erop kan beschrijven. Tegelijk moet dat mechanisme garanderen dat eigenschappen van het systeem die niet worden be\"invloed door de huidige beschouwde actie van het sequentiediagram niet veranderen. Lineaire tijdscalculus\cite{BogaertsBart2014Sdsu}, oftewel LTC, voldoet aan deze voorwaarden. Daarom zullen we om sequentiediagrammen uitvoerbaar te maken binnen FO($\cdot$) het generatieproces voor het vocabularium en de theorie die we bekomen hebben in hoofdstuk \ref{sec:consistentie} uitbreiden volgens de principes van LTC. Dit betekent dat we de predicaten voor operaties die voorheen gegenereerd werden in hoofdstuk \ref{sec:consistentie} achterwege laten.
 
 In de volgende secties werken we deze uitbreiding uit voor het sequentiediagram in figuur \ref{fig:seq-diagram-game}.
 
-\section{Veranderingen aan het vocabularium}
+\section{Veranderingen aan het vocabularium}\label{sec:sd-voc}
 Allereerst verwijderen we alle predicaten omtrent methodes gegenereerd volgens de regels in sectie \ref{sec:cons-method}. Sequentiediagrammen modelleren immers het gedrag van methodes gedefinieerd in een bijhorend klassediagram, dus zijn deze predicaten nu overbodig.
 
 In LTC is tijd een centraal concept, dus daarom introduceren we een logisch type $Time \subset \mathbb{N}$. Verder defini\"eren we een parti\"ele functie \textit{Next(Time)} dat voor alle tijdpunten het volgende tijdpunt geeft behalve voor het laatst mogelijke tijdpunt. We defini\"eren ook een constante \textit{Start}, wat het eerst mogelijke tijdpunt aanduidt.
@@ -720,12 +722,12 @@ In een project stelt men doorgaans meerdere sequentiediagrammen op die elkaar oo
 
 \begin{figure}[htp]
 	\centering
-	\includegraphics[width=\textwidth]{chap-gedrag/methodTwo.png}
+	\includegraphics[width=0.7\textwidth]{chap-gedrag/methodTwo.png}
 	\caption{Sequentiediagram voor methodTwo()}
 	\label{fig:methodtwo}
 \end{figure}
 
-In de volgende subsecties gebruiken we het voorbeeld uitgebeeld in figuren \ref{fig:recursion-class} en \ref{fig:methodOne} en \ref{fig:methodtwo} om de gebruikte principes te illustreren.
+In de volgende subsecties gebruiken we het voorbeeld uitgebeeld in figuren \ref{fig:recursion-class}, \ref{fig:methodOne} en \ref{fig:methodtwo} om de gebruikte principes te illustreren.
 
 \subsection{Aanpassingen aan \textit{SDPoint}}
 Het is niet meer voldoende om \textit{SDPoint}s te modelleren als natuurlijke getallen aangezien elk diagram zijn eigen \textit{SDPoint}s heeft. Om de \textit{SDPoint}s horende bij elk diagram van elkaar te kunnen onderscheiden, maken we van het logisch type \textit{SDPoint} nu een \textit{constructed type} in IDP. We gebruiken als patroon voor de naamgeving van elk logisch object $<diagramnaam>\_<instructienummer>$. Voor het voorbeeld krijgen we o.a. $methodOne\_2$ en $methodTwo\_3$. We voegen ook een nieuwe functie toe aan het vocabularium dat gegeven een \textit{SDPoint} het volgende \textit{SDPoint} teruggeeft, namelijk $NextSD(SDPoint) : SDPoint$.
@@ -813,8 +815,26 @@ Er komen twee nieuwe soorten variabelen bij: Objecten waarvan een methode wordt 
 
 Zin \ref{eq:mtwoarg-inc} demonstreert dat ook buiten oproepinstructies of een terugkeer uit een diagram wordt gekeken naar het oproepniveau. Er wordt immers enkel gekeken of geschreven naar de waarde van de 'versie' van de variabele die overeenkomt met het huidige oproepniveau. Dit komt ook terug bij de variabelen die niet het oproepobject of een parameter van een methode voorstellen.
 
+\subsubsection{Causatiezinnen voor het resultaat van een oproep}
+
+Diagrammen die een waarde berekenen hebben een laatste instructie die die waarde doorgeeft aan de oproepende methode. Instructie 5 in diagram \ref{fig:methodtwo} is daar een voorbeeld van. Zulk een instructie benoemt de variabele die dient als resultaat.
+
+Stel een diagram met als naam \textit{diagramA} een ander diagram oproept in instructie $i$ en het resultaat toekent aan de variabele \textit{var}. Stel verder dat het opgeroepen diagram de variabele \textit{return} benoemt als resultaat. Om zulk een toekenning waar te maken, voegen we een zin toe volgens dit patroon:
+
+\begin{align*}
+	&\forall{t}[Time]\forall{st}[StackLevel]\forall{v}[VarType](C\_VarT(t, st, v) \\ &\leftarrow (CurrentStackLevel(t) = st) \land SDPointAt(t, diagramA\_ipost) \\ &\land ReturnT(t, (st+1), v)).
+\end{align*}
+
+De eigenlijke toekenning gebeurt dus in de virtuele instructie na een oproep. Deze instructie haalt de waarde van de resultaatvariabele voor de juist afgesloten stapeldiepte op en slaagt ze op in de juiste variabele.
+
+Voor instructie 3 in \textit{methodOne} krijgen we dus:
+
+\begin{align*}
+&\forall{t}[Time]\forall{st}[StackLevel]\forall{n}[LimitedInt](C\_ResultT(t, st, n) \\ &\leftarrow (CurrentStackLevel(t) = st) \land SDPointAt(t, methodOne\_3post) \\ &\land MTwoArgT(t, (st+1), n)).
+\end{align*}
+
 \subsubsection{Uitkomst van de beschreven procedure}
-Er zijn geen noemenswaardige veranderingen aan hoe we de toestandszinnen opstellen. Bijlage \ref{app:seq-recursion} bevat de uitkomst van de procedure die we hebben beschreven in deze sectie. 
+Er zijn geen noemenswaardige veranderingen aan hoe we de toestandszinnen opstellen. Bijlage \ref{app:seq-recursion} bevat de uitkomst van de procedure die we hebben beschreven in deze sectie voor figuren \ref{fig:recursion-class}, \ref{fig:methodOne} en \ref{fig:methodtwo}. 
 
 \section{Extra veronderstellingen over het ontwerp van sequentiediagrammen}\label{sec:beperkingen}
 Er zijn een aantal veronderstellingen ten aanzien van sequentiediagrammen die de gebruiker als invoer geeft. We maken deze veronderstellingen om bij inferentie op theorie\"en resulterend uit de regels van dit hoofdstuk de rekentijd en het geheugengebruik binnen de perken te houden. De veronderstellingen zijn als volgt:

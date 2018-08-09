@@ -1,6 +1,4 @@
-include<LTC>
-
-LTCvocabulary V {
+vocabulary V {
 
     type Time isa nat
     Start: Time
@@ -19,19 +17,23 @@ LTCvocabulary V {
     
     type A
     
-    ObjT(Time,StackLevel,A)
+    ObjT(Time, StackLevel, A)
     I_ObjT(StackLevel, A)
     C_ObjT(Time, StackLevel, A)
     
-    Obj2T(Time,StackLevel,A)
+    Obj2T(Time, StackLevel, A)
     I_Obj2T(StackLevel, A)
     C_Obj2T(Time, StackLevel, A)
     
-    FinishedT(Time,StackLevel,bool)
+    FinishedT(Time, StackLevel, bool)
     I_FinishedT(StackLevel, bool)
     C_FinishedT(Time, StackLevel, bool)
     
-    MTwoArgT(Time,StackLevel,LimitedInt)
+	ResultT(Time, StackLevel, LimitedInt)
+	I_ResultT(StackLevel, LimitedInt)
+	C_ResultT(Time, StackLevel, LimitedInt)
+	
+    MTwoArgT(Time, StackLevel, LimitedInt)
     I_MTwoArgT(StackLevel, LimitedInt)
     C_MTwoArgT(Time, StackLevel, LimitedInt)
     
@@ -39,7 +41,7 @@ LTCvocabulary V {
     I_CurrentStackLevel : StackLevel
     C_CurrentStackLevel(Time, StackLevel)
     
-    ReturnPoint(Time,StackLevel,SDPoint)
+    ReturnPoint(Time, StackLevel, SDPoint)
     I_ReturnPoint(StackLevel, SDPoint)
     C_ReturnPoint(Time, StackLevel, SDPoint)
     Cn_ReturnPoint(Time, StackLevel, SDPoint)
@@ -64,16 +66,18 @@ theory T:V {
     ! t [Time] st [StackLevel] : C_CurrentStackLevel(Next(t), st) <- (CurrentStackLevel(t) = (st - 1)) & (SDPointAt(t, methodOne_3) | SDPointAt(t, methodTwo_3)).
     ! t [Time] st [StackLevel] : C_CurrentStackLevel(Next(t), st) <- (CurrentStackLevel(t) = (st + 1)) & (SDPointAt(t, methodOne_5) | SDPointAt(t, methodTwo_5)).
     
-    
     ! t [Time] s [StackLevel] : C_FinishedT(t, s, F) <- (s = CurrentStackLevel(t)) & SDPointAt(t, methodOne_2).
     ! t [Time] s [StackLevel] : C_FinishedT(t, s, T) <- (s = CurrentStackLevel(t)) & SDPointAt(t, methodOne_4).
     
+	! t [Time] s [StackLevel] n [LimitedInt] : C_ResultT(t, s, n) <- (CurrentStackLevel(t) = s) & SDPointAt(t, methodOne_3post) & MTwoArgT(t, (s+1), n).
+	
     ! t [Time] s [StackLevel] obj [A] : C_Obj2T(Next(t), s, obj) <- (CurrentStackLevel(t) = (s-1)) & SDPointAt(t, methodOne_3) & ObjT(t, (s-1), obj).
     ! t [Time] s [StackLevel] obj [A] : C_Obj2T(Next(t), s, obj) <- (CurrentStackLevel(t) = (s-1)) & SDPointAt(t, methodTwo_3) & Obj2T(t, (s-1), obj).
     
     ! t [Time] s [StackLevel] : C_MTwoArgT(Next(t), s, 1) <- (CurrentStackLevel(t) = (s-1)) & SDPointAt(t, methodOne_3).
     ! t [Time] s [StackLevel] n [LimitedInt] : C_MTwoArgT(Next(t), s, n) <- (CurrentStackLevel(t) = (s-1)) & SDPointAt(t, methodTwo_3) & MTwoArgT(t, (s-1), n).
     ! t [Time] s [StackLevel] n [LimitedInt] : C_MTwoArgT(Next(t), s, n) <- (CurrentStackLevel(t) = s) & SDPointAt(t, methodTwo_2) & (? n1 [LimitedInt] : MTwoArgT(t, s, n1) & (n = n1 + 1)).
+    ! t [Time] s [StackLevel] n [LimitedInt] : C_MTwoArgT(Next(t), s, n) <- (CurrentStackLevel(t) = s) & SDPointAt(t, methodTwo_3post) & MTwoArgT(t, (s+1), n).
     }
     
     {
@@ -101,6 +105,10 @@ theory T:V {
     ! t [Time] st [StackLevel] b [bool] : FinishedT(t, st, b) <- C_FinishedT(t, st, b).
     ! t [Time] st [StackLevel] b [bool] : FinishedT(Next(t), st, b) <- FinishedT(t, st, b) & ~(? b1 [bool] : C_FinishedT(Next(t), st, b1) & ~(b = b1)).
     
+    ! st [StackLevel] n [LimitedInt] : ResultT(Start, st, n) <- I_ResultT(st, n).
+    ! t [Time] st [StackLevel] n [LimitedInt] : ResultT(t, st, n) <- C_ResultT(t, st, n).
+    ! t [Time] st [StackLevel] n [LimitedInt] : ResultT(Next(t), st, n) <- ResultT(t, st, n) & ~(? n1 [LimitedInt] : C_ResultT(Next(t), st, n1) & ~(n = n1)).
+	
     ! st [StackLevel] n [LimitedInt] : MTwoArgT(Start, st, n) <- I_MTwoArgT(st, n).
     ! t [Time] st [StackLevel] n [LimitedInt] : MTwoArgT(t, st, n) <- C_MTwoArgT(t, st, n).
     ! t [Time] st [StackLevel] n [LimitedInt] : MTwoArgT(Next(t), st, n) <- MTwoArgT(t, st, n) & ~(? n1 [LimitedInt] : C_MTwoArgT(Next(t), st, n1) & ~(n = n1)).
@@ -111,8 +119,7 @@ structure S:V {
     Time = { 0..20 }
     Start = 0
 //    Next = { 0->1;1->2;2->3;3->4 }
-    Next = { 0->1;1->2;2->3;3->4;4->5;5->6;6->7;7->8;8->9;9->10;10->11;11->12;
-	12->13;13->14;14->15;15->16;16->17;17->18;18->19;19->20 }
+    Next = { 0->1;1->2;2->3;3->4;4->5;5->6;6->7;7->8;8->9;9->10;10->11;11->12;12->13;13->14;14->15;15->16;16->17;17->18;18->19;19->20 }
     NextSD = { methodOne_1->methodOne_2; methodOne_2->methodOne_3; methodOne_3->methodOne_3post; methodOne_3post->methodOne_4; methodOne_4->methodOne_5; methodTwo_1->methodTwo_2; methodTwo_2->methodTwo_3; methodTwo_3->methodTwo_3post; methodTwo_3post->methodTwo_4; methodTwo_4->methodTwo_5 }
     A = { objA }
     I_SDPointAt = {methodOne_1}
@@ -121,6 +128,7 @@ structure S:V {
     I_ObjT = {1, objA}
     I_Obj2T = {}
     I_FinishedT = {}
+	I_ResultT = {}
     I_MTwoArgT = {}
     C_ObjT = {}
 }
