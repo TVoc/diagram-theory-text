@@ -399,7 +399,7 @@ We will use a translation of a class diagram to verify whether the diagram is co
 
 We will use a translation of a set of sequence diagrams to simulate the behavior modelled therein. We will then use that translation to verify whether the diagrams fulfill certain requirements.
 
-The software we use to verify consistency, detect design flaws, simulate sequence diagrams and verify requirements for sequence diagrams is IDP\cite{DeCatBroes2014PLaa}, a knowledge base system for FO($\cdot$). IDP can perform model expansion and other forms of inference given one or more input vocabularies, theories and structures. 
+The software we use to verify consistency, detect design flaws, simulate sequence diagrams and verify requirements for sequence diagrams is IDP\cite{DeCatBroes2014PLaa}, a knowledge base system for FO($\cdot$). IDP can perform model expansion, progression inference and other forms of inference given one or more input vocabularies, theories and structures. 
 
 The rest of this article is structured as follows. Section \ref{sec:related-work} gives an overview of related work with regard to translating UML diagrams to logic. Section \ref{sec:class-diagram} introduces a method to translate class diagrams to FO($\cdot$) and verifies consistency of and detects design flaws in an example diagram. Section \ref{sec:seq} describes our method to translate a set of sequence diagrams to FO($\cdot$). Section \ref{sec:evaluation} evaluates the use of our method to design a set of diagrams that models the game Nim, whether the translation can be used to simulate the game and to verify whether certain requirements hold, and performance in terms of execution time and grounding size. Finally, section \ref{sec:conclusion} concludes the article.
 % You must have at least 2 lines in the paragraph with the drop letter
@@ -413,9 +413,9 @@ In \cite{BerardiDaniela2005RoUc}, the authors first provide a method to translat
 
 In \cite{KuhlmannMirco2012FUaO}, the authors briefly introduce relational logic and outline how to translate class diagrams to relational logic by defining constants that represent instances of a class and binary relations that relate constants according to attribute and association relationships. The translation imposes conditions on membership of the relations in order to enforce correct typing and multiplicites defined in the diagram. They also show how to translate constraints expressed in OCL\cite{WarmerJosB1999Ocl:}. The authors describe how they use Kodkod\cite{10.1007/978-3-540-71209-1_49} to calculate instances of an output relational model. Kodkod translates relational models to SAT-formulas and translates solutions in SAT format back to solutions for the relational model.
 
-In \cite{RamalhoFranklin2004CTFL}, the authors provide an introduction to Concurrent Transaction Frame Logic\cite{kifer1995deductive,kifer1996concurrency} (CTFL). CTFL integrates two extensions of first-order Horn-clause logic: Frame Logic (FL), which models objects and inheritance; and Concurrent Transaction Logic (CTL), which models behavior with regard to concurrent logical database updates, transactions, process communication and temporal execution constraints. The authors show how class diagrams and activity diagrams\cite{RumbaughJames2005Tuml} map to features of CTFL and use the resulting executable CTFL program to verify consistency of the given class and activity diagrams.
+In \cite{LIMA2009143}, the authors describe how to represent sequence diagrams in PROMELA\cite{neumann2014using}, a modelling language that models processes. PROMELA is used by the SPIN\cite{holzmann2004spin} model checker to verify whether properties expressed in linear temporal logic (LTL) hold in the modelled processes. It is possible to simulate sequence diagrams with the proposed representation. The paper also describes how to represent state transitions during the execution of a sequence diagram by listing the performed action, the lifeline that performed the action, the message and the lifeline that sent/received the message for each time step. The authors present a sequence diagram that models the behavior of an ATM in order to prove they can verify certain properties for a sequence diagram. They express four properties in LTL. SPIN determines that only one property holds. For the other three properties, SPIN generates a counterexample of an execution of the sequence diagram that violates the property. However, the authors consider sequence diagrams independently from any class diagram. Therefore, their method cannot truly represent a system of which the state may change over time. They also do not consider sequence diagrams that call other sequence diagrams. Full understanding of a system may only be gained by considering that type of sequence diagram.
 
-Every work discussed in this section uses a subset of FO to perform verification and certain forms of inference on UML diagrams. Our contribution is to instead use FO($\cdot$) to both model class and sequence diagrams and to perform verification on those diagrams.
+Every work discussed in this section uses a subset of FO to perform verification and certain forms of inference on UML class diagrams. Sequence diagrams are considered separately. Our contribution is to instead use FO($\cdot$) to both model class and sequence diagrams and to perform verification on those diagrams.
 
 One cannot express transitive closure in FO in a general manner and hence also not in these subsets of FO. However, transitive closures are easily expressible in FO($\cdot$), and hence it can also correctly specify inheritance relationships. 
 
@@ -484,13 +484,13 @@ In this article, we consider three different kinds of design flaws related to as
 \begin{itemize}
 	\item \textbf{Many-to-many associations}: The presence of a many-to-many association is generally an indication that there is a class missing from the design.
 	\item \textbf{Loose class}: If a class cannot be reached by navigating associations, that class is essentially useless and should be eliminated.
-	\item \textbf{Redundant associations}\cite{Balaban2015}: Consider figure \ref{fig:design-flaw}. In the association \textit{Alice}---\textit{Charlie}, the lower bounds for both roles are greater than the lower bounds in the association \textit{Bob}---\textit{David}. Similarly, the upper bounds for \textit{Alice}---\textit{Charlie} are less than the upper bounds for \textit{Bob}---\textit{David}. This means that the multiplicities for \textit{Bob}---\textit{David} are more permissive than those for \textit{Alice}---\textit{Charlie} and are thus unnecessary. Associations of this kind should be removed in order to improve the readability of the diagram.
+	\item \textbf{Insufficiently precise upper bound in a multiplicity}\cite{Balaban2015}: Consider figure \ref{fig:design-flaw}. The multiplicities imply that classes \textit{Alice}, \textit{Bob} and \textit{Charlie} contain an equal number of instances. This renders the upper bound of 2 on \textit{Alice} in \textit{Charlie}---\textit{Alice} insufficiently precise since the other bounds imply that every instance of \textit{Charlie} is associated with exactly one instance of \textit{Alice}. Since this fact is not immediately apparent, such a bound should be corrected to improve the understandability of the diagram. Either set the upper bound on \textit{Alice} to 1, set the lower bound on \textit{Alice} to 0 or increase the upper bound on \textit{Charlie}.
 \end{itemize}
 
 \begin{figure}[!t]
 	\centering
-	\includegraphics[width=2.5in]{hierarchy}
-	\caption{Example of loose class and redundant association}
+	\includegraphics[width=2in]{cycle}
+	\caption{Example of loose class and insufficiently precise multiplicity upper bound}
 	\label{fig:design-flaw}
 \end{figure}
 
@@ -506,22 +506,18 @@ For the first two named design flaws, we introduce the following two rules:
 
 \begin{align}
 	\nonumber &\forall{x}[ClassObject]\forall{y}[ClassObject](ManyToMany(x, y) \\ \nonumber &\Leftrightarrow BiAssoc(x, y) \land \lnot \exists{z}[nat](BiAssocHigh(x, y, x, z)) \\ &\land \lnot \exists{z}[nat](BiAssocHigh(x, y, y, z))).\label{form:flaw1} \\
-	\nonumber &\forall{x}[ClassObject](LooseClass(x) \Leftrightarrow \\ \nonumber &\lnot (\exists{y}[ClassObject](\lnot(x = y) \land (BiAssoc(x, y) \\ \nonumber  &\lor \exists{s}[ClassObject]\exists{y}[ClassObject]\\ &(IsSupertypeOf(s, x) \land BiAssoc(s, y)))))).\label{form:flaw2}
+	\nonumber &\forall{x}[ClassObject](LooseClass(x) \Leftrightarrow \\ \nonumber &\lnot (\exists{y}[ClassObject](\lnot(x = y) \land (BiAssoc(x, y) \\ \nonumber  &\lor \exists{s}[ClassObject]\exists{y}[ClassObject]\\ &(IsSupertypeOf(s, x) \land BiAssoc(s, y)))))).\label{form:flaw2} \\
+	&\nonumber\forall{x}[ClassObject]\forall{y}[ClassObject] \\
+	&\nonumber(CycleImpreciseUpperBound(x, y, x) \\ &\nonumber\Leftrightarrow EqualNbInstances(x, y) \land BiAssocLow(x, y, x) \\ &\nonumber= BiAssocHigh(x, y, y) = BiAssocLow(x, y, y) \\ &\nonumber\land (BiAssocHigh(x, y, x) > BiAssocLow(x, y, x) \\ &\lor \lnot\exists{z}[nat](BiAssocHigh(x, y, x) = z))).\label{form:flaw3}
 \end{align}
 
 Rule \ref{form:flaw1} designates an association as many-to-many if neither role specifies an upper bound.
 
 Rule \ref{form:flaw2} designates a class as loose if it is not directly associated with another class or if it does not have a superclass that is directly associated with another class.
 
-The rule that detects redundant associations is too large to include in this article in a format that is reasonably understandable. It is structured as follows:
+Rule \ref{form:flaw3} designates an upper bound as insufficiently precise if the association is between two classes with an equal number of instances and if the other three bounds are both equal to each other and less than the considered upper bound. \textit{EqualNbInstances/2} is a helper predicate that expresses that two classes must have an equal number of instances. We construct the interpretation of this predicate by way of transitive closure over associations for which all bounds are equal.
 
-\begin{itemize}
-	\item Classes \textit{x} and \textit{y} are associated. There is a class \textit{Sx} which is a superclass of \textit{x} and is associated with \textit{y}. Association \textit{x}---\textit{y} has a greater upper bound or a smaller lower bound at the \textit{x}-end, rendering \textit{Sx}---\textit{y} redundant.
-	\item Classes \textit{x} and \textit{y} are associated. There is a class \textit{Sy} which is a superclass of \textit{y} and is associated with \textit{x}. Association \textit{x}---\textit{y} has a greater upper bound or a smaller lower bound at the \textit{x}-end, rendering \textit{x}---\textit{Sy} redundant.
-	\item Classes \textit{x} and \textit{y} are associated. There are classes \textit{Sx}, a superclass of \textit{x}, and \textit{Sy}, a superclass of \textit{y}. Association \textit{x}---\textit{y} has a greater upper bound or a smaller lower bound at the \textit{x}-end, rendering \textit{Sx}---\textit{Sy} redundant. 
-\end{itemize}
-
-We combine the information from the diagrams in figures \ref{fig:game-class} and \ref{fig:game-class} into one theory. IDP finds all many-to-many associations and concludes that \textit{Loose} is a loose class and that association \textit{Bob}---\textit{David} is redundant.
+We combine the information from the diagrams in figures \ref{fig:game-class} and \ref{fig:design-flaw} into one theory. IDP finds all many-to-many associations, concludes that \textit{Loose} is a loose class and the upper bound on \textit{Alice} in \textit{Charlie}---\textit{Alice} is insufficiently precise.
 
 \section{Translating sequence diagrams to FO($\cdot$)}\label{sec:seq}
 We will use the framework of linear time calculus\cite{BogaertsBart2014Sdsu} (LTC). LTC can model dynamic systems that change over time. Across each time step, only the inertial predicates that need be changed to the diagram do so, while all other inertial predicates remain the same. If we model diagram variables, an instruction pointer, a stack level counter and a return point stack as inertial predicates, we have exactly the elements we need to translate mutually recursive sequence diagrams to FO($\cdot$) theories.
@@ -602,7 +598,7 @@ The requirements we tested for are whether \textit{isEmpty()} returns true if an
 
 The expectation for both diagrams is that the first two sentences lead to an unsatisfiable theory, while the third and fourth sentences lead IDP to answer with the expected models. The third sentence for \textit{isEmpty()} should lead IDP to answer with the model corresponding to an empty heap while the fourth sentence should lead to an answer with all models corresponding to non-empty heaps. Similarly, the third sentence for \textit{allHeapsEmpty()} should lead to an answer with the model corresponding to all heaps being empty and the fourth sentence should lead to an answer with all models corresponding to at least one non-empty heap.
 
-The input structure for \textit{isEmpty()} specifies that there are seven time steps in total, while for \textit{allHeapsEmpty()}, there are 22 time steps in total, which suffices to reach a conclusive answer for two heaps. Each run did indeed lead to the expected answer. For each diagram, the runs were similar in terms of execution time and grounding size. For \textit{isEmpty()}, the execution time is approximately 29 seconds and the size of the grounding is 578,306. For \textit{allHeapsEmpty()} given two heaps, the execution time is approximately 1 minute and 28 seconds and the grounding size is 2,249,098.
+The input structure for \textit{isEmpty()} specifies that there are seven time steps in total, while for \textit{allHeapsEmpty()}, there are 25 time steps in total. Each run did indeed lead to the expected answer. For each diagram, the runs were similar in terms of execution time and grounding size. For \textit{isEmpty()}, the execution time is approximately 40 seconds, the size of the grounding is 578,306 and memory usage is 2.14 GB. For \textit{allHeapsEmpty()} given two heaps, the execution time is approximately 43.29 seconds, the grounding size is 366,643 and memory usage is 1.63 GB.
 
 \begin{figure*}[!t]
 	\centering
