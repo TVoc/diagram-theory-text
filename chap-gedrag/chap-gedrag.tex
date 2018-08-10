@@ -27,6 +27,8 @@ Een numerieke variabele kan een waarde krijgen door middel van de functies \text
 
 Een variabele kan ook gedefinieerd worden door een paar van methodeoproep en terugkeerbericht. Instructies 6 en 7 in figuur \ref{fig:seq-diagram-game} zijn daar een voorbeeld van. Instructie 6 is een methodeoproep. Instructie 7 definieert impliciet de variabele \textit{defenceVal} en kent de waarde berekend in de oproep eraan toe.
 
+Een oproep van een methode die \textit{void} als resultaattype heeft mag niet gepaard gaan met een definitie van of toekenning aan een variabele.
+
 Methodeoproepen zijn enkel geldig als de methode die wordt opgeroepen gedefinieerd is voor de klasse waar de ontvanger van het bericht een instantie van is. Als een methode gedefinieerd voor een klasse in het klassediagram wordt opgeroepen, wordt verwacht dat voor elke parameter een geldige waarde van het juiste type wordt opgegeven, hetzij een directe waarde, hetzij een variabele. Indien het verkeerde aantal argumenten wordt opgegeven, is het gedrag van de oproep niet gedefinieerd. Indien een waarde van een fout type wordt opgegeven, is het sequentiediagram niet geldig.
 
 Attributen en associaties defini\"eren voor klasses impliciet enkele methodes. 
