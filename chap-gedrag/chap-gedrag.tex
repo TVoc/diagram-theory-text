@@ -256,6 +256,9 @@ We geven een overzicht van de procedure in algoritme \ref{alg:transition-to-frag
 	\KwOut{Een mapping van bericht naar string, zoals in algoritme \ref{alg:transition-to-frag}}
 	\textit{uitvoer $\leftarrow \emptyset$}; \\
 	\ForEach{\textit{kind} $\in$ \textit{kinderen}}{
+	\If{kind is eerste kind $\land$ slaEersteOver}{
+	\textit{gezien $\leftarrow$ gezien + kind}; \\
+	\textbf{continue};}
 	\eIf{kind is lusfragment}{
 	\eIf{allemaal}{
 	\textit{uitvoer $\leftarrow$ uitvoer $\cup$ bepaalTransitieIn(kind, aggregateVoorwaarde)};
@@ -372,7 +375,7 @@ Het doel is om te bepalen welke berichten dienen als punten waar het uitvoerpad 
 	\label{alg:exitToOutside}
 \end{algorithm}
 
-Merk op in stap 3 dat \textit{laatsteBericht} later wordt gemapt naar een mapping van berichten naar de voorwaarde waaronder naar die berichten wordt gesprongen vanaf \textit{laatsteBericht}.
+Merk op in stap 1 dat \textit{laatsteBericht} later wordt gemapt naar een mapping van berichten naar de voorwaarde waaronder naar die berichten wordt gesprongen vanaf \textit{laatsteBericht}.
 Algoritme \ref{alg:calcExitForMessages} gebruikt eerst algoritme \ref{alg:determineFinalMessage} om te bepalen of het laatste bericht van het fragment rechtstreeks deel is ervan. Zoniet, gaat het algoritme voort met de kinderen van het fragment. Zoja, controleren we of het fragment een ouder heeft. Als dat zo is, dan kan het zijn dat die ouder een bericht heeft dat in het diagram meteen na het laatste bericht van het fragment komt en dat het uitvoerpad dus mogelijk naar dat bericht springt. Als dat bericht rechtstreeks deel is van de ouder, dan wordt genoteerd dat de uitvoering vanaf het laatste bericht springt naar dat bericht en gaat het algoritme verder vanaf stap 31 (door ruimtegebrek is deze mogelijkheid niet neergeschreven in deze weergave van algoritme \ref{alg:calcExitForMessages}). Als het bericht in de plaats deel is van een kind van de ouder, haalt het algoritme het fragment op waarvan dat bericht rechtstreeks deel is, klimt het naar boven in de boom tot het een kind van de ouder tegenkomt, bundelt opeenvolgende lussen als dat kind een lusfragment is (en ook het fragment na die lussen, als er \'e\'en bestaat) en roept dan algoritme \ref{alg:transition-to-frag} op op alle gebundelde fragmenten. In de uitvoer wordt dan genoteerd dat het uitvoerpad kan springen naar de berichten die deel zijn van de uitvoer van algoritme \ref{alg:transition-to-frag}. Als op het laatste lusfragment een bericht volgt in plaats van een ander type fragment, noteren we dat naar dat bericht kan worden gesprongen (deze mogelijkheid staat niet in het algoritme door ruimtegebrek). Het algoritme gaat verder met de kinderen van het oorspronkelijk fragment.
 
 Als het bericht na het laatste bericht geen deel is van de ouder, of als het laatste lid van \textit{kinderenNa} een lus is, of als het laatste lid van \textit{kinderenNa} geen lus is en er volgt geen bericht op, controleren we of de ouder zelf een ouder heeft. Zoja, neemt het algoritme een stap naar boven in de fragmentenboom. Bij deze stap markeren we eerst het huidige fragment zodat deze niet meer beschouwd wordt in verdere oproepen van algoritme \ref{alg:transition-to-frag} en concateneren we \textit{aggregateVoorwaarde} met de negaties van de lusvoorwaardes van de lussen op het einde van het fragment, als die er zijn (niet weergegeven in algoritme door plaatsgebrek). Zonee, betekent dit dat de top van de fragmentenboom is bereikt en dat het uitvoerpad de boom moet verlaten. Algoritme \ref{alg:exitToOutside} zorgt voor deze stap uit de boom. We controleren of de fragmentenboom wordt opgevolgd door een lusfragment en bundelen alle volgende lusfragmenten (en het meteen daaropvolgend fragment, als er \'e\'en bestaat) als dat zo is. We roepen algoritme \ref{alg:transition-to-frag} op met die fragmenten om de beurt als argument en registreren de uitvoer als berichten waarnaar gesprongen kan worden. Als er geen lus volgt op de boom, roepen we algoritme \ref{alg:transition-to-frag} op als er een fragment volgt, en anders noteren we het bericht dat meteen volgt op de boom als een bericht waarnaar gesprongen kan worden.
@@ -508,42 +511,28 @@ Deze sectie gebruikt figuur \ref{fig:seq-diagram-frag-ex} om een voorbeeld te ge
 
 In wat volgt gebruiken we de voorwaarde voor een fragment als naam voor het fragment zelf. Om het onderscheid te maken tussen deze twee manieren waarop we de voorwaarde gebruiken, schrijven we \fragname{loop1} om aan te duiden dat de voorwaarde als naam wordt gebruikt en \fragcond{loop1} wanneer we het effectief als voorwaarde voor de uitvoering van een fragment gebruiken. \fragname{alt1} verwijst naar het gehele alt-fragment en \fragname{alt1a} en \fragname{alt1b} verwijzen respectievelijk naar het \textit{if}-deel en het \textit{else}-deel.
 
+We geven een beschrijving van de uitvoering op hoog niveau.
+
 We roepen algoritme \ref{alg:processCombinedFragment} eerst op op met \fragname{loop1} als argument. Aangezien het geen ouder heeft en \fragmessage{message1}, wat geen fragment heeft, eraan voorafgaat, noteren we in de uitvoer:
 
 \begin{align*}
 	&\transitionentry[\fragmessage{message1}]{\lnot \fragcond{loop1}}{\fragmessage{message10}}
 \end{align*}
 
-Er is geen fragment dat v\'o\'or dit fragment komt, dus roepen we algoritme \ref{alg:transition-to-frag} op. \fragmessage{message2} is rechtstreeks deel van \fragname{loop1}, dus noteren we in de uitvoer voor dit algoritme:
+Er is geen fragment dat v\'o\'or dit fragment komt, dus roepen we algoritme \ref{alg:transition-to-frag} op.
+
+De recursieve oproepen van algoritme \ref{alg:transition-to-frag} zorgen ervoor dat alle fragmenten worden bekeken. Verder verzekeren ze ook dat de voorwaarde voor een ouderfragment wordt doorgegeven aan alle geneste fragmenten die zelf een fragment hebben als eerste container. Algoritme \ref{alg:wrap-loops} zorgt ervoor dat $\lnot$\fragcond{loop3} wordt opgenomen in de voorwaarde voor de uitvoering van \fragname{loop4}. De uitkomst van de uitvoering van algoritme \ref{alg:transition-to-frag} op \fragname{loop1} is:
 
 \begin{align*}
-	\transitionentry{\fragcond{loop1}}{\fragmessage{message2}}
-\end{align*}
-
-Hierna gaan we verder naar algoritme \ref{alg:wrap-loops} met \fragname{alt1} en \fragname{loop2} als invoerfragmenten en \textit{allemaal} gezet naar \textbf{true}. \fragname{alt1} is geen lusfragment en slaan we over. Vervolgens roepen we algoritme \ref{alg:transition-to-frag} op met \fragname{loop2} als argument.
-\fragmessage{message6} is niet rechtstreeks deel van \fragname{loop2}, dus zetten we \textit{voorwaarde} naar \fragcondt{loop2} en roepen eerst algoritme \ref{alg:transition-to-frag} op met \fragname{loop3} als argument. Op dit niveau wordt \textit{voorwaarde} gezet naar ``\fragcond{loop2} $\land$ \fragcond{loop3}'' en roepen we algoritme \ref{alg:transition-to-frag} op met \fragname{alt2} als argument. \fragmessage{message6} en \fragmessage{message7} zijn rechtstreeks deel van \fragname{alt2}, dus hebben we:
-
-\begin{align*}
-	&\transitionentry{\fragcond{loop2} \land \fragcond{loop3} \land \fragcond{alt2a}}{\fragmessage{message6}} \\
-	&\transitionentry{\fragcond{loop2} \land \fragcond{loop3} \land \fragcond{alt2b}}{\fragmessage{message7}}
-\end{align*}
-
-We keren terug naar het niveau van \fragname{loop2}. \fragname{loop3} was een lus, dus zetten we \textit{voorwaarde} naar ``\fragcond{loop2} $\land \lnot$ \fragcond{loop3}'' en roepen we algoritme \ref{alg:wrap-loops} op met als argument de verzameling met enkel \fragname{loop4} als lid. Het resultaat van die oproep is dat we neerschrijven:
-
-\begin{align*}
-	\transitionentry{\fragcond{loop2} \land \lnot \fragcond{loop3} \land \fragcond{loop4}}{\fragmessage{message8}}
-\end{align*}
-
-We keren terug naar het niveau van \fragname{loop2}. Dit fragment heeft verder geen kinderen, dus eindigt deze oproep van algoritme \ref{alg:wrap-loops} hier.
-
-We keren terug naar stap 7 in algoritme \ref{alg:transition-to-frag} voor \fragname{loop1}. \fragname{alt1} is niet eerder gemarkeerd door algoritme \ref{alg:wrap-loops}, dus gebruiken we het als argument voor een oproep van algoritme \ref{alg:transition-to-frag}. Het resultaat van die oproep is:
-
-\begin{align*}
+	&\transitionentry{\fragcond{loop1}}{\fragmessage{message2}} \\
 	&\transitionentry{\fragcond{alt1a}}{\fragmessage{message3}} \\
-	&\transitionentry{\fragcond{alt1b}}{\fragmessage{message5}}
+	&\transitionentry{\fragcond{alt1b}}{\fragmessage{message5}} \\
+	&\transitionentry{\fragcond{loop2} \land \fragcond{loop3} \land \fragcond{alt2a}}{\fragmessage{message6}} \\
+	&\transitionentry{\fragcond{loop2} \land \fragcond{loop3} \land \fragcond{alt2b}}{\fragmessage{message7}} \\
+	&\transitionentry{\fragcond{loop2} \land \lnot \fragcond{loop3} \land \fragcond{loop4}}{\fragmessage{message8}}
 \end{align*}
 
-Dit markeert het einde van algoritme \ref{alg:transition-to-frag} voor \fragname{loop1}. In algoritme \ref{alg:processCombinedFragment} gaan we nu over naar stap 10. Na het uitvoeren van de lus verkrijgen we:
+In algoritme \ref{alg:processCombinedFragment} gaan we nu over naar stap 10. Na het uitvoeren van de lus verkrijgen we:
 
 \begin{align*}
 	&\transitionentry[\fragmessage{message1}]{\fragcond{loop1}}{\fragmessage{message2}} \\
@@ -557,90 +546,49 @@ Dit markeert het einde van algoritme \ref{alg:transition-to-frag} voor \fragname
 	&\transitionentry[\fragmessage{message7}]{\fragcond{loop2} \land \lnot \fragcond{loop3} \land \fragcond{loop4}}{message8}
 \end{align*}
 
-Nu bereiken we stap 18 in algoritme \ref{alg:processCombinedFragment}. Deze stap houdt in dat we algoritme \ref{alg:calcExitForMessages} oproepen met \fragname{loop1} als argument.
+Nu bereiken we stap 18 in algoritme \ref{alg:processCombinedFragment}. Deze stap houdt in dat we algoritme \ref{alg:calcExitForMessages} oproepen met \fragname{loop1} als argument. Dit algoritme wordt recursief opgeroepen op alle kinderen.
 
-In stap 1 roepen we eerst algoritme \ref{alg:determineFinalMessage} op met \fragname{loop1} als argument. De uitkomst daarvan is dat \fragmessage{message9} herkend wordt als laatste bericht. \fragname{loop1} heeft geen ouder, dus gebruiken we algoritme \ref{alg:exitToOutside} met \fragname{loop1} als fragment en ``$\lnot$ \fragcond{loop1}'' als transitievoorwaarde als invoer. Er volgen geen fragmenten op \fragname{loop1} en \fragmessage{message10} is geen deel van een fragment, dus noteren we:
+Algoritme \ref{alg:determineFinalMessage} vindt eerst \fragmessage{message9} als laatste bericht van \fragname{loop1}. \fragmessage{message10} is geen deel van een fragment, dus noteert algoritme \ref{alg:exitToOutside} dat de uitvoering van \fragmessage{message9} springt naar \fragmessage{10} als \fragcond{loop1} niet meer geldt.
 
-\begin{align*}
-	\transitionentry{\lnot \fragcond{loop1}}{\fragmessage{message10}}
-\end{align*}
+Vervolgens vindt algoritme \ref{alg:determineFinalMessage} \fragmessage{message4} en \fragmessage{message5} als laatste berichten van respectievelijk \fragname{alt1a} en \fragname{alt1b}. \fragmessage{message6} is deel van de ouder van \fragname{alt1}, namelijk \fragname{loop1}, dus wordt algoritme \ref{alg:transition-to-frag} opgeroepen op \fragname{loop2}. Op deze manier wordt gevonden dat de uitvoering van \fragmessage{message4} naar \fragmessage{message6} springt als \fragcond{loop2} $\land$ \fragcond{loop3} $\land$ \fragcond{alt2a} geldt, naar \fragmessage{message7} als \fragcond{loop2} $\land$ \fragcond{loop3} $\land$ \fragcond{alt2b} geldt en naar \fragmessage{message8} als \fragcond{loop2} $\land \lnot$ \fragcond{loop3} $\land$ \fragcond{loop4} geldt. Het kan ook zijn dat de uitvoering van \fragmessage{message4} rechtstreeks springt naar \fragmessage{message9} omdat $\lnot$\fragcond{loop2}. Diezelfde mogelijke sprongen gelden ook voor \fragmessage{message5}.
 
-Voor stap 6 in algoritme \ref{alg:calcExitForMessages} noteren we:
+Algoritme \ref{alg:determineFinalMessage} duidt \fragmessage{message6} en \fragmessage{message7} aan als laatste berichten van respectievelijk \fragname{alt2a} en \fragname{alt2b}. \fragmessage{message8} is deel van de ouder van \fragname{alt2}, namelijk \fragname{loop2}, dus springt de uitvoering van \fragmessage{message6} en \fragmessage{message7} naar \fragmessage{message8} als $\lnot$\fragcond{loop3} $\land$ \fragcond{loop4} geldt. Algoritme \ref{alg:calcExitForMessages} zet nu een stap naar boven in de boom naar \fragname{loop1}. \fragmessage{message9} is daar een deel van, dus springt de uitvoering van \fragmessage{message6} en \fragmessage{message7} naar \fragmessage{message9} als $\lnot$\fragcond{loop2} $\land \lnot$ \fragcond{loop3} $\land lnot$ \fragcond{loop4} geldt.
 
-\begin{align*}
-	\transitionentry[\fragmessage{message9}]{\lnot \fragcond{loop1}}{\fragmessage{message10}}
-\end{align*}
-
-Algoritme \ref{alg:calcExitForMessages} gaat nu verder met de kinderen van \fragname{loop1}. \fragname{alt1} komt eerst aan bod, en we bekijken eerst het \textit{if}-deel. Het resultaat van algoritme \ref{alg:determineFinalMessage} is \textit{\{\fragmessage{message4}, $\epsilon$\}}. \fragname{loop1} is de ouder van \fragname{alt1} en \fragmessage{message6} is deel van \fragname{loop1}, dus we gaan naar stap 11. In wat volgt roepen we algoritme \ref{alg:transition-to-frag} op met \fragname{loop2} als argument. Het resultaat daarvan gebruiken we om te noteren:
-
+Vervolgens vindt algoritme \ref{alg:determineFinalMessage} \fragmessage{message8} als laatste bericht van \fragname{loop4}. Algoritme \ref{alg:calcExitForMessages} vindt geen bericht na \fragmessage{message8} dat deel is van de ouder van \fragname{loop4}, namelijk \fragname{loop2}, maar wel van de ouder van \fragname{loop2}, namelijk \fragname{loop1}. Dit is \fragmessage{message9}. De uitvoering springt dus van \fragmessage{message8} naar \fragmessage{message9} als $\lnot$ \fragcond{loop2} $\land \lnot$ \fragcond{loop4} geldt.
+ 
+Hier stopt de uitvoering van algoritme \ref{alg:calcExitForMessages}. Samengevat was de uitvoer: 
+ 
 \begin{align*}
 	&\transitionentry[\fragmessage{message4}]{\fragcond{loop2} \land \fragcond{loop3} \land \fragcond{alt2a}}{\fragmessage{message6}} \\
 	&\transitionentry[\fragmessage{message4}]{\fragcond{loop2} \land \fragcond{loop3} \land \fragcond{alt2b}}{\fragmessage{message7}} \\
-	&\transitionentry[\fragmessage{message4}]{\fragcond{loop2} \land \lnot \fragcond{loop3} \land \fragcond{loop4}}{\fragmessage{message8}}
-\end{align*}
-
-Als gevolg van het feit dat \fragmessage{message9} volgt op \fragname{loop2}, noteren we ook:
-
-\begin{align*}
-	&\transitionentry[\fragmessage{message4}]{\lnot \fragcond{loop2}}{message9}
-\end{align*}
-
-Het voorgaande wordt herhaald voor het \textit{else}-deel. Op gelijkaardige wijze voor het \textit{if}-deel leidt dit tot:
-
-\begin{align*}
+	&\transitionentry[\fragmessage{message4}]{\fragcond{loop2} \land \lnot \fragcond{loop3} \land \fragcond{loop4}}{\fragmessage{message8}} \\
+	&\transitionentry[\fragmessage{message4}]{\lnot \fragcond{loop2}}{message9} \\
 	&\transitionentry[\fragmessage{message5}]{\fragcond{loop2} \land \fragcond{loop3} \land \fragcond{alt2a}}{\fragmessage{message6}} \\
 	&\transitionentry[\fragmessage{message5}]{\fragcond{loop2} \land \fragcond{loop3} \land \fragcond{alt2b}}{\fragmessage{message7}} \\
 	&\transitionentry[\fragmessage{message5}]{\fragcond{loop2} \land \lnot \fragcond{loop3} \land \fragcond{loop4}}{\fragmessage{message8}} \\
-	&\transitionentry[\fragmessage{message5}]{\lnot \fragcond{loop2}}{message9}
+	&\transitionentry[\fragmessage{message5}]{\lnot \fragcond{loop2}}{message9} \\
+	&\transitionentry[\fragmessage{message6}]{\fragcond{loop4} \land \lnot \fragcond{loop3}}{\fragmessage{message8}} \\
+	&\transitionentry[\fragmessage{message6}]{\lnot \fragcond{loop3} \land \lnot \fragcond{loop4} \land \lnot \fragcond{loop2}}{\fragmessage{message9}} \\
+	&\transitionentry[\fragmessage{message7}]{\fragcond{loop4} \land \lnot \fragcond{loop3}}{\fragmessage{message8}} \\
+	&\transitionentry[\fragmessage{message7}]{\lnot \fragcond{loop3} \land \lnot \fragcond{loop4} \land \lnot \fragcond{loop2}}{\fragmessage{message9}} \\
+	&\transitionentry[\fragmessage{message8}]{\lnot \fragcond{loop4} \land \lnot \fragcond{loop2}}{\fragmessage{message9}} \\
+	&\transitionentry[\fragmessage{message9}]{\lnot \fragcond{loop1}}{\fragmessage{message10}}
 \end{align*}
 
-We gaan terug naar stap 31 voor \fragname{loop1}. Algoritme \ref{alg:calcExitForMessages} wordt nu opgeroepen op \fragname{loop2}. Via algoritme \ref{alg:determineFinalMessage} concluderen we dat \fragname{loop2} geen laatste bericht heeft, dus roepen we algoritme \ref{alg:calcExitForMessages} op met elk kind om de beurt als argument. \fragname{loop3} komt eerst. Op gelijkaardige wijze gaan we verder naar \fragname{alt2}.
+We bereiken stap 19 in algoritme \ref{alg:processCombinedFragment}. Algoritme \ref{alg:calculateLoopReentry} duidt \fragmessage{message6}, \fragmessage{message7}, \fragmessage{message8} en \fragmessage{message9} aan als mogelijke laatste berichten van de uitvoering van een lus. Vanaf \fragmessage{message6} en \fragmessage{message7} moet \'e\'en stap naar boven in de boom gezet worden voordat men een lusfragment tegenkomt. \fragcond{loop3} is dus de enige voorwaarde voor een heruitvoering van \fragcond{alt2} naast de \textit{if}- of \textit{else}-voorwaarde voor de respectievelijke delen. \fragmessage{message8} is zelf rechtstreeks deel van \fragname{loop4}, dus moet enkel \fragcond{loop4} gelden voor een heruitvoering. Als \fragcond{loop4} niet geldt maar wel \fragcond{loop2}, landt de heruitvoering van \fragname{loop2} in \fragname{alt2} als \fragcond{loop3} geldt en ook \fragcond{alt2a} of \fragcond{alt2b}. Als laatste moet om van \fragmessage{message9} naar \fragmessage{message2} te springen \fragcond{loop1} gelden. 
 
-Het \textit{if}-deel van \fragname{alt2} komt eerst. Algoritme \ref{alg:determineFinalMessage} besluit dat \fragmessage{message6} het laatste bericht is. \fragmessage{message8} is geen deel van \fragname{loop3}, dus zetten we \textit{aggregateVoorwaarde} naar ``$\lnot$ \fragcond{loop3}'' en \textit{fragment} naar \fragname{loop2} en gaan naar stap 10. \fragname{message8} is deel van \fragname{loop2}, dus roepen we algoritme \ref{alg:transition-to-frag} op met \fragname{loop4} als argument en concateneren \textit{aggregateVoorwaarde}, wat resulteert in:
+De uitvoer van algoritme \ref{alg:calculateLoopReentry} is dus:
 
 \begin{align*}
-	\transitionentry[\fragmessage{message6}]{\fragcond{loop4} \land \lnot \fragcond{loop3}}{\fragmessage{message8}}
+	&\transitionentry[message6]{\fragcond{loop3} \land \fragcond{alt2a}}{message6} \\
+	&\transitionentry[message7]{\fragcond{loop3} \land \fragcond{alt2b}}{message6} \\
+	&\transitionentry[message8]{\lnot \fragcond{loop4} \land \fragcond{loop2} \land \fragcond{loop3} \land \fragcond{alt2a}}{message6} \\
+	&\transitionentry[message6]{\fragcond{loop3} \land \fragcond{alt2a}}{message7} \\
+	&\transitionentry[message7]{\fragcond{loop3} \land \fragcond{alt2b}}{message7} \\
+	&\transitionentry[message8]{\lnot \fragcond{loop4} \land \fragcond{loop2} \land \fragcond{loop3} \land \fragcond{alt2b}}{message7} \\
+	&\transitionentry[message8]{\fragcond{loop4}}{message8} \\
+	&\transitionentry[message2]{\fragcond{loop1}}{message9}
 \end{align*}
-
-\fragname{loop4} is een lus, dus zetten we \textit{fragment} naar \fragname{loop1} en gaan naar stap 10. \fragmessage{message8} is deel van \fragname{loop1}, maar \fragname{loop2} is gemarkeerd in de vorige iteratie en slaan we dus over. We zien wel dat \fragname{loop1} een bericht heeft na \fragmessage{message8}, namelijk \fragmessage{message9}, en daarom noteren we:
-
-\begin{align*}
-	\transitionentry[\fragmessage{message6}]{\lnot \fragcond{loop3} \land \lnot \fragcond{loop4} \land \lnot \fragcond{loop2}}{\fragmessage{message9}}
-\end{align*}
-
-Met het vinden van dat bericht na \fragmessage{message8}, eindigt het algoritme voor het \textit{if}-deel van \fragname{alt2}. Nu komt het \textit{else}-deel van \fragname{alt2} aan bod, en gelijkaardig voor het \textit{if}-deel krijgen we:
-
-\begin{align*}
-		&\transitionentry[\fragmessage{message7}]{\fragcond{loop4} \land \lnot \fragcond{loop3}}{\fragmessage{message8}} \\
-		&\transitionentry[\fragmessage{message7}]{\lnot \fragcond{loop3} \land \lnot \fragcond{loop4} \land \lnot \fragcond{loop2}}{\fragmessage{message9}}
-\end{align*}
-
-\fragname{loop3} is nu volledig behandeld, en we gaan terug naar stap 31 voor \fragname{loop2}. We roepen algoritme \ref{alg:calcExitForMessages} op met \fragname{loop4} als argument. Algoritme \ref{alg:determineFinalMessage} besluit dat \fragmessage{message8} het laatste bericht is en we zetten \textit{aggregateVoorwaarde} naar ``$\lnot$ \fragcond{loop4}''. \fragname{loop2} heeft geen bericht na \fragmessage{message8}, dus zetten we fragment naar \fragname{loop1} en gaan terug naar stap 8. \fragmessage{message9} komt in \fragname{loop1} meteen na \fragmessage{message8} en is rechtstreeks deels van \fragname{loop1}, dus noteren we:
-
-\begin{align*}
-	\transitionentry[\fragmessage{message8}]{\lnot \fragcond{loop4} \land \lnot \fragcond{loop2}}{\fragmessage{message9}}
-\end{align*}
-
-Hier stopt de uitvoering van het algoritme voor \fragname{loop4}, en hiermee meteen ook voor \fragname{loop2} en \fragname{loop1}.
-
-\parbreak
-
-We bereiken stap 19 in algoritme \ref{alg:processCombinedFragment}. In plaats van \fragname{loop1} te gebruiken als argument zoals het zou zijn in een echte uitvoering, gebruiken we \fragname{loop4} als illustratiever voorbeeld.
-
-\fragmessage{message8} is vanzelfsprekend het laatste bericht van \fragname{loop4}. We roepen de variant van algoritme \ref{alg:transition-to-frag} gebruikt in dit algoritme op met \fragname{loop4} als argument. De uitkomst van deze iteratie is:
-
-\begin{align*}
-	\transitionentry[\fragmessage{message8}]{\fragcond{loop4}}{\fragmessage{message8}}
-\end{align*}
-
-We voegen \fragname{loop4} toe aan \textit{uitgesloten} en zetten \textit{aggregateVoorwaarde} naar ``$\lnot$ \fragcond{loop4}'' en \textit{fragment} naar \fragname{loop2}. De laatste container van \fragname{loop2} is een fragment en \fragmessage{message8} is daar het laatste bericht van, dus zetten we \textit{bundelVoorwaarde} naar ``\fragcond{loop2}''. \fragname{loop4} is lid van \textit{uitgesloten}, dus noteren we:
-
-\begin{align*}
-	&\transitionentry[\fragmessage{message8}]{\lnot \fragcond{loop4} \land \fragcond{loop2} \land \fragcond{loop3} \land \fragcond{alt2a}}{\fragmessage{message6}} \\
-	&\transitionentry[\fragmessage{message8}]{\lnot \fragcond{loop4} \land \fragcond{loop2} \land \fragcond{loop3} \land \fragcond{alt2b}}{\fragmessage{message7}}
-\end{align*}
-
-We voegen \fragname{loop2} toe aan \textit{uitgesloten}, concateneren \textit{aggregateVoorwaarde} met ``$\land \lnot$ \fragcond{loop2}'' en gaan verder met \fragname{loop1}. \fragmessage{message8} is geen laatste bericht van \fragname{loop1}, en \fragname{loop1} heeft geen ouder. De uitvoering van algoritme \ref{alg:calculateLoopReentry} stopt.
 
 \parbreak
 
@@ -672,10 +620,7 @@ De uitvoer van algoritme \ref{alg:processCombinedFragment} voor alle fragmenten 
 	&\forall{t}[Time](C\_SDPointAt(Next(t), 6) \leftarrow (SDPointAt(t, 4) \\ &\lor SDPointAt(t, 5)) \land \fragcond{loop2} \land \fragcond{loop3} \land \fragcond{alt2a}). \\
 	&\forall{t}[Time](C\_SDPointAt(Next(t), 7) \leftarrow (SDPointAt(t, 6) \\ &\lor SDPointAt(t, 7)) \land \fragcond{loop3} \land \fragcond{alt2b})). \\
 	&\forall{t}[Time](C\_SDPointAt(Next(t), 7) \leftarrow SDPointAt(t, 8) \\ &\land \lnot \fragcond{loop4} \land \fragcond{loop2} \land \fragcond{loop3} \land \fragcond{alt2b}). \\
-	&\forall{t}[Time](C\_SDPointAt(Next(t), 7) \leftarrow (SDPointAt(t, 4) \\ &\lor SDPointAt(t, 5)) \land \fragcond{loop2} \land \fragcond{loop3} \land \fragcond{alt2b}).
-\end{align*}
-
-\begin{align*}
+	&\forall{t}[Time](C\_SDPointAt(Next(t), 7) \leftarrow (SDPointAt(t, 4) \\ &\lor SDPointAt(t, 5)) \land \fragcond{loop2} \land \fragcond{loop3} \land \fragcond{alt2b}).\\
 	&\forall{t}[Time](C\_SDPointAt(Next(t), 8) \leftarrow (SDPointAt(t, 6) \\ &\lor SDPointAt(t, 7)) \land \lnot \fragcond{loop3} \land \fragcond{loop4}). \\
 	&\forall{t}[Time](C\_SDPointAt(Next(t), 8) \leftarrow (SDPointAt(t, 4) \\ &\lor SDPointAt(t, 5)) \land \fragcond{loop2} \land \lnot \fragcond{loop3} \\ &\land \fragcond{loop4}). \\
 	&\forall{t}[Time](C\_SDPointAt(Next(t), 8) \leftarrow SDPointAt(t, 8) \\ &\land \fragcond{loop4}). \\
