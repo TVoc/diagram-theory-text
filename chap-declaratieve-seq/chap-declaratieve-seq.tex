@@ -11,8 +11,8 @@ Bij het opstellen van deze theorie werden de volgende stappen gevolgd:
 
 \begin{enumerate}
 	\item Bepaal de variabelen die de toestand van het systeem beschrijven. Zo krijgen we de logische types \textit{Heap}, die stapels voorstellen; \textit{Size}, wat het aantal objecten op een stapel voorstelt; en \textit{Player}, voorgesteld door exact twee getallen voor de twee spelers. We onderscheiden ook de functies \textit{NumObj(Time, Heap) : Size}, wat de grootte van een stapel op een bepaald tijdstip voorstelt; en \textit{PlayerTurn(Time) : Player}, die voor elk tijdstip aangeeft welke speler aan beurt is. Deze functies maken we inertieel.
-	\item Bepaal welke bewerkingen er kunnen gebeuren op het systeem op elk tijdstip die er mogelijks voor zorgen dat de toestand van het systeem verandert in toekomstige tijdstappen. Definieer de \textit{constructed type Action} die deze bewerkingen benoemt. Voor Nim is er maar \'e\'en actie mogelijk: het nemen van een aantal objecten van een bepaalde stapel. Daarom bestaat \textit{Action} uit domeinobjecten gegenereerd uit de specificatie \textit{Take(Heap, Size)}, dat voor alle mogelijke combinaties van \textit{Heap} en \textit{Size} een domeinobject genereert.
-	\item Leg geschikte voorwaarden op de uitvoering van de bewerkingen bepaald in de vorige stap. In Nim moeten we ervoor zorgen dat een speler objecten neemt van een stapel die niet leeg is en dat een speler minstens \'e\'en object wegneemt en niet meer objecten dan aanwezig op de stapel. Verder dwingen we af dat een speler een niet-lege stapel kiest.
+	\item Bepaal welke bewerkingen er kunnen gebeuren op het systeem op elk tijdstip die er mogelijks voor zorgen dat de toestand van het systeem verandert in toekomstige tijdstappen. Definieer de \textit{constructed type Action} die deze bewerkingen benoemt. Voor Nim is er maar \'e\'en actie mogelijk: het nemen van een aantal objecten van een bepaalde stapel. Daarom defini\"eren we het type \textit{Action} met behulp van de Herbrandfunctor \textit{Take(Heap, Size)}. Dit garandeert het uniekenaamaxioma en domeinsluitingsaxioma voor het type \textit{Action} in termen van logische objecten van het type \textit{Heap} en het type \textit{Size}.\cite{DeCatBroes2014PLaa} Met andere woorden: elk mogelijk tupel $(h, s)$ waar $h \in Heap$ en $s \in Size$ correspondeert met \'e\'en uniek logisch object $Take(h, s)$. Het domein van het type \textit{Action} bestaat uitsluitend uit deze objecten.
+	\item Leg geschikte voorwaarden op de uitvoering van de bewerkingen bepaald in de vorige stap. In Nim moeten we ervoor zorgen dat een speler objecten neemt van een niet-lege stapel en dat een speler minstens \'e\'en object wegneemt van de gekozen stapel. De speler mag niet meer objecten wegnemen dan aanwezig op de stapel.
 	\item Schrijf de causatiezinnen. Specificeer hoe een bewerking de toestand van het systeem verandert. We leiden af dat \textit{NumObj} verandert ten gevolge van een \textit{Take} actie. Verder zorgen we ervoor dat er elke tijdstap een beurtwissel gebeurt.
 	\item Schrijf de toestandzinnen. Deze hebben een vast patroon voor elk inertieel logisch symbool.
 \end{enumerate}
@@ -21,12 +21,16 @@ Het meest opmerkelijk verschil tussen deze logische specificatie en de specifica
 
 We merken op dat een belangrijk nadeel dat sequentiediagrammen hebben ten opzichte van rechtstreekse LTC is dat de toestand van maar \'e\'en variabele kan opgevraagd of aangepast worden. De LTC-theorie heeft bijvoorbeeld \'e\'en zin nodig om te verzekeren dat het spel voorbij is indien alle stapels leeg zijn. Er is echter een heel diagram nodig om voor elke stapel om de beurt te controleren of die leeg is.
 
-Verder kan de LTC-theorie ook meteen alle lege stapels uitsluiten wanneer de speler moet kiezen van welke stapel hij objecten neemt. In figuur \ref{fig:nim-takeTurn} moet eerst gecontroleerd worden of de stapel die de speler kiest effectief leeg is. De aanwezigheid van lussen die een berekening implementeren in plaats van dat ze iteratief proces in het probleemdomein voorstellen zorgt er dus voor dat modelexpansie voor de resulterende theorie minder performant is. Dit leidt namelijk tot logische symbolen die de variabelen betrokken bij de berekening voorstellen en zinnen in de theorie die overeenkomen met instructies op die variabelen. In de context van Nim is de beurtenwissel wanneer nog niet alle stapels leeg zijn een voorbeeld van een iteratief proces binnen het probleemdomein. In het ontwerp gepresenteerd in sectie \ref{sec:nim-design} zijn er echter meerdere lussen aanwezig die geen iteratief proces in het probleemdomein voorstellen:
+Verder kan de LTC-theorie ook meteen alle lege stapels uitsluiten wanneer de speler moet kiezen van welke stapel hij objecten neemt. In figuur \ref{fig:nim-takeTurn} moet eerst gecontroleerd worden of de stapel die de speler kiest effectief leeg is. Het keuzeproces herhaalt zich tot de gebruiker een niet-lege stapel kiest. Zulk een iteratief proces is niet aanwezig in de LTC-theorie. Beschouw ook het diagram \ref{fig:nim-allHeapsEmpty} dat \textit{allHeapsEmpty()} modelleert. Daar controleert de lus voor elke stapel om de beurt of hij leeg is. Deze iteratieve controle is niet aanwezig in de LTC-theorie.
 
-\begin{itemize}
-	\item De lus in diagram \ref{fig:nim-allHeapsEmpty} die voor elke stapel nagaat of hij leeg is.
-	\item De lus in diagram \ref{fig:nim-takeTurn} die de speler een stapel laat selecteren tot hij een niet-lege stapel kiest.
-\end{itemize}
+We stellen de volgende zaken vast:
+
+\begin{enumerate}
+	\item Indien een LTC-theorie een iteratief proces bevat, komt dit overeen met een iteratief proces in het beschouwde probleemdomein. In listing \ref{code:ltc-nim} is de beurtenwissel het enige iteratief proces. Dit is ook het enige iteratief proces dat bestaat in Nim.
+	\item De modellering van Nim in sectie \ref{sec:nim-design} bevat naast de beurtenwissel ook iteratieve processen die niet overeenkomen met een proces in Nim. Zulke processen zijn ook aanwezig in het ontwerp voor Reversi in sectie \ref{sec:reversi-design}. Een voorbeeld daarvan is het diagram voor \textit{count(Player)}, dat elk speelvak afgaat om te tellen hoeveel stenen een bepaalde speler op het bord heeft liggen. Dit komt niet overeen met een iteratief proces in Reversi. Modelleringen volgens onze voorstelling zullen dus zowel iteratieve processen die overeenkomen met een proces in het probleemdomein bevatten als iteratieve processen die een berekening uitvoeren die niet rechtstreeks relevant is voor het probleemdomein.
+\end{enumerate}
+
+De extra iteratieve processen in onze voorstelling leiden tot nieuwe logische symbolen die de variabelen betrokken in het proces voorstellen. De theorie zal ook zinnen bevatten die overeenkomen met bewerkingen op die variabelen. Zulke processen vergroten op deze manier de rekentijd en het geheugengebruik voor modelexpansie en progressie\"inferentie.
 
 Deze observaties leiden ertoe dat we nieuwe soorten instructies voor sequentiediagrammen beschikbaar willen stellen met het oog op deze doelen:
 
@@ -37,38 +41,44 @@ Deze observaties leiden ertoe dat we nieuwe soorten instructies voor sequentiedi
 
 Concreet willen we instructies die ons toelaten om de toestand van alle objecten in een verzameling op te vragen, te controleren of te wijzigen. Verder willen we ook instructies die bij simulatie toelaten om te kiezen uit bepaalde leden uit een verzameling op basis van een criterium op de toestand van de leden.
 
-\section{Nieuwe soorten instructies}
+\section{Nieuwe soorten instructies}\label{sec:new-instr}
 
 Voorheen kon een variabele maar \'e\'en object of waarde van een primitief type voorstellen. Nu laten we toe dat een variabele een verzameling kan voorstellen. In de theorie behouden we voor namen het patroon $<variabelenaam>T/3$.
 
-We laten op variabelen die een verzameling voorstellen enkele nieuwe instructies toe:
+\subsubsection{Nieuwe toegelaten instructies in sequentiediagrammen}
 
-\begin{itemize}
+We laten de volgende nieuwe instructies toe in sequentiediagrammen:
+
+\begin{enumerate}
 	\item Voor alle leden van een verzameling tegelijkertijd kan een associatie genavigeerd worden. Als op een verzameling S van objecten van klasse X \textit{getY()} wordt uitgevoerd waar Y de naam is van een klasse geassocieerd met X, dan is het resultaat een verzameling van objecten van klasse Y. Die verzameling bestaat uit alle objecten die in verband staan met minstens \'e\'en object uit S.
 	\item $getNumX()$ waar X de naam is van een klasse die in verband staat met de klasse van de verzameling. Het resultaat is de som van het aantal instanties van klasse X waarmee elk lid van de verzameling in verband staat.
-	\item $EXISTS\ ONE\ WHERE\ [query]$: Geeft \textbf{true} als en slechts als \textit{query} geldt voor minstens \'e\'en lid van de verzameling. \textit{query} betekent hier een instructie die bestaat uit getters van klassevariabelen verbonden met booleaanse connectieven (klassevariabelen kunnen hierbij rechtstreeks vergeleken worden met een getal of string, waar toepasselijk).
-	\item $EXISTS\ n\ TO\ m\ WHERE\ [query]$ waar $n \leq m$: Geeft \textbf{true} als en slechts als voor minstens $n$ en ten hoogste $m$ leden van de verzameling geldt dat \textit{query} waar is.
-	\item $FOR\ ALL\ APPLIES\ [query]$: Geeft \textbf{true} als en slechts als voor alle leden van de verzameling \textit{query} geldt.
+	\item $EXISTS\ ONE\ [x]\ FROM\ [y]\ WHERE\ [query]$: $y$ stelt een verzameling voor. $x$ wordt gebonden in $query$ en stelt een lid van $y$ voor. \textit{query} stelt een instructie voor die bestaat uit getters van klassevariabelen verbonden met booleaanse connectieven. Klassevariabelen kunnen hierbij rechtstreeks vergeleken worden met een getal of string, waar toepasselijk. Deze instructie geeft \textbf{true} als en slechts als minstens \'e\'en $x$ bestaat waarvoor \textit{query} geldt.\label{instr:exists-one}
+	\item $EXISTS\ n\ TO\ m\ [x]\ FROM\ [y]\  WHERE\ [query]$ waar $n \leq m$: Geeft \textbf{true} als en slechts als \textit{query} geldt voor minstens $n$ en ten hoogste $m$ verschillende waarden $x \in y$. Het domein voor $n$ en $m$ is $[1,+\infty]$.
+	\item $FOR\ ALL\ [x]\ FROM\ [y]\ APPLIES\ [query]$: Geeft \textbf{true} als en slechts als $query$ geldt voor alle $x \in y$.
 	\item $NOT\ [query]$: geeft \textbf{true} als en slechts als \textit{query} \textbf{false} geeft. \textit{query} kan hier \'e\'en van de voorgaande soorten instructies zijn.
-	\item $CHOOSE\ ALL\ WHERE\ APPLIES\ [query]$: Geeft een nieuwe verzameling die bestaat uit alle leden van de originele verzameling waarvoor \textit{query} waar is.
-	\item $CHOOSE\ ONE\ WHERE\ APPLIES\ [query]$: Geeft \'e\'en object uit de verzameling waarvoor \textit{query} waar is. Dit vormt een keuzepunt bij simulatie.
-	\item $CHOOSE\ n\ TO\ m\ WHERE\ APPLIES\ [query]$ waar $n \leq m$: Geeft een nieuwe verzameling die bestaat uit minstens $n$ en ten hoogste $m$ leden uit de originele verzameling waarvoor \textit{query} waar is. Dit vormt een keuzepunt bij simulatie.
-	\item $CHOOSE\ <getalnaam>\ WHERE\ APPLIES\ [query\ dat\ <getalnaam>\ bindt]$: Geeft een nieuwe variabele met als naam \textit{getalnaam} waarvoor geldt dat de waarde voldoet aan \textit{query}. Dit soort instructie kan ook toegepast worden op een variabele dat maar \'e\'en object voorstelt. Dit vormt een keuzepunt bij simulatie.
-	\item $SET <klassevariabele> TO <waarde>$: Voor alle leden van de verzameling wordt de waarde van de genoemde klassevariabele veranderd naar de genoemde waarde.
-\end{itemize}
+	\item $CHOOSE\ ALL\ [x]\ FROM\ [y]\ WHERE\ APPLIES\ [query]$: Geeft een nieuwe verzameling die bestaat uit alle $x \in y$ waarvoor \textit{query} waar is.
+	\item $CHOOSE\ ONE\ [x]\ FROM\ [y]\ WHERE\ APPLIES\ [query]$: Geeft \'e\'en $x \in y$ waarvoor \textit{query} waar is. Dit vormt een keuzepunt bij simulatie.\label{instr:choose-one}
+	\item $CHOOSE\ n\ TO\ m\ [x]\ FROM\ [y]\ WHERE\ APPLIES\ [query]$ waar $1 \leq n \leq m < +\infty$: Geeft een nieuwe verzameling die bestaat uit minstens $n$ en ten hoogste $m$ $x \in y$ waarvoor \textit{query} waar is. Dit vormt een keuzepunt bij simulatie.\label{instr:choose-n-to-m}
+	\item $SET <klassevariabele> IN\ [y]\ TO <waarde>$: Voor alle leden van de verzameling wordt de waarde van de genoemde klassevariabele veranderd naar de genoemde waarde.\label{instr:set}
+\end{enumerate}
+
+In instructies \ref{instr:exists-one} tot en met \ref{instr:set} kan $y$ een verzameling van alle waarden van een primitief type zijn, zoals ``Integer'', ``Float'' of ``String''.
 
 In een \textit{query} mogen er geen methodes voorkomen waarvan het gedrag gespecificeerd wordt in een sequentiediagram.
 
-Vergelijk de \textit{CHOOSE}-instructies met de $\pi$-operator van GOLOG\cite{levesque1997golog}. GOLOG is een logische programmeertaal gebaseerd op de situatiecalculus. Net zoals de lineaire tijdscalculus is de situatiecalculus een formalisme binnen de eerste-orde-predicatenlogica om dynamische systemen te modelleren. De basisblokken van de situatiecalculus zijn:
+\subsubsection{Vergelijking van de \textit{CHOOSE}-instructies met de $\pi$-operator in GOLOG}
+
+GOLOG\cite{levesque1997golog} is een logische programmeertaal gebaseerd op de situatiecalculus. Net zoals de lineaire tijdscalculus is de situatiecalculus een formalisme binnen de eerste-orde-predicatenlogica om dynamische systemen te modelleren. De basisblokken van de situatiecalculus zijn:
 
 \begin{itemize}
 	\item De acties die uitgevoerd kunnen worden in het systeem.
 	\item De \textit{fluents} die de toestand van het systeem beschrijven.
 	\item De situaties. Een situatie is een geschiedenis van uitgevoerde acties.
-	
 \end{itemize}
 
-De $pi$-operator is de non-deterministische keuzeoperator, gebruikt als $(\pi{}x)[\delta{}(x)]$, waar $\delta{}(x)$ \'e\'en of meerdere acties die de variabele $x$ gebruiken voorstelt. De $pi$-operator bepaalt non-deterministisch de waarde van het invoerargument voor de acties waar het op wordt toegepast. De \textit{CHOOSE}-instructies bepalen daarentegen non-deterministsch de waarde van een variabele.
+De $\pi$-operator is de non-deterministische keuzeoperator, gebruikt als $(\pi{}x)[\delta{}(x)]$, waar $\delta{}(x)$ \'e\'en of meerdere acties die de variabele $x$ binden voorstelt. De $\pi$-operator bepaalt non-deterministisch de waarde van het invoerargument voor de acties waar het op wordt toegepast. Als \textit{pickup(x)} bijvoorbeeld een actie voorstelt waarbij een robot een object opraapt, kiest $(\pi{}x)[pickup(x)]$ op non-deterministische wijze het object $x$ dat de robot opraapt. Instructies \ref{instr:choose-one} en \ref{instr:choose-n-to-m} zijn gelijkaardig. De gebruiker kiest uit alle $x \in y$ die voldoen aan een voorwaarde die $x$ bindt. De keuze van de gebruiker wordt dan toegekend aan een variabele. 
+
+\subsubsection{Modellering van Nim met de nieuwe instructies}
 
 We illustreren het gebruik van deze nieuwe instructies door middel van het voorbeeld van figuur \ref{fig:new-nim}, dat Nim volledig modelleert. De beurt gaat eerst naar de gekozen speler. Dan wordt gecontroleerd of alle stapels leeg zijn. Als dat niet het geval is, kiest de speler eerst een stapel en neemt dan minstens \'e\'en object weg van die stapel. Daarna wordt de beurt gegeven aan de volgende speler. Als alle stapels leeg zijn, is de huidige speler de winnaar.
 
@@ -114,9 +124,9 @@ Voor modelexpansie specificeren we in de invoerstructuur \'e\'en stapel met twee
 
 We simuleren weer een spelverloop waar de eerste speler alle drie objecten van de tweede stapel neemt, dan de tweede speler \'e\'en object van de eerste stapel, en dan de eerste speler het laatste object. In totaal is de simulatie 16 tijdstappen lang, met een totale simulatietijd van 93,11 seconden en een totaal geheugengebruik van 242,3 MB. Als we dit vergelijken met de resultaten in tabel \ref{tab:sim-mem}, zien we dat zowel de simulatietijd als het geheugengebruik significant kleiner zijn.
 
-\section{Variabele associaties}
+\section{Variabele associaties}\label{sec:var-assoc}
 
-Sectie \ref{sec:eval-design} beschouwde hoe het feit dat de invulling van een associatie niet kan veranderen over de tijd ontwerpen onintu\"itief maakt. Deze sectie onderzoekt de impact op de performantie in termen van rekentijd en geheugengebruik als dat nu wel toegelaten is.
+Sectie \ref{sec:eval-design} besprak hoe het feit dat de invulling van een associatie niet kan veranderen over de tijd tot onintu\"itieve ontwerpen leidt. We legden die beperking op om de rekentijd en het geheugengebruik bij modelexpansie en progressie\"inferentie beperkt te houden. Na de resultaten in sectie \ref{sec:dec-performance} onderzoeken we wat het effect is op de rekentijd en het geheugengebruik als we deze beperking opheffen nu de instructies uit sectie \ref{sec:new-instr} beschikbaar zijn.
 
 Associaties defini\"eren nu impliciet twee operaties. Voor een associatie \textit{X}---\textit{Y} wordt voor de klasse \textit{X} de operatie \textit{setY(Y)} en de operatie \textit{unset(Y)} gedefinieerd. \textit{setY(Y)} relateert het object van klasse \textit{X} tot het gegeven object van klasse \textit{Y}. \textit{unsetY(Y)} zorgt ervoor dat het object niet meer gerelateerd is aan het gegeven object.
 
@@ -145,7 +155,7 @@ Bijlage \ref{app:nim-assoc} bevat het IDP-bestand dat deze diagrammen modelleert
 		\label{fig:nim-assoc-play}
 	\end{subfigure}
 	\begin{subfigure}{\textwidth}
-		\includegraphics[width=\textwidth]{chap-declaratieve-seq/takeTurn.png}
+		\includegraphics[width=1.1\textwidth]{chap-declaratieve-seq/takeTurn.png}
 		\caption{Sequentiediagram voor \textit{takeTurn(Game)}}
 		\label{fig:nim-assoc-taketurn}
 	\end{subfigure}
@@ -155,7 +165,7 @@ Bijlage \ref{app:nim-assoc} bevat het IDP-bestand dat deze diagrammen modelleert
 
 We evalueren modelexpansie en progressie\"inferentie.
 
-In de invoerstructuur geven we twee stapels, \'e\'en van twee objecten en \'e\'en van drie objecten. We defini\"eren 21 tijdstappen, wat genoeg is om drie beurten te spelen. Modelexpansie vindt alle modellen na 15,58 seconden, met een \textit{grounding}-grootte van 424 682 en virtueel geheugengebruik van 592,55 GB.
+In de invoerstructuur geven we twee stapels, \'e\'en van twee objecten en \'e\'en van drie objecten. We defini\"eren 21 tijdstappen, wat genoeg is om drie beurten te spelen. Modelexpansie vindt alle modellen na 15,58 seconden, met een \textit{grounding}-grootte van 424 682 en virtueel geheugengebruik van 592,55 MB.
 
 Via progressie\"inferentie spelen we het spel in drie beurten. De simulatie is 22 stappen lang. De simulatie duurt drie minuten en gebruikt 462,02 MB aan virtueel geheugen.
 
@@ -193,6 +203,6 @@ Er zijn meerdere mogelijke aanpakken om zulke functionaliteit te modelleren in L
 
 We vergeleken een rechtstreekse implementatie van Nim in LTC met de theorie gegenereerd uit het ontwerp in sectie \ref{sec:nim-design}. We merkten dat de LTC-theorie significant compacter was. Dit komt onder meer omdat sequentiediagrammen toelaten dat de toestand van maar \'e\'en variabele tegelijk wordt gecontroleerd. Verder heeft LTC enkel lussen in de vorm van iteratieve processen binnen het probleemdomein, waar sequentiediagrammen ook lussen moeten bevatten voor procedurale berekeningen. Deze observaties dienden als basis voor het ontwerpen van nieuwe soorten instructies voor sequentiediagrammen. De instructies integreren logica in de ontwerptaal voor sequentiediagrammen.
 
-We maakten een nieuw ontwerp voor Nim waar we gebruikmaakten van deze instructies. Modelexpansie en progressie\"inferentie waren significant performanter voor de resulterende theorie. Deze winst blijft grotendeels bewaard wanneer we ook toelaten dat de invulling van een associatie verandert over de tijd.
+We maakten een nieuw ontwerp voor Nim waar we gebruikmaakten van deze instructies. Dit ontwerp vertaalden we naar een logische theorie. Modelexpansie en progressie\"inferentie waren significant performanter voor deze theorie vergeleken met de theorie uit sectie \ref{sec:nim-design}. Deze winst blijft grotendeels bewaard wanneer we ook toelaten dat de invulling van een associatie verandert over de tijd.
 
 We gaven tenslotte een aanzet voor toekomstig onderzoek naar mogelijkheden om een methode op te roepen op meerdere objecten tegelijkertijd.

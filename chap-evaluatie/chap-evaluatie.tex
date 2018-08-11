@@ -52,7 +52,7 @@ Diagram \ref{fig:nim-takeTurn} vraagt aan de speler van welke stapel hij objecte
 
 Diagram \ref{fig:nim-take} berekent hoeveel objecten er nog overblijven op een stapel gegeven een aantal objecten om weg te nemen van de stapel. Als het verschil kleiner is dan nul, wordt de teller op nul gezet.
 
-Bijlage \ref{app:nim-eval} bevat het IDP-bestand met de automatisch gegenereerde uitvoertheorie voor deze diagrammen.
+Het IDP-bestand met de automatisch gegenereerde uitvoertheorie voor deze diagrammen is beschikbaar op de volgende online locatie: \url{https://pastebin.com/f90riJGV}.
 
 %\begin{landscape}
 %	\newpage
@@ -70,7 +70,7 @@ Bijlage \ref{app:nim-eval} bevat het IDP-bestand met de automatisch gegenereerde
 %	\end{figure}
 %\end{landscape}
 
-\subsection{Ontwerp voor Reversi}
+\subsection{Ontwerp voor Reversi}\label{sec:reversi-design}
 
 Reversi is een spel voor twee spelers. Ze spelen op een rechthoekig bord verdeeld in even grote vakken. Er liggen al in het begin stenen op het bord. De spelers leggen om de beurt een steen van hun kleur op het bord. Een steen mag enkel gelegd worden indien minstens \'e\'en steen van de tegenspeler ligt tussen de nieuwe steen en een steen van de eigen kleur die al op het bord ligt. Noem alle zulke stenen van de tegenspeler de gepakte stenen. Na het neerleggen van de nieuwe steen draait de speler de gepakte stenen om naar zijn kleur. Als geen enkele zet leidt tot minstens \'e\'en gepakte steen, slaat de speler zijn beurt over. Als de beurt twee keer na elkaar wordt overgeslagen, stopt het spel. De speler met het grootste aantal stenen van zijn kleur wint.
 
@@ -107,7 +107,7 @@ De sequentiediagrammen zijn beschikbaar op deze locatie: \url{https://imgur.com/
 
 \textit{count(boolean)} telt voor de gegeven speler hoeveel stenen er liggen van zijn kleur. Hierbij worden alle x- en y-co\"ordinaten bekeken.
 
-Bijlage \ref{app:reversi-eval} bevat het IDP-bestand met de automatisch gegenereerde uitvoertheorie voor deze diagrammen.
+Het IDP-bestand met de automatisch gegenereerde uitvoertheorie voor deze diagrammen is beschikbaar op de volgende online locatie: \url{https://pastebin.com/B1zKWyTq}.
 
 \subsection{Evaluatie van het ontwerpproces}
 
