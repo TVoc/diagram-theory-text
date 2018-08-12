@@ -3,7 +3,7 @@ UML is een modelleertaal die wordt gebruikt ter ondersteuning van softwareontwer
 
 \section{Vergelijking tussen lineaire tijdcalculus en onze voorstellingsmethode}
 
-We modelleren eerst Nim rechtstreeks in lineaire tijdcalculus en vergelijken de resulterende theorie met de theorie gegenereerd volgens de regels in hoofdstuk \ref{sec:gedrag}. Het volgende codefragment bevat een LTC-theorie die Nim modelleert. 
+We modelleren eerst Nim rechtstreeks in lineaire tijdscalculus en vergelijken de resulterende theorie met de theorie gegenereerd volgens de regels in hoofdstuk \ref{sec:gedrag}. Het volgende codefragment bevat een LTC-theorie die Nim modelleert. 
 
 \lstinputlisting[caption=Nim gemodelleerd in lineaire tijdcalculus]{chap-declaratieve-seq/ltc-nim.idp}\label{code:ltc-nim}
 
@@ -11,13 +11,13 @@ Bij het opstellen van deze theorie werden de volgende stappen gevolgd:
 
 \begin{enumerate}
 	\item Bepaal de variabelen die de toestand van het systeem beschrijven. Zo krijgen we de logische types \textit{Heap}, die stapels voorstellen; \textit{Size}, wat het aantal objecten op een stapel voorstelt; en \textit{Player}, voorgesteld door exact twee getallen voor de twee spelers. We onderscheiden ook de functies \textit{NumObj(Time, Heap) : Size}, wat de grootte van een stapel op een bepaald tijdstip voorstelt; en \textit{PlayerTurn(Time) : Player}, die voor elk tijdstip aangeeft welke speler aan beurt is. Deze functies maken we inertieel.
-	\item Bepaal welke bewerkingen er kunnen gebeuren op het systeem op elk tijdstip die er mogelijks voor zorgen dat de toestand van het systeem verandert in toekomstige tijdstappen. Definieer de \textit{constructed type Action} die deze bewerkingen benoemt. Voor Nim is er maar \'e\'en actie mogelijk: het nemen van een aantal objecten van een bepaalde stapel. Daarom defini\"eren we het type \textit{Action} met behulp van de Herbrandfunctor \textit{Take(Heap, Size)}. Dit garandeert het uniekenaamaxioma en domeinsluitingsaxioma voor het type \textit{Action} in termen van logische objecten van het type \textit{Heap} en het type \textit{Size}.\cite{DeCatBroes2014PLaa} Met andere woorden: elk mogelijk tupel $(h, s)$ waar $h \in Heap$ en $s \in Size$ correspondeert met \'e\'en uniek logisch object $Take(h, s)$. Het domein van het type \textit{Action} bestaat uitsluitend uit deze objecten.
+	\item Bepaal welke bewerkingen er kunnen gebeuren op het systeem op elk tijdstip die er mogelijks voor zorgen dat de toestand van het systeem verandert in toekomstige tijdstappen. Definieer de \textit{constructed type Action} die deze bewerkingen benoemt. Voor Nim is er maar \'e\'en actie mogelijk: het nemen van een aantal objecten van een bepaalde stapel. Daarom defini\"eren we het type \textit{Action} met behulp van de Herbrandfunctor \textit{Take(Heap, Size)}. Dit garandeert het uniekenaamaxioma en domeinsluitingsaxioma voor het type \textit{Action} in termen van logische objecten van het type \textit{Heap} en het type \textit{Size}.\cite{DeCatBroes2014PLaa} Met andere woorden: elk mogelijk tupel $(h, s)$ waar $h \in Heap$ en $s \in Size$ komt overeen met \'e\'en uniek logisch object $Take(h, s)$. Het domein van het type \textit{Action} bestaat uitsluitend uit deze objecten.
 	\item Leg geschikte voorwaarden op de uitvoering van de bewerkingen bepaald in de vorige stap. In Nim moeten we ervoor zorgen dat een speler objecten neemt van een niet-lege stapel en dat een speler minstens \'e\'en object wegneemt van de gekozen stapel. De speler mag niet meer objecten wegnemen dan aanwezig op de stapel.
 	\item Schrijf de causatiezinnen. Specificeer hoe een bewerking de toestand van het systeem verandert. We leiden af dat \textit{NumObj} verandert ten gevolge van een \textit{Take} actie. Verder zorgen we ervoor dat er elke tijdstap een beurtwissel gebeurt.
 	\item Schrijf de toestandzinnen. Deze hebben een vast patroon voor elk inertieel logisch symbool.
 \end{enumerate}
 
-Het meest opmerkelijk verschil tussen deze logische specificatie en de specificatie in bijlage \ref{code:nim-eval} is dat zowel het vocabularium en de theorie significant compacter zijn. De combinatie van kleinere zoekruimte en minder zinnen om rekening mee te houden zorgt ervoor dat zowel rekentijd als geheugengebruik sterk verkleinen. Inderdaad, voor een spel met een stapel met twee objecten en een stapel met drie objecten duurt het iets meer dan twee seconden om alle 37 mogelijke spelverlopen te vinden. Daarbij is de \textit{grounding}-grootte 3855 en het virtueel geheugengebruik 40,59 MB. Vergelijk met de verificatie van \textit{allHeapsEmpty} in hoofdstuk \ref{sec:evaluatie}, waar de rekentijd 43,29 seconden was, de \textit{grounding}-grootte 366 643 en het virtueel geheugengebruik 1,63 GB.
+Het meest opmerkelijk verschil tussen deze theorie en de theorie gegenereerd uit het ontwerp in sectie \ref{sec:nim-design} is dat zowel het vocabularium en de theorie significant compacter zijn. De combinatie van kleinere zoekruimte en minder zinnen om rekening mee te houden zorgt ervoor dat zowel rekentijd als geheugengebruik sterk verkleinen. Inderdaad, voor een spel met een stapel met twee objecten en een stapel met drie objecten duurt het iets meer dan twee seconden om alle 37 mogelijke spelverlopen te vinden. Daarbij is de \textit{grounding}-grootte 3855 en het virtueel geheugengebruik 40,59 MB. Vergelijk met de verificatie van \textit{allHeapsEmpty} in hoofdstuk \ref{sec:evaluatie}, waar de rekentijd 43,29 seconden was, de \textit{grounding}-grootte 366 643 en het virtueel geheugengebruik 1,63 GB.
 
 We merken op dat een belangrijk nadeel dat sequentiediagrammen hebben ten opzichte van rechtstreekse LTC is dat de toestand van maar \'e\'en variabele kan opgevraagd of aangepast worden. De LTC-theorie heeft bijvoorbeeld \'e\'en zin nodig om te verzekeren dat het spel voorbij is indien alle stapels leeg zijn. Er is echter een heel diagram nodig om voor elke stapel om de beurt te controleren of die leeg is.
 
@@ -30,13 +30,13 @@ We stellen de volgende zaken vast:
 	\item De modellering van Nim in sectie \ref{sec:nim-design} bevat naast de beurtenwissel ook iteratieve processen die niet overeenkomen met een proces in Nim. Zulke processen zijn ook aanwezig in het ontwerp voor Reversi in sectie \ref{sec:reversi-design}. Een voorbeeld daarvan is het diagram voor \textit{count(Player)}, dat elk speelvak afgaat om te tellen hoeveel stenen een bepaalde speler op het bord heeft liggen. Dit komt niet overeen met een iteratief proces in Reversi. Modelleringen volgens onze voorstelling zullen dus zowel iteratieve processen die overeenkomen met een proces in het probleemdomein bevatten als iteratieve processen die een berekening uitvoeren die niet rechtstreeks relevant is voor het probleemdomein.
 \end{enumerate}
 
-De extra iteratieve processen in onze voorstelling leiden tot nieuwe logische symbolen die de variabelen betrokken in het proces voorstellen. De theorie zal ook zinnen bevatten die overeenkomen met bewerkingen op die variabelen. Zulke processen vergroten op deze manier de rekentijd en het geheugengebruik voor modelexpansie en progressie\"inferentie.
+De extra iteratieve processen in onze voorstelling leiden tot nieuwe logische symbolen die de variabelen betrokken in het proces voorstellen. De theorie zal ook zinnen of zelfs hele diagrammen bevatten die overeenkomen met bewerkingen op die variabelen. Zulke processen vergroten op deze manier de rekentijd en het geheugengebruik voor modelexpansie en progressie\"inferentie.
 
 Deze observaties leiden ertoe dat we nieuwe soorten instructies voor sequentiediagrammen beschikbaar willen stellen met het oog op deze doelen:
 
 \begin{enumerate}
-	\item Het totale aantal instructies over alle sequentiediagrammen verminderen
-	\item Het aantal LTC-tijdstappen die nodig zijn bij modelexpansie of progressie\"inferentie om een bepaalde taak te verrichten verminderen
+	\item Het totale aantal instructies over alle sequentiediagrammen verminderen.
+	\item Het aantal LTC-tijdstappen die nodig zijn bij modelexpansie of progressie\"inferentie om een bepaalde taak te verrichten verminderen.
 \end{enumerate}
 
 Concreet willen we instructies die ons toelaten om de toestand van alle objecten in een verzameling op te vragen, te controleren of te wijzigen. Verder willen we ook instructies die bij simulatie toelaten om te kiezen uit bepaalde leden uit een verzameling op basis van een criterium op de toestand van de leden.
@@ -51,8 +51,8 @@ We laten de volgende nieuwe instructies toe in sequentiediagrammen:
 
 \begin{enumerate}
 	\item Voor alle leden van een verzameling tegelijkertijd kan een associatie genavigeerd worden. Als op een verzameling S van objecten van klasse X \textit{getY()} wordt uitgevoerd waar Y de naam is van een klasse geassocieerd met X, dan is het resultaat een verzameling van objecten van klasse Y. Die verzameling bestaat uit alle objecten die in verband staan met minstens \'e\'en object uit S.
-	\item $getNumX()$ waar X de naam is van een klasse die in verband staat met de klasse van de verzameling. Het resultaat is de som van het aantal instanties van klasse X waarmee elk lid van de verzameling in verband staat.
-	\item $EXISTS\ ONE\ [x]\ FROM\ [y]\ WHERE\ [query]$: $y$ stelt een verzameling voor. $x$ wordt gebonden in $query$ en stelt een lid van $y$ voor. \textit{query} stelt een instructie voor die bestaat uit getters van klassevariabelen verbonden met booleaanse connectieven. Klassevariabelen kunnen hierbij rechtstreeks vergeleken worden met een getal of string, waar toepasselijk. Deze instructie geeft \textbf{true} als en slechts als minstens \'e\'en $x$ bestaat waarvoor \textit{query} geldt.\label{instr:exists-one}
+	\item $getNumX()$ waar X de naam is van een klasse die in verband staat met de klasse van de verzameling waar deze instructie op wordt uitgevoerd. Het resultaat is de som van het aantal instanties van klasse X die met minstens \'e\'en lid uit de verzameling in verband staan.
+	\item $EXISTS\ ONE\ [x]\ FROM\ [y]\ WHERE\ [query]$: $y$ stelt een verzameling voor. $x$ wordt gebonden in $query$ en stelt een lid van $y$ voor. \textit{query} stelt een instructie voor die bestaat uit \textit{getters} van klassevariabelen verbonden met booleaanse connectieven. Klassevariabelen kunnen hierbij rechtstreeks vergeleken worden met een getal of string, waar toepasselijk. Deze instructie geeft \textbf{true} als en slechts als minstens \'e\'en $x$ bestaat waarvoor \textit{query} geldt.\label{instr:exists-one}
 	\item $EXISTS\ n\ TO\ m\ [x]\ FROM\ [y]\  WHERE\ [query]$ waar $n \leq m$: Geeft \textbf{true} als en slechts als \textit{query} geldt voor minstens $n$ en ten hoogste $m$ verschillende waarden $x \in y$. Het domein voor $n$ en $m$ is $[1,+\infty]$.
 	\item $FOR\ ALL\ [x]\ FROM\ [y]\ APPLIES\ [query]$: Geeft \textbf{true} als en slechts als $query$ geldt voor alle $x \in y$.
 	\item $NOT\ [query]$: geeft \textbf{true} als en slechts als \textit{query} \textbf{false} geeft. \textit{query} kan hier \'e\'en van de voorgaande soorten instructies zijn.
@@ -62,7 +62,7 @@ We laten de volgende nieuwe instructies toe in sequentiediagrammen:
 	\item $SET <klassevariabele> IN\ [y]\ TO <waarde>$: Voor alle leden van de verzameling wordt de waarde van de genoemde klassevariabele veranderd naar de genoemde waarde.\label{instr:set}
 \end{enumerate}
 
-In instructies \ref{instr:exists-one} tot en met \ref{instr:set} kan $y$ een verzameling van alle waarden van een primitief type zijn, zoals ``Integer'', ``Float'' of ``String''.
+In instructies \ref{instr:exists-one} tot en met \ref{instr:choose-n-to-m} kan $y$ een verzameling van alle waarden van een primitief type zijn, zoals ``Integer'', ``Float'' of ``String''.
 
 In een \textit{query} mogen er geen methodes voorkomen waarvan het gedrag gespecificeerd wordt in een sequentiediagram.
 
@@ -95,7 +95,7 @@ De lusvoorwaarde wordt als volgt voorgesteld:
 \nonumber &\forall{t}[Time]\forall{st}[StackLevel](C\_SDPointAt(Next(t), play\_7) \leftarrow \\ \nonumber &(CurrentStackLevel(t) = st) \land SDPointAt(t, play\_6) \land \exists{g}[Game](GameT(t, st, g) \land \\ \nonumber &\forall{h}[Heap](GameandHeap(g, h) \\ &\Rightarrow \exists{n}[LimitedInt](HeapamountObjects(t, h, n) \land n = 0)))).
 \end{align}
 
-In instructie 3 wordt de $CHOOSE\ ONE\ WHERE\ APPLIES\ [query]$ instructie gebruikt. We introduceren hier een open predicaat, $ChosenHeap(Time, Heap)$, om ons te helpen deze instructie te vertalen. We voegen de volgende zin toe aan het definitieblok voor diagramvariabelen:
+In instructie 3 wordt de $CHOOSE\ ONE$-instructie gebruikt. We introduceren hier een open predicaat, $ChosenHeap(Time, Heap)$, om ons te helpen deze instructie te vertalen. We voegen de volgende zin toe aan het definitieblok voor diagramvariabelen:
 
 \begin{align}
 \nonumber &\forall{t}[Time]\forall{st}[StackLevel]\forall{h}[Heap](C\_HeapT(Next(t), st, h) \\ &\leftarrow (CurrentStackLevel(t) = st) \land SDPointAt(t, play\_3) \land ChosenHeap(t, h)).
@@ -138,7 +138,7 @@ Figuur \ref{fig:nim-assoc-play} geeft het sequentiediagram voor \textit{play(Pla
 
 Figuur \ref{fig:nim-assoc-taketurn} toont het sequentiediagram voor \textit{takeTurn(Game)}. De speler kiest een niet-lege stapel en neemt minstens \'e\'en object ervan weg.
 
-Bijlage \ref{app:nim-assoc} bevat het IDP-bestand dat deze diagrammen modelleert. De predicaten die de associaties voorstellen, namelijk \textit{GameandHeap} en \textit{GameandPlayer}, zijn inertieel. Zo laten we toe dat associaties variabel zijn over de tijd.
+Bijlage \ref{app:nim-assoc} bevat het IDP-bestand dat deze diagrammen modelleert. De predicaten die de associaties voorstellen, namelijk \textit{GameandHeap/3} en \textit{GameandPlayer/3}, zijn inertieel. Zo laten we toe dat associaties variabel zijn over de tijd.
 
 \begin{figure}
 	\centering
@@ -173,7 +173,7 @@ Vergeleken met sectie \ref{sec:dec-performance} is er een aanzienlijke impact op
 
 \section{Verdere uitbreidingen aan sequentiediagrammen}
 
-In principe is het in LTC mogelijk om meerdere acties tegelijk uit te voeren op het systeem in \'e\'en tijdstap. Dit suggereert dat het voor complexere problemen dan Nim interessant kan zijn om parallellisme in sequentiediagrammen voor te kunnen stellen in FO($\cdot$)-theorie\'en. Er zijn twee mogelijke paden daarin om verdere uitbreidingen te onderzoeken.
+Het is in LTC mogelijk om meerdere acties tegelijk uit te voeren op het systeem in \'e\'en tijdstap. Dit suggereert dat het voor complexere problemen dan Nim interessant kan zijn om parallellisme in sequentiediagrammen voor te kunnen stellen in FO($\cdot$)-theorie\'en. Er zijn twee mogelijke paden daarin om verdere uitbreidingen te onderzoeken.
 
 \subsection{Het parallel gecombineerd fragment}
 
@@ -190,7 +190,7 @@ Zulk een fragment zou dus kunnen toelaten dat meer dan \'e\'en instructie tegeli
 
 \subsection{Een methode oproepen op meerdere objecten tegelijk}
 
-Een andere denkpiste is het oproepen van een bepaalde methode op alle leden van een verzameling of de leden die aan een bepaald criterium voldoen. Zulke functionaliteit zou bijvoorbeeld toegepast kunnen worden om een sequentiediagram voor een booleaanse methode op te roepen op alle leden van een verzameling en om alle leden te selecteren waarvoor het resultaat \textit{true} is.
+Een andere denkpiste is het oproepen van een bepaalde methode op alle leden van een verzameling. Zulke functionaliteit zou bijvoorbeeld toegepast kunnen worden om een sequentiediagram voor een booleaanse methode op te roepen op alle leden van een verzameling en om alle leden te selecteren waarvoor het resultaat \textit{true} is.
 
 Er zijn meerdere mogelijke aanpakken om zulke functionaliteit te modelleren in LTC:
 

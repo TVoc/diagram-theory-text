@@ -1,7 +1,7 @@
 \chapter{Evaluatie van de voorgestelde voorstellingsmethodes voor klassediagrammen en sequentiediagrammen}\label{sec:evaluatie}
-We hebben software ontworpen die een interne voorstelling heeft voor de informatie bevat in een klassediagram en een stel bijhorende sequentiediagrammen. De software kan die interne voorstelling vertalen naar een FO($\cdot$)-theorie opgesteld volgens de regels bekomen in hoofdstukken \ref{sec:consistentie} en \ref{sec:gedrag}. Een XML-vertaler vertaalt een voorstelling van klassediagrammen en sequentiediagrammen in XML naar de interne voorstelling, maar door tijdgebrek is deze vertaler niet doorheen heel het implementatieproces onderhouden geweest.
+We hebben software ontworpen die een interne voorstelling heeft voor de informatie bevat in een klassediagram en een stel bijhorende sequentiediagrammen. De software kan die interne voorstelling vertalen naar een FO($\cdot$)-theorie opgesteld volgens de regels bekomen in hoofdstukken \ref{sec:consistentie} en \ref{sec:gedrag}. Een XML-vertaler vertaalt een voorstelling van klassediagrammen en sequentiediagrammen in XML naar de interne voorstelling.
 
-In dit hoofdstuk ontwerpen we klassediagrammen en sequentiediagrammen waarmee we de spellen Nim en Reversi modelleren. We vertalen die diagrammen dan manueel naar onze interne voorstelling en laten FO($\cdot$)-theorie\"en genereren: een theorie voor Nim en een theorie voor Reversi. We beoordelen de volgende criteria:
+In dit hoofdstuk ontwerpen we klassediagrammen en sequentiediagrammen waarmee we de spellen Nim en Reversi modelleren. We laten die diagrammen vertalen naar FO($\cdot$)-theorie\"en: een theorie voor Nim en een theorie voor Reversi. We beoordelen de volgende criteria:
 
 \begin{enumerate}
 	\item Hoe gemakkelijk is het om tot een ontwerp te komen en hoe omvangrijk is de uitvoertheorie?\label{crit:design}
@@ -22,7 +22,7 @@ Figuur \ref{fig:nim-cd} bevat het klassediagram voor ons ontwerp van Nim.
 
 \begin{figure}[htp]
 	\centering
-	\includegraphics[width=0.75\textwidth]{chap-evaluatie/ClassDiagram1.png}
+	\includegraphics[width=0.8\textwidth]{chap-evaluatie/ClassDiagram1.png}
 	\caption{Klassediagram voor Nim}
 	\label{fig:nim-cd}
 \end{figure}
@@ -85,7 +85,7 @@ Figuur \ref{fig:reversi-cd} bevat het klassediagram. Het toont twee klasses: \te
 
 De sequentiediagrammen zijn beschikbaar op deze locatie: \url{https://imgur.com/a/kgVg4dv} 
 
-\textit{play()} regelt het spelverloop. Aan het begin van elke beurt wordt er gecontroleerd of de huidige speler een zet kan doen. Zo ja, kiest de speler een positie en legt er een steen. Zo nee slaat de speler zijn beurt over. Als de beurt twee keer wordt overgeslagen, wordt voor beide spelers het aantal stenen geteld en wordt de winnaar aangeduid, tenzij het gelijkspel is.
+\textit{play()} regelt het spelverloop. Aan het begin van elke beurt wordt er gecontroleerd of de huidige speler een zet kan doen. Zo ja, kiest de speler een positie en legt er een steen. Zo nee, slaat de speler zijn beurt over. Als de beurt twee keer wordt overgeslagen, wordt voor beide spelers het aantal stenen geteld en wordt de winnaar aangeduid, tenzij het gelijkspel is.
 
 \textit{canPlay(boolean)} controleert voor elk vak om de beurt of de gegeven speler een steen op dat vak kan leggen. Het antwoordt ja zodra het een geldig vak vindt. Als geen enkel vak geldig is, antwoordt het nee.
 
@@ -154,7 +154,7 @@ We spelen een spel met twee stapels. E\'en stapel bevat twee objecten en de ande
 
 De eerste speler neemt tijdens zijn beurt alle drie de objecten van de stapel met drie objecten. Vervolgens neemt de tweede speler \'e\'en object van de andere stapel. Nu heeft de eerste speler geen keuze en moet hij het overblijvend object nemen, waardoor hij het spel verliest.
 
-Figuur \ref{fig:ms} bevat een boxplot van de rekentijd per simulatiestap, en figuur \ref{fig:ms-nooutliers} bevat een boxplot van dezelfde gegevens zonder de uitschieters. We zien dat voor ongeveer de helft van de tijdstappen de rekentijd tussen ongeveer 6,65 seconden en 6,9 seconden ligt. Globaal gezien is de rekentijd gespreid tussen ongeveer 6,5 seconden en 7,15 seconden. Omdat een procedurale modellering een groot aantal stappen tot gevolg heeft, duurt het ongeveer negentien minuten om het spel volledig te spelen. Van de 116 tijdstappen waren er vijf stappen waar de gebruiker het proces kon be\"invloeden, namelijk stappen 23, 34, 67, 78 en 111. De rekentijd tussen deze vijf stappen komt overeen met de verwachting die voortkomt uit de gemiddelde rekentijd.
+Figuur \ref{fig:ms} bevat een boxplot van de rekentijd per simulatiestap, en figuur \ref{fig:ms-nooutliers} bevat een boxplot van dezelfde gegevens zonder de uitschieters. We zien dat voor ongeveer de helft van de tijdstappen de rekentijd tussen ongeveer 6,65 seconden en 6,9 seconden ligt. Globaal gezien is de rekentijd gespreid tussen ongeveer 6,5 seconden en 7,15 seconden. Omdat een procedurale modellering een groot aantal stappen tot gevolg heeft, duurt het ongeveer 18 minuten en 30 seconden om het spel volledig te spelen. Van de 166 tijdstappen waren er vijf stappen waar de gebruiker het proces kon be\"invloeden, namelijk stappen 23, 35, 67, 79 en 111. De rekentijd tussen deze vijf stappen komt overeen met de verwachting die voortkomt uit de gemiddelde rekentijd.
 
 \begin{figure}
 	\includegraphics[width=1.05\textwidth]{chap-evaluatie/boxplot.png}
@@ -223,7 +223,7 @@ Figuur \ref{fig:reversi-space} geeft het virtueel geheugengebruik per stap weer.
 
 \subsection{Conclusie}
 
-Het is mogelijk om Nim te spelen met de uitvoertheorie, maar dit kost ongeveer negentien minuten aan rekentijd en meerdere gigabytes aan geheugen voor een spel met twee stapels.
+Het is mogelijk om Nim te spelen met de uitvoertheorie, maar dit kost ongeveer 18 minuten en 30 seconden aan rekentijd en meerdere gigabytes aan geheugen voor een spel met twee stapels.
 
 Het was mogelijk om acht stappen van progressie\"inferentie uit te voeren voor Reversi. Dit duurde echter 33 minuten en kostte een gigabyte aan geheugen.
 
@@ -314,8 +314,8 @@ We willen controleren of het diagram voor \textit{calcNeighbor(Position, int, in
 Dit zijn de gebruikte zinnen:
 
 \begin{align}
-	\nonumber&\forall{t}[Time]\forall{st}[StackLevel]\forall{pr}[Position]((NeighborCNT(t, st, pr) \\ \nonumber &\land SDPointAt(t, finished)) \Leftrightarrow \exists{pi}[Position]\exists{xr}[LimitedInt]\exists{yr}[LimitedInt]\\ \nonumber &\exists{xi}[LimitedInt]\exists{yi}[LimitedInt]\exists{xo}[LimitedInt]\exists{yo}[LimitedInt](PosCNT(t, st, pi) \\ \nonumber &\land PositionxCo(t, pi, xi) \land PositionyCo(t, pi, yi) \land PositionxCo(t, po, xo) \\ \nonumber &\land PositionyCo(t, po, yo) \land XOffCNT(t, st, xo) \land YOffCNT(t, st, yo) \\ &\land xr = xi + xo \land yr = yi + yo)).\label{form:correct-neighbor} \\
-	\nonumber&\forall{t}[Time]\forall{st}[StackLevel]\forall{pr}[Position]((NeighborCNT(t, st, pr) \\ \nonumber &\land SDPointAt(t, finished)) \Rightarrow \exists{pi}[Position]\exists{xr}[LimitedInt]\exists{yr}[LimitedInt]\\ \nonumber &\exists{xi}[LimitedInt]\exists{yi}[LimitedInt]\exists{xo}[LimitedInt]\exists{yo}[LimitedInt](PosCNT(t, st, pi) \\ \nonumber &\land PositionxCo(t, pi, xi) \land PositionyCo(t, pi, yi) \land PositionxCo(t, po, xo) \\ \nonumber &\land PositionyCo(t, po, yo) \land XOffCNT(t, st, xo) \land YOffCNT(t, st, yo) \\ &\land \lnot{}(xr = xi + xo \land yr = yi + yo))).\label{form:incorrect-neighbor}
+	\nonumber&\forall{t}[Time]\forall{st}[StackLevel]\forall{pr}[Position]((NeighborCNT(t, st, pr) \\ \nonumber &\land SDPointAt(t, finished)) \Rightarrow \exists{pi}[Position]\exists{xr}[LimitedInt]\exists{yr}[LimitedInt]\\ \nonumber &\exists{xi}[LimitedInt]\exists{yi}[LimitedInt]\exists{xo}[LimitedInt]\exists{yo}[LimitedInt](PosCNT(t, st, pi) \\ \nonumber &\land PositionxCo(t, pi, xi) \land PositionyCo(t, pi, yi) \land PositionxCo(t, pr, xr) \\ \nonumber &\land PositionyCo(t, pr, yr) \land XOffCNT(t, st, xo) \land YOffCNT(t, st, yo) \\ &\land xr = xi + xo \land yr = yi + yo)).\label{form:correct-neighbor} \\
+	\nonumber&\forall{t}[Time]\forall{st}[StackLevel]\forall{pr}[Position]((NeighborCNT(t, st, pr) \\ \nonumber &\land SDPointAt(t, finished)) \Rightarrow \exists{pi}[Position]\exists{xr}[LimitedInt]\exists{yr}[LimitedInt]\\ \nonumber &\exists{xi}[LimitedInt]\exists{yi}[LimitedInt]\exists{xo}[LimitedInt]\exists{yo}[LimitedInt](PosCNT(t, st, pi) \\ \nonumber &\land PositionxCo(t, pi, xi) \land PositionyCo(t, pi, yi) \land PositionxCo(t, pr, xr) \\ \nonumber &\land PositionyCo(t, pr, yr) \land XOffCNT(t, st, xo) \land YOffCNT(t, st, yo) \\ &\land \lnot{}(xr = xi + xo \land yr = yi + yo))).\label{form:incorrect-neighbor}
 \end{align} 
 
 Zin \ref{form:correct-neighbor} stelt dat het verschil voor de x- en y-co\"ordinaat tussen de resulterende positie en de invoerpositie gelijk moet zijn aan het verschil tussen de co\"ordinaat van de resulterende afstand en de gegeven sprong. Deze zin moet dus leiden tot modellen waar de juiste buur wordt berekend.
@@ -367,9 +367,9 @@ Zin \ref{form:turncondition} stelt dat als minstens \'e\'en stapel niet leeg is 
 
 We defini\"eren twee stapels in de invoerstructuur en zetten de initi\"ele \textit{SDPoint} naar de eerste instructie van \textit{takeTurn()}. Het duurt 24 tijdstappen om \textit{takeTurn()} volledig uit te voeren als meteen een niet-lege stapel wordt gekozen in instructie 3. Daarom defini\"eren we 24 tijdstappen. Een stapel kan tussen nul en twee objecten bevatten.
 
-Modelexpansie geeft 40 modellen. Voor al de modellen waar \'e\'en van de twee stapels aan het begin minstens \'e\'en object heeft en de uitvoering het einde van het diagram bereikt, zien we inderdaad dat exact \'e\'en stapel minstens \'e\'en object verliest. Voor al de modellen waar beide stapels geen objecten bevatten, merken we dat de uitvoering het lusfragment nooit verlaat. IDP vindt ook alle modellen waar minstens \'e\'en stapel leeg is en waar die stapel telkens wordt gekozen. 
+Modelexpansie geeft 40 modellen. Voor al de modellen waar \'e\'en van de twee stapels aan het begin minstens \'e\'en object heeft en de uitvoering het einde van het diagram bereikt, zien we inderdaad dat exact \'e\'en stapel minstens \'e\'en object verliest. Voor al de modellen waar beide stapels geen objecten bevatten, merken we dat de uitvoering het lusfragment nooit verlaat. IDP vindt ook alle modellen waar minstens \'e\'en stapel leeg is en waar die stapel telkens wordt gekozen in instructies 3 en 8. 
 
-Voor 24 tijdstappen bereikt de uitvoering maximaal drie keer een instructie waar een stapel gekozen wordt en maximaal twee keer een instructie waar het aantal genomen objecten gekozen wordt. Samen met het feit dat er twee stapels zijn en dat ze tussen nul en twee objecten kunnen bevatten, leidt dit tot tabel \ref{tbl:exp-models} voor het aantal verwachte modellen per scenario
+Voor 24 tijdstappen bereikt de uitvoering maximaal drie keer een instructie waar een stapel gekozen wordt en maximaal twee keer een instructie waar het aantal genomen objecten gekozen wordt. Samen met het feit dat er twee stapels zijn en dat ze tussen nul en twee objecten kunnen bevatten, leidt dit tot tabel \ref{tbl:exp-models} voor het aantal verwachte modellen per scenario.
 
 \begin{table}[]
 	\centering
@@ -392,7 +392,7 @@ Stapelgrootte & Aantal verwachte modellen & Som \\ \hline
 
 Modelexpansie op de theorie waar zinnen \ref{form:heapempty}, \ref{form:losesobject} en \ref{form:turncondition} zijn aan toegevoegd vindt 40 modellen. De zinnen verminderen dus niet het aantal modellen dat wordt gevonden.
 
-Het besluit is dat de toestand van het spel op een correcte manier verandert in de loop van \'e\'en beurt. Het toepassen van de \textit{small scope} hypothese leidt tot de conclusie dat het zeer waarschijnlijk is dat de toestand correct verandert over alle beurten heen voor alle mogelijke spelverlopen.
+Het besluit is dat de toestand van het spel op een correcte manier verandert in de loop van \'e\'en beurt. Het toepassen van de \textit{small scope} hypothese leidt tot de conclusie dat het waarschijnlijk is dat de toestand correct verandert over alle beurten heen voor alle mogelijke spelverlopen.
 
 De \textit{grounding}-grootte voor deze uitvoering van modelexpansie is 1 596 587. De uitvoering duurt ongeveer 1 minuut en 16 seconden en het virtueel geheugengebruik is 5,19 GB.
 
@@ -422,7 +422,7 @@ Het geheugen raakte uitgeput bij de controle of in ons ontwerp voor Reversi een 
 \section{Samenvatting van de bevindingen}
 We hebben ontwerpen voor Nim en Reversi gemaakt en ze kunnen vertalen naar FO($\cdot$)-theorie\"en. Dit was relatief eenvoudig, maar door de vele benodigde instructies duurde het relatief lang om de diagrammen te maken. Daarbij merkten we op dat een aantal factoren ervoor zorgen dat de resulterende vocabularia en theorie\"en een grote omvang aannemen.
 
-We konden de uitvoertheorie voor Nim gebruiken om een spelverloop te simuleren. Dit duurde negentien minuten en kostte 4,84 GB aan geheugen. We konden Reversi maar deels simuleren omwege van een fout intern aan IDP. Daarbij kunnen we wel voorspellen dat het enkele uren zou duren om een beurt te spelen met een kost van enkele tientallen aan gigabytes aan geheugen.
+We konden de uitvoertheorie voor Nim gebruiken om een spelverloop te simuleren. Dit duurde ongeveer 18 minuten en 30 seconden en kostte 4,84 GB aan geheugen. We konden Reversi maar deels simuleren omwege van een fout intern aan IDP. Daarbij kunnen we wel voorspellen dat het enkele uren zou duren om een beurt te spelen met een kost van enkele tientallen aan gigabytes aan geheugen.
 
 Voor diagrammen \ref{fig:nim-isEmpty} en \ref{fig:nim-allHeapsEmpty} konden we verifi\"eren dat de uitvoer correct was. Modelexpansie duurde telkens minder dan een minuut, met een \textit{grounding}-grootte van enkele honderdduizenden en een maximaal virtueel geheugengebruik van 2,14 GB. We probeerden de uitvoer van \textit{calcNeighbor(Position, int, int)} te verifi\"eren, maar het geheugen raakte uitgeput voordat IDP een antwoord kon geven.
 
