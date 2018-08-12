@@ -219,7 +219,7 @@ We geven een overzicht van de procedure in algoritme \ref{alg:transition-to-frag
 
 \begin{algorithm}
 	\KwIn{\textit{fragment : gecombineerd fragment}; \textit{aggregateVoorwaarde : string}}
-	\KwOut{Een mapping van bericht naar string. De string stelt de voorwaarde voor waaronder naar een bericht wordt gesprongen bij de transitie naar een fragment.}
+	\KwOut{Een afbeelding van bericht naar string. De string stelt de voorwaarde voor waaronder naar een bericht wordt gesprongen bij de transitie naar een fragment.}
 	$uitvoer \leftarrow \emptyset$; \\
 	\textit{gezien $\leftarrow \emptyset$}; \\
 	\eIf{eerste bericht is rechtstreeks deel van fragment}{
@@ -253,7 +253,7 @@ We geven een overzicht van de procedure in algoritme \ref{alg:transition-to-frag
 
 \begin{algorithm}
 	\KwIn{\textit{gezien : verzameling van gecombineerde fragmenten}; \textit{kinderen : lijst van gecombineerde fragmenten}; \textit{aggregateVoorwaarde : string}; \textit{slaEersteOver : boolean}; \textit{allemaal : boolean}}
-	\KwOut{Een mapping van bericht naar string, zoals in algoritme \ref{alg:transition-to-frag}}
+	\KwOut{Een afbeelding van bericht naar string, zoals in algoritme \ref{alg:transition-to-frag}}
 	\textit{uitvoer $\leftarrow \emptyset$}; \\
 	\ForEach{\textit{kind} $\in$ \textit{kinderen}}{
 	\If{kind is eerste kind $\land$ slaEersteOver}{
@@ -277,17 +277,17 @@ We geven een overzicht van de procedure in algoritme \ref{alg:transition-to-frag
 	\label{alg:wrap-loops}
 \end{algorithm}
 
-In algoritme \ref{alg:wrap-loops} is \textit{bepaalTransitieInOnvolledig} een variant van \textit{bepaalTransitieIn} waar er geen recursieve oproep is voor die kinderen die niet betrokken zijn in het vouwproces voor lusfragmenten.
+In algoritme \ref{alg:wrap-loops} is \textit{bepaalTransitieInOnvolledig} een variant van \textit{bepaalTransitieIn} waar er enkel een recursieve oproep is voor het eerste kind van het fragment.
 
 Merk op dat voor alt-fragmenten algoritme \ref{alg:transition-to-frag} wordt uitgevoerd voor het \textit{if}-gedeelte en het \textit{else}-gedeelte afzonderlijk.
 
-De kern van algoritme \ref{alg:transition-to-frag} is dat in de uitvoertheorie in \'e\'en stap bepaald moet worden welk bericht eerst zal worden uitgevoerd wanneer het uitvoerpad een gecombineerd fragment binnengaat. Daarom bouwen we doorheen de recursie een aggregate voorwaarde op die bestaat uit een conjunctie van voorwaarden voor fragmenten. Enkel wanneer een fragment bereikt wordt waarvoor geldt dat het eerste bericht rechtstreeks deel is van dat fragment wordt er een mapping van dat bericht naar die aggregate voorwaarde toegevoegd. Hierna maken we de aggregate voorwaarde terug leeg om dan het proces voort te zetten voor de kinderen.
+De kern van algoritme \ref{alg:transition-to-frag} is dat in de uitvoertheorie in \'e\'en stap bepaald moet worden welk bericht eerst zal worden uitgevoerd wanneer het uitvoerpad een gecombineerd fragment binnengaat. Daarom bouwen we doorheen de recursie een aggregate voorwaarde op die bestaat uit een conjunctie van voorwaarden voor fragmenten. Enkel wanneer een fragment bereikt wordt waarvoor geldt dat het eerste bericht rechtstreeks deel is van dat fragment wordt er een afbeelding van dat bericht naar die aggregate voorwaarde toegevoegd. Hierna maken we de aggregate voorwaarde terug leeg om dan het proces voort te zetten voor de kinderen.
 
 Algoritme \ref{alg:wrap-loops} is nodig omdat lusfragmenten die elkaar opvolgen een speciaal geval vormen. Voor een lusfragment geldt immers dat het wordt uitgevoerd indien de voorwaarde voor dat lusfragment vervuld is en de voorwaarden voor alle voorgaande lusfragmenten niet vervuld zijn. Figuur \ref{fig:seq-diagram-frag-ex} stelt bijvoorbeeld dat de uitvoering springt naar de lus aangeduid met \fragname{loop4} als aan de voorwaarde voor de lus aangeduid met \fragname{loop3} niet voldaan is. Algoritme \ref{alg:wrap-loops} markeert alle fragmenten die het voor zijn rekening neemt zodat ze niet opnieuw worden behandeld in algoritme \ref{alg:transition-to-frag}.
 
 \subsection{Transitie uit een fragment}\label{sec:transitions-out}
 
-Het doel is om te bepalen welke berichten dienen als punten waar het uitvoerpad een gecombineerd fragment verlaat (verder een `verlaatpunt'), en naar welke berichten de uitvoer springt onder welke voorwaarden. Daarom is het resultaat van deze procedure een mapping van verlaatpunt naar een verzameling van paren van bericht en voorwaarde die moet gelden om naar dat bericht te springen. We geven een overzicht van de procedure in algoritme \ref{alg:calcExitForMessages}.
+Het doel is om te bepalen welke berichten dienen als punten waar het uitvoerpad een gecombineerd fragment verlaat (verder een `verlaatpunt'), en naar welke berichten de uitvoer springt onder welke voorwaarden. Daarom is het resultaat van deze procedure een afbeelding van verlaatpunt naar een verzameling van paren van bericht en voorwaarde die moet gelden om naar dat bericht te springen. We geven een overzicht van de procedure in algoritme \ref{alg:calcExitForMessages}.
 
 \begin{algorithm}
 	\thispagestyle{empty}
@@ -375,8 +375,7 @@ Het doel is om te bepalen welke berichten dienen als punten waar het uitvoerpad 
 	\label{alg:exitToOutside}
 \end{algorithm}
 
-Merk op in stap 1 dat \textit{laatsteBericht} later wordt gemapt naar een mapping van berichten naar de voorwaarde waaronder naar die berichten wordt gesprongen vanaf \textit{laatsteBericht}.
-Algoritme \ref{alg:calcExitForMessages} gebruikt eerst algoritme \ref{alg:determineFinalMessage} om te bepalen of het laatste bericht van het fragment rechtstreeks deel is ervan. Zoniet, gaat het algoritme voort met de kinderen van het fragment. Zoja, controleren we of het fragment een ouder heeft. Als dat zo is, dan kan het zijn dat die ouder een bericht heeft dat in het diagram meteen na het laatste bericht van het fragment komt en dat het uitvoerpad dus mogelijk naar dat bericht springt. Als dat bericht rechtstreeks deel is van de ouder, dan wordt genoteerd dat de uitvoering vanaf het laatste bericht springt naar dat bericht en gaat het algoritme verder vanaf stap 31 (door ruimtegebrek is deze mogelijkheid niet neergeschreven in deze weergave van algoritme \ref{alg:calcExitForMessages}). Als het bericht in de plaats deel is van een kind van de ouder, haalt het algoritme het fragment op waarvan dat bericht rechtstreeks deel is, klimt het naar boven in de boom tot het een kind van de ouder tegenkomt, bundelt opeenvolgende lussen als dat kind een lusfragment is (en ook het fragment na die lussen, als er \'e\'en bestaat) en roept dan algoritme \ref{alg:transition-to-frag} op op alle gebundelde fragmenten. In de uitvoer wordt dan genoteerd dat het uitvoerpad kan springen naar de berichten die deel zijn van de uitvoer van algoritme \ref{alg:transition-to-frag}. Als op het laatste lusfragment een bericht volgt in plaats van een ander type fragment, noteren we dat naar dat bericht kan worden gesprongen (deze mogelijkheid staat niet in het algoritme door ruimtegebrek). Het algoritme gaat verder met de kinderen van het oorspronkelijk fragment.
+Algoritme \ref{alg:calcExitForMessages} gebruikt eerst algoritme \ref{alg:determineFinalMessage} om te bepalen of het laatste bericht van het fragment rechtstreeks deel is ervan. Zoniet, gaat het algoritme voort met de kinderen van het fragment. Zoja, controleren we of het fragment een ouder heeft. Als dat zo is, dan kan het zijn dat die ouder een bericht heeft dat in het diagram meteen na het laatste bericht van het fragment komt en dat het uitvoerpad dus mogelijk naar dat bericht springt. Als dat bericht rechtstreeks deel is van de ouder, dan wordt genoteerd dat de uitvoering vanaf het laatste bericht springt naar dat bericht en gaat het algoritme verder vanaf stap 31 (door ruimtegebrek is deze mogelijkheid niet neergeschreven in deze weergave van algoritme \ref{alg:calcExitForMessages}). Als het bericht in de plaats deel is van een afstammeling van de ouder, haalt het algoritme het fragment op waarvan dat bericht rechtstreeks deel is, klimt het naar boven in de boom tot het een kind van de ouder tegenkomt, bundelt opeenvolgende lussen als dat kind een lusfragment is (en ook het fragment na die lussen, als er \'e\'en bestaat) en roept dan algoritme \ref{alg:transition-to-frag} op op alle gebundelde fragmenten. In de uitvoer wordt dan genoteerd dat het uitvoerpad kan springen naar de berichten die deel zijn van de uitvoer van algoritme \ref{alg:transition-to-frag}. Als op het laatste lusfragment een bericht volgt in plaats van een ander type fragment, noteren we dat naar dat bericht kan worden gesprongen (deze mogelijkheid staat niet in het algoritme door ruimtegebrek). Het algoritme gaat verder met de kinderen van het oorspronkelijk fragment.
 
 Als het bericht na het laatste bericht geen deel is van de ouder, of als het laatste lid van \textit{kinderenNa} een lus is, of als het laatste lid van \textit{kinderenNa} geen lus is en er volgt geen bericht op, controleren we of de ouder zelf een ouder heeft. Zoja, neemt het algoritme een stap naar boven in de fragmentenboom. Bij deze stap markeren we eerst het huidige fragment zodat deze niet meer beschouwd wordt in verdere oproepen van algoritme \ref{alg:transition-to-frag} en concateneren we \textit{aggregateVoorwaarde} met de negaties van de lusvoorwaardes van de lussen op het einde van het fragment, als die er zijn (niet weergegeven in algoritme door plaatsgebrek). Zonee, betekent dit dat de top van de fragmentenboom is bereikt en dat het uitvoerpad de boom moet verlaten. Algoritme \ref{alg:exitToOutside} zorgt voor deze stap uit de boom. We controleren of de fragmentenboom wordt opgevolgd door een lusfragment en bundelen alle volgende lusfragmenten (en het meteen daaropvolgend fragment, als er \'e\'en bestaat) als dat zo is. We roepen algoritme \ref{alg:transition-to-frag} op met die fragmenten om de beurt als argument en registreren de uitvoer als berichten waarnaar gesprongen kan worden. Als er geen lus volgt op de boom, roepen we algoritme \ref{alg:transition-to-frag} op als er een fragment volgt, en anders noteren we het bericht dat meteen volgt op de boom als een bericht waarnaar gesprongen kan worden.
 
@@ -396,10 +395,10 @@ Een laatste aspect is dat we ervoor moeten zorgen dat een lus terug wordt uitgev
 	\If{fragment is een lusfragment en laatsteBericht is een mogelijk laatst bericht van fragment}{
 	\textit{containers $\leftarrow$ containers van fragment}; \\
 	\eIf{eerste container is lus}{
-	\textit{bundelVoorwaarde $\leftarrow$ voorwaarde van lus als de laatste container een fragment is en laatsteBericht is daar een laatste bericht van, anders $\epsilon$}; \\
+	\textit{bundelVoorwaarde $\leftarrow$ voorwaarde van fragment}; \\
 	\ForEach{container $\in$ containers}{
-	\eIf{container is een fragment en container $\notin$ uitgesloten}{
-	\textit{transities $\leftarrow$ bepaalTransitieInOnvolledig(fragment, $\epsilon$, uitgesloten)}; \\
+	\eIf{container is een fragment}{
+	\textit{transities $\leftarrow$ bepaalTransitieInOnvolledig(container, $\epsilon$, uitgesloten)}; \\
 	\textit{concateneer alle sprongvoorwaardes in transities met aggregateVoorwaarde en bundelVoorwaarde}; \\
 	\ForEach{bericht---voorwaarde-paar $\in$ transities}{
 	\textit{uitvoer $\leftarrow$ uitvoer + \{laatsteBericht $\rightarrow$ \{bericht $\rightarrow$ voorwaarde\}\}};
@@ -433,13 +432,15 @@ Een laatste aspect is dat we ervoor moeten zorgen dat een lus terug wordt uitgev
 We gebruiken hier een variant van \textit{bepaalTransitieInOnvolledig} waarbij de fragmenten doorgegeven in \textit{uitgesloten} worden overgeslagen.
 De mogelijke laatste berichten van een fragment zijn deze waarbij het uitvoerpad het fragment verlaat nadat ze zijn uitgevoerd, bijvoorbeeld de laatste berichten van de \textit{if}- en \textit{else}-gedeeltes van een alt-fragment of een bericht dat voorafgaat aan een lusfragment.
 
-Vanaf zulk een laatste bericht gaan we van onderaf naar boven in de boom, beginnend bij het fragment dat als argument wordt gegeven van de oproep. Telkens we een lusfragment tegenkomen waarvan dat bericht een laatste bericht is, moeten we voor dat fragment alle mogelijke beginpunten vinden. We beschouwen de \textit{containers} voor het fragment. Indien de eerste \textit{container} een lus is, controleren we of de laatste \textit{container} een lus is en of \textit{laatsteBericht} een laatst bericht ervan is. In dat geval moeten we verzekeren dat er rekening wordt gehouden met de lusvoorwaarde van de lus op dit niveau wanneer we \textit{bepaalTransitieInOnvolledig} gebruiken. Verder gaan we de \textit{containers} af: We bundelen de negaties van de voorwaardes van voorafgaande lusfragmenten samen, we bepalen de transitiepunten ervan en we gaan naar boven in de boom nadat we een \textit{container} zijn tegengekomen die geen lus is of als we alle \textit{containers} hebben beschouwd.
+Vanaf zulk een laatste bericht gaan we van onderaf naar boven in de boom, beginnend bij het fragment dat als argument wordt gegeven van de oproep. Telkens we een lusfragment tegenkomen waarvan dat bericht een laatste bericht is, moeten we voor dat fragment alle mogelijke beginpunten vinden.
+
+Als de eerste \textit{container} een lus is, houden we bij de uitvoering van \textit{bepaalTransitieInOnvolledig} met de voorwaarde van die lus. We gaan de \textit{containers} af: we bundelen de negaties van de voorwaardes van voorafgaande lusfragmenten samen, we bepalen de transitiepunten ervan en we gaan naar boven in de boom nadat we een \textit{container} zijn tegengekomen die geen lus is of als we alle \textit{containers} hebben beschouwd.
 
 Als de eerste \textit{container} geen lus is, bepalen we de transitiepunten van het fragment en gaan dan naar boven in de boom.
 
 \subsection{De vertaling van transities}\label{sec:process-frag}
 
-Nu volgt een beschrijving van hoe we de voorgaande algoritmes gebruiken om een verzameling van mappings van berichten waarnaar gesprongen wordt naar een mapping van berichten waarvan gesprongen wordt en onder welke voorwaarde vanaf die berichten wordt gesprongen bij te houden. We geven een beschrijving op hoog niveau in algoritme \ref{alg:processCombinedFragment}. Bij de uitvoering ervan werken we vanuit de veronderstelling dat alle berichten en fragmenten van een diagram toegankelijk zijn.
+Nu volgt een beschrijving van hoe we de voorgaande algoritmes gebruiken om een verzameling van afbeeldingen van berichten waarvan gesprongen wordt naar een afbeelding van berichten waarnaar gesprongen wordt en onder welke voorwaarde naar die berichten wordt gesprongen bij te houden. We geven een beschrijving op hoog niveau in algoritme \ref{alg:processCombinedFragment}. Bij de uitvoering ervan werken we vanuit de veronderstelling dat alle berichten en fragmenten van een diagram toegankelijk zijn.
 
 \begin{algorithm}
 	\KwIn{fragment : gecombineerd fragment; uitvoer : verzameling van bericht $\rightarrow$ verzameling van \{bericht $\rightarrow$ string\}}
@@ -476,8 +477,8 @@ Nu volgt een beschrijving van hoe we de voorgaande algoritmes gebruiken om een v
 Bij het vertalen van sequentiediagrammen roepen we algoritme \ref{alg:processCombinedFragment} op met alle fragmenten in het diagram om de beurt als argument. De resulterende informatie geeft ons:
 
 \begin{enumerate}
+	\item De berichten waarvan gesprongen wordt
 	\item De berichten waarnaar gesprongen wordt
-	\item De berichten vanwaar gesprongen wordt
 	\item Onder welke voorwaarde zulk een sprong gebeurt
 \end{enumerate}
 
@@ -521,7 +522,7 @@ We roepen algoritme \ref{alg:processCombinedFragment} eerst op op met \fragname{
 
 Er is geen fragment dat v\'o\'or dit fragment komt, dus roepen we algoritme \ref{alg:transition-to-frag} op.
 
-De recursieve oproepen van algoritme \ref{alg:transition-to-frag} zorgen ervoor dat alle fragmenten worden bekeken. Verder verzekeren ze ook dat de voorwaarde voor een ouderfragment wordt doorgegeven aan alle geneste fragmenten die zelf een fragment hebben als eerste container. Algoritme \ref{alg:wrap-loops} zorgt ervoor dat $\lnot$\fragcond{loop3} wordt opgenomen in de voorwaarde voor de uitvoering van \fragname{loop4}. De uitkomst van de uitvoering van algoritme \ref{alg:transition-to-frag} op \fragname{loop1} is:
+De recursieve oproepen van algoritme \ref{alg:transition-to-frag} zorgen ervoor dat alle fragmenten worden bekeken. Verder verzekeren ze ook dat de voorwaarde voor een ouderfragment wordt doorgegeven aan alle geneste fragmenten als dat gepast is. Algoritme \ref{alg:wrap-loops} zorgt ervoor dat ``$\lnot$\fragcond{loop3}'' wordt opgenomen in de voorwaarde voor de uitvoering van \fragname{loop4}. De uitkomst van de uitvoering van algoritme \ref{alg:transition-to-frag} op \fragname{loop1} is:
 
 \begin{align*}
 	&\transitionentry{\fragcond{loop1}}{\fragmessage{message2}} \\
@@ -546,17 +547,17 @@ In algoritme \ref{alg:processCombinedFragment} gaan we nu over naar stap 10. Na 
 	&\transitionentry[\fragmessage{message7}]{\fragcond{loop2} \land \lnot \fragcond{loop3} \land \fragcond{loop4}}{message8}
 \end{align*}
 
-Nu bereiken we stap 18 in algoritme \ref{alg:processCombinedFragment}. Deze stap houdt in dat we algoritme \ref{alg:calcExitForMessages} oproepen met \fragname{loop1} als argument. Dit algoritme wordt recursief opgeroepen op alle kinderen.
+Nu bereiken we stap 18 in algoritme \ref{alg:processCombinedFragment}. Deze stap houdt in dat we algoritme \ref{alg:calcExitForMessages} oproepen met \fragname{loop1} als argument. Dit algoritme wordt recursief opgeroepen voor alle kinderen.
 
-Algoritme \ref{alg:determineFinalMessage} vindt eerst \fragmessage{message9} als laatste bericht van \fragname{loop1}. \fragmessage{message10} is geen deel van een fragment, dus noteert algoritme \ref{alg:exitToOutside} dat de uitvoering van \fragmessage{message9} springt naar \fragmessage{10} als \fragcond{loop1} niet meer geldt.
+Algoritme \ref{alg:determineFinalMessage} vindt eerst \fragmessage{message9} als laatste bericht van \fragname{loop1}. \fragmessage{message10} is geen deel van een fragment, dus noteert algoritme \ref{alg:exitToOutside} dat de uitvoering van \fragmessage{message9} springt naar \fragmessage{10} als ``\fragcond{loop1}'' niet meer geldt.
 
-Vervolgens vindt algoritme \ref{alg:determineFinalMessage} \fragmessage{message4} en \fragmessage{message5} als laatste berichten van respectievelijk \fragname{alt1a} en \fragname{alt1b}. \fragmessage{message6} is deel van de ouder van \fragname{alt1}, namelijk \fragname{loop1}, dus wordt algoritme \ref{alg:transition-to-frag} opgeroepen op \fragname{loop2}. Op deze manier wordt gevonden dat de uitvoering van \fragmessage{message4} naar \fragmessage{message6} springt als \fragcond{loop2} $\land$ \fragcond{loop3} $\land$ \fragcond{alt2a} geldt, naar \fragmessage{message7} als \fragcond{loop2} $\land$ \fragcond{loop3} $\land$ \fragcond{alt2b} geldt en naar \fragmessage{message8} als \fragcond{loop2} $\land \lnot$ \fragcond{loop3} $\land$ \fragcond{loop4} geldt. Het kan ook zijn dat de uitvoering van \fragmessage{message4} rechtstreeks springt naar \fragmessage{message9} omdat $\lnot$\fragcond{loop2}. Diezelfde mogelijke sprongen gelden ook voor \fragmessage{message5}.
+Vervolgens vindt algoritme \ref{alg:determineFinalMessage} \fragmessage{message4} en \fragmessage{message5} als laatste berichten van respectievelijk \fragname{alt1a} en \fragname{alt1b}. \fragmessage{message6} is deel van de ouder van \fragname{alt1}, namelijk \fragname{loop1}, dus wordt algoritme \ref{alg:transition-to-frag} opgeroepen met \fragname{loop2} als argument. Op deze manier wordt gevonden dat de uitvoering van \fragmessage{message4} naar \fragmessage{message6} springt als ``\fragcond{loop2} $\land$ \fragcond{loop3} $\land$ \fragcond{alt2a}'' geldt, naar \fragmessage{message7} als ``\fragcond{loop2} $\land$ \fragcond{loop3} $\land$ \fragcond{alt2b}'' geldt en naar \fragmessage{message8} als ``\fragcond{loop2} $\land \lnot$ \fragcond{loop3} $\land$ \fragcond{loop4}'' geldt. Het kan ook zijn dat de uitvoering van \fragmessage{message4} rechtstreeks springt naar \fragmessage{message9} omdat ``$\lnot$\fragcond{loop2}'' geldt. Diezelfde mogelijke sprongen gelden ook voor \fragmessage{message5}.
 
-Algoritme \ref{alg:determineFinalMessage} duidt \fragmessage{message6} en \fragmessage{message7} aan als laatste berichten van respectievelijk \fragname{alt2a} en \fragname{alt2b}. \fragmessage{message8} is deel van de ouder van \fragname{alt2}, namelijk \fragname{loop2}, dus springt de uitvoering van \fragmessage{message6} en \fragmessage{message7} naar \fragmessage{message8} als $\lnot$\fragcond{loop3} $\land$ \fragcond{loop4} geldt. Algoritme \ref{alg:calcExitForMessages} zet nu een stap naar boven in de boom naar \fragname{loop1}. \fragmessage{message9} is daar een deel van, dus springt de uitvoering van \fragmessage{message6} en \fragmessage{message7} naar \fragmessage{message9} als $\lnot$\fragcond{loop2} $\land \lnot$ \fragcond{loop3} $\land lnot$ \fragcond{loop4} geldt.
+Algoritme \ref{alg:determineFinalMessage} duidt \fragmessage{message6} en \fragmessage{message7} aan als laatste berichten van respectievelijk \fragname{alt2a} en \fragname{alt2b}. \fragmessage{message8} is deel van de ouder van \fragname{alt2}, namelijk \fragname{loop2}, dus springt de uitvoering van \fragmessage{message6} en \fragmessage{message7} naar \fragmessage{message8} als ``$\lnot$\fragcond{loop3} $\land$ \fragcond{loop4}'' geldt. Algoritme \ref{alg:calcExitForMessages} zet nu een stap naar boven in de boom naar \fragname{loop1}. \fragmessage{message9} is daar een deel van, dus springt de uitvoering van \fragmessage{message6} en \fragmessage{message7} naar \fragmessage{message9} als ``$\lnot$\fragcond{loop2} $\land \lnot$ \fragcond{loop3} $\land \lnot$ \fragcond{loop4}'' geldt.
 
-Vervolgens vindt algoritme \ref{alg:determineFinalMessage} \fragmessage{message8} als laatste bericht van \fragname{loop4}. Algoritme \ref{alg:calcExitForMessages} vindt geen bericht na \fragmessage{message8} dat deel is van de ouder van \fragname{loop4}, namelijk \fragname{loop2}, maar wel van de ouder van \fragname{loop2}, namelijk \fragname{loop1}. Dit is \fragmessage{message9}. De uitvoering springt dus van \fragmessage{message8} naar \fragmessage{message9} als $\lnot$ \fragcond{loop2} $\land \lnot$ \fragcond{loop4} geldt.
+Vervolgens vindt algoritme \ref{alg:determineFinalMessage} \fragmessage{message8} als laatste bericht van \fragname{loop4}. Algoritme \ref{alg:calcExitForMessages} vindt geen bericht na \fragmessage{message8} dat deel is van de ouder van \fragname{loop4}, namelijk \fragname{loop2}, maar wel van de ouder van \fragname{loop2}, namelijk \fragname{loop1}. Dit is \fragmessage{message9}. De uitvoering springt dus van \fragmessage{message8} naar \fragmessage{message9} als ``$\lnot$ \fragcond{loop2} $\land \lnot$ \fragcond{loop4}'' geldt.
  
-Hier stopt de uitvoering van algoritme \ref{alg:calcExitForMessages}. Samengevat was de uitvoer: 
+Hier stopt de uitvoering van algoritme \ref{alg:calcExitForMessages}. Samengevat is de uitvoer: 
  
 \begin{align*}
 	&\transitionentry[\fragmessage{message4}]{\fragcond{loop2} \land \fragcond{loop3} \land \fragcond{alt2a}}{\fragmessage{message6}} \\
@@ -575,7 +576,7 @@ Hier stopt de uitvoering van algoritme \ref{alg:calcExitForMessages}. Samengevat
 	&\transitionentry[\fragmessage{message9}]{\lnot \fragcond{loop1}}{\fragmessage{message10}}
 \end{align*}
 
-We bereiken stap 19 in algoritme \ref{alg:processCombinedFragment}. Algoritme \ref{alg:calculateLoopReentry} duidt \fragmessage{message6}, \fragmessage{message7}, \fragmessage{message8} en \fragmessage{message9} aan als mogelijke laatste berichten van de uitvoering van een lus. Vanaf \fragmessage{message6} en \fragmessage{message7} moet \'e\'en stap naar boven in de boom gezet worden voordat men een lusfragment tegenkomt. \fragcond{loop3} is dus de enige voorwaarde voor een heruitvoering van \fragcond{alt2} naast de \textit{if}- of \textit{else}-voorwaarde voor de respectievelijke delen. \fragmessage{message8} is zelf rechtstreeks deel van \fragname{loop4}, dus moet enkel \fragcond{loop4} gelden voor een heruitvoering. Als \fragcond{loop4} niet geldt maar wel \fragcond{loop2}, landt de heruitvoering van \fragname{loop2} in \fragname{alt2} als \fragcond{loop3} geldt en ook \fragcond{alt2a} of \fragcond{alt2b}. Als laatste moet om van \fragmessage{message9} naar \fragmessage{message2} te springen \fragcond{loop1} gelden. 
+We bereiken stap 19 in algoritme \ref{alg:processCombinedFragment}. Algoritme \ref{alg:calculateLoopReentry} duidt \fragmessage{message6}, \fragmessage{message7}, \fragmessage{message8} en \fragmessage{message9} aan als mogelijke laatste berichten van de uitvoering van een lus. Vanaf \fragmessage{message6} en \fragmessage{message7} moet \'e\'en stap naar boven in de boom gezet worden voordat men een lusfragment tegenkomt. ``\fragcond{loop3}'' is dus de enige voorwaarde voor een heruitvoering van \fragcond{alt2} naast de \textit{if}- of \textit{else}-voorwaarde voor de respectievelijke delen. \fragmessage{message8} is zelf rechtstreeks deel van \fragname{loop4}, dus moet enkel ``\fragcond{loop4}'' gelden voor een heruitvoering. Als ``\fragcond{loop4}'' niet geldt maar wel ``\fragcond{loop2}'', landt de heruitvoering van \fragname{loop2} in \fragname{alt2} als ``\fragcond{loop3} geldt'' en ook ``\fragcond{alt2a}'' of ``\fragcond{alt2b}''. Als laatste moet om van \fragmessage{message9} naar \fragmessage{message2} te springen ``\fragcond{loop1}'' gelden. 
 
 De uitvoer van algoritme \ref{alg:calculateLoopReentry} is dus:
 
@@ -676,12 +677,12 @@ In een project stelt men doorgaans meerdere sequentiediagrammen op die elkaar oo
 In de volgende subsecties gebruiken we het voorbeeld uitgebeeld in figuren \ref{fig:recursion-class}, \ref{fig:methodOne} en \ref{fig:methodtwo} om de gebruikte principes te illustreren.
 
 \subsection{Aanpassingen aan \textit{SDPoint}}
-Het is niet meer voldoende om \textit{SDPoint}s te modelleren als natuurlijke getallen aangezien elk diagram zijn eigen \textit{SDPoint}s heeft. Om de \textit{SDPoint}s horende bij elk diagram van elkaar te kunnen onderscheiden, maken we van het logisch type \textit{SDPoint} nu een \textit{constructed type} in IDP. We gebruiken als patroon voor de naamgeving van elk logisch object $<diagramnaam>\_<instructienummer>$. Voor het voorbeeld krijgen we o.a. $methodOne\_2$ en $methodTwo\_3$. We voegen ook een nieuwe functie toe aan het vocabularium dat gegeven een \textit{SDPoint} het volgende \textit{SDPoint} teruggeeft, namelijk $NextSD(SDPoint) : SDPoint$.
+Het is niet meer voldoende om \textit{SDPoint}s te modelleren als natuurlijke getallen aangezien elk diagram zijn eigen \textit{SDPoint}s heeft. Om de \textit{SDPoint}s horend bij elk diagram van elkaar te kunnen onderscheiden, maken we van het logisch type \textit{SDPoint} nu een \textit{constructed type} in IDP. We gebruiken als patroon voor de naamgeving van elk logisch object $<diagramnaam>\_<instructienummer>$. Voor het voorbeeld krijgen we o.a. $methodOne\_2$ en $methodTwo\_3$. We voegen ook een nieuwe functie toe aan het vocabularium dat gegeven een \textit{SDPoint} het volgende \textit{SDPoint} teruggeeft, namelijk $NextSD(SDPoint) : SDPoint$.
 
 Een andere aanpassing is dat we een virtuele \textit{SDPoint} inpassen na elke instructie voor een oproep. Het naamgevingspatroon hiervoor is $<diagramnaam>\_<instructienummer>post$. Aangezien de derde instructie in figuur \ref{fig:methodOne} een oproep is, krijgen we $methodOne\_3post$. Met deze toevoeging ontkoppelen we twee zaken die bij een oproep komen kijken: Enerzijds dat het mogelijk is dat het resultaat van een oproep wordt toegekend aan een variabele; en anderzijds dat na een oproep er mogelijks een alt-fragment of lusfragment volgt, en dat het dus v\'o\'or de oproep niet noodzakelijk duidelijk is welke de volgende instructie is na de uitvoering van de oproep. Het zou niet mogelijk zijn om voor deze twee zaken het correcte gedrag te verkrijgen zonder een oproepinstructie op deze manier op te splitsen.
 
 \subsection{Het stapelmechanisme}
-Om oproepen van andere sequentiediagrammen correct uit te voeren, moet de theorie bijhouden welke variabelen er bestaan tijdens een bepaalde oproep. Bovendien moet de theorie voor recursieve oproepen ook de waardes van een set variabelen kunnen bewaren v\'o\'or een oproep en die waardes herstellen na een oproep. Hiertoe ontwerpen we een stapelmechanisme. Er gebeuren volgende aanpassingen aan het vocabularium:
+Om oproepen van andere sequentiediagrammen correct uit te voeren, moet de theorie bijhouden welke variabelen er bestaan tijdens een bepaalde oproep. Bovendien moet de theorie voor recursieve oproepen ook de waardes van een stel variabelen kunnen bewaren v\'o\'or een oproep en die waardes herstellen na een oproep. Hiertoe ontwerpen we een stapelmechanisme. Er gebeuren volgende aanpassingen aan het vocabularium:
 
 \begin{itemize}
 	\item Toevoeging van het logisch type $StackLevel \subset \mathbb{N}$: Dit stelt de oproepdiepte van een oproep voor.
@@ -693,7 +694,7 @@ Om oproepen van andere sequentiediagrammen correct uit te voeren, moet de theori
 De volgende subsecties beschrijven hoe we in het definitieblok voor de causatiezinnen dit stapelmechanisme gebruiken.
 
 \subsubsection{Causatiezinnen voor \textit{SDPointAt/2}}\label{sec:sd-rec-cause}
-Oproepinstructies betekenen bijkomende uitzonderingen op het normale verloop van \textit{SDPoints} naast deze die voortkomen uit alt-- en lusfragmenten. In dit geval zijn $methodOne\_3$, $methodTwo\_3$, $methodOne\_5$, $methodTwo\_5$ en $finished$ de nieuwe uitzonderingen. $methodOne\_5$ en $methodTwo\_5$ zijn ook \textit{SDPoint}s die niet in het diagram terug te vinden zijn, maar die we zelf toevoegen. Dit zijn impliciete terugkeerinstructies die we toevoegen voor diagrammen die \textit{void} als resultaat hebben. $finished$ is een speciale \textit{SDPoint} die het einde van de uitvoering aanduidt. De zin die het normale verloop van \textit{SDPoint}s regelt wordt dus:
+Oproepinstructies betekenen bijkomende uitzonderingen op het normale verloop van \textit{SDPoints} naast deze die voortkomen uit alt-- en lusfragmenten. In dit geval zijn $methodOne\_3$, $methodTwo\_3$, $methodOne\_5$, $methodTwo\_5$ en $finished$ de nieuwe uitzonderingen. $methodOne\_5$ is ook een \textit{SDPoint} die niet in het diagram terug te vinden is, maar die we zelf toevoegen. Dit is een impliciete terugkeerinstructie die we toevoegen voor diagrammen die \textit{void} als resultaat hebben. $finished$ is een speciale \textit{SDPoint} die het einde van de uitvoering aanduidt. De zin die het normale verloop van \textit{SDPoint}s regelt wordt dus:
 
 \begin{align}
 	& \nonumber \forall{t}[Time]\forall{s}[SDPoint](C\_SDPointAt(Next(t), NextSD(s) \leftarrow \\ \nonumber &SDPointAt(t,s) \land \lnot((s = methodOne\_3) \lor (s = methodOne\_5) \\ \nonumber &\lor (s = methodTwo\_1) \lor (s = methodTwo\_3) \lor (s = methodTwo\_3post) \\ &\lor (methodTwo\_4) \lor (methodTwo\_5) \lor (s = finished)).
@@ -756,7 +757,7 @@ Er komen twee nieuwe soorten variabelen bij: Objecten waarvan een methode wordt 
 \begin{align}
 	\nonumber &\forall{t}[Time]\forall{s}[StackLevel](C\_MTwoArgT(Next(t), s, 1) \leftarrow \\ &(CurrentStackLevel(t) = (s-1)) \land SDPointAt(t, methodOne\_3)). \\
 	\nonumber &\forall{t}[Time]\forall{s}[StackLevel]\forall{n}[int](C\_MTwoArgT(Next(t), s, n) \leftarrow \\ \nonumber &(CurrentStackLevel(t) = (s-1)) \land SDPointAt(t, methodTwo\_3) \\ &\land MTwoArg(t, (s-1), n)). \\
-	\nonumber &\forall{t}[Time]\forall{s}[StackLevel]\forall{n}[int](C\_MTwoArgT(Next(t), s, n) \leftarrow \\ \nonumber &(CurrentStackLevel(t) = s) \land SDPointAt(t, methodTwo\_2) \\ &\land (\exists{n1}[int](MTwoArg(t, s, n1) \land (n = n1 + 1)))).\label{eq:mtwoarg-inc}
+	\nonumber &\forall{t}[Time]\forall{s}[StackLevel]\forall{n}[int](C\_MTwoArgT(Next(t), s, n) \leftarrow \\ \nonumber &(CurrentStackLevel(t) = s) \land SDPointAt(t, methodTwo\_2) \\ &\land (\exists{n_1}[int](MTwoArg(t, s, n_1) \land (n = n_1 + 1)))).\label{eq:mtwoarg-inc}
 \end{align}
 
 Zin \ref{eq:mtwoarg-inc} demonstreert dat ook buiten oproepinstructies of een terugkeer uit een diagram wordt gekeken naar het oproepniveau. Er wordt immers enkel gekeken of geschreven naar de waarde van de 'versie' van de variabele die overeenkomt met het huidige oproepniveau. Dit komt ook terug bij de variabelen die niet het oproepobject of een parameter van een methode voorstellen.
