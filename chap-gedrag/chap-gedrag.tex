@@ -21,7 +21,7 @@ Verder zijn er ook kaders die berichten omsluiten. Deze kaders duiden \textbf{ge
 
 Berichten worden voorgesteld door pijlhoofden aan ofwel een ononderbroken lijn ofwel een streepjeslijn. Ze kunnen verscheidene betekenissen hebben afhankelijk van de context.
 
-Er zijn berichten die een variabele defini\"eren en er een waarde aan toekennen. Die waarde kan direct berekend worden, zoals in instructie 12 in figuur \ref{fig:seq-diagram-game}. De waarde kan een directe waarde zijn zoals 3 of ``foo'', een variabele, of een bewerking op directe waarden of variabelen van primitieve types. Als de instructie een bewerking op waarden van een primitief type is, moeten de gebruikte waardes allemaal van hetzelfde type zijn en moet het type een geldig invoertype voor de bewerking zijn, anders is het sequentiediagram ongeldig. De toegekende waarde kan ook het resultaat zijn van een methodeoproep, zoals in instructie 3 in dezelfde figuur. Als de methode die wordt opgeroepen een methode is gedefinieerd voor een klasse door het klassediagram, wordt de waarde eerst berekend in een uitvoering van het bijhorend sequentiediagram v\'o\'or het wordt toegekend aan de variabele.
+Er zijn berichten die een variabele defini\"eren en/of er een waarde aan toekennen. Die waarde kan direct berekend worden, zoals in instructie 12 in figuur \ref{fig:seq-diagram-game}. De waarde kan een directe waarde zijn zoals 3 of ``foo'', een variabele, of een bewerking op directe waarden of variabelen van primitieve types. Als de instructie een bewerking op waarden van een primitief type is, moeten de gebruikte waardes allemaal van hetzelfde type zijn en moet het type een geldig invoertype voor de bewerking zijn, anders is het sequentiediagram ongeldig. De toegekende waarde kan ook het resultaat zijn van een methodeoproep, zoals in instructie 3 in dezelfde figuur. Als de methode die wordt opgeroepen een methode is gedefinieerd door het klassediagram voor een klasse, wordt de waarde eerst berekend in een uitvoering van het bijhorend sequentiediagram v\'o\'or het wordt toegekend aan de variabele.
 
 Een numerieke variabele kan een waarde krijgen door middel van de functies \textit{chooseEx(lowerBound, upperBound)} en \textit{chooseIn(lowerBound, upperBound)}. Bij uitvoering van die functies geeft de gebruiker een getal $n$ op. Bij \textit{chooseEx} geldt dat $n \geq lowerBound$ en $n < upperBound$ en bij \textit{chooseIn} geldt dat $n \geq lowerBound$ en $n \leq upperBound$.
 
@@ -40,7 +40,7 @@ Wat betreft associaties beschouwen we enkel binaire associaties. Ze defini\"eren
 \begin{itemize}
 	\item De multipliciteit is $1..1$: We defini\"eren een methode volgens het patroom \textit{getKlassenaam()}. De klasse \textit{Character} in figuur \ref{fig:diagram-voorbeeld} krijgt dus de methode \textit{getInventory()} dat de gerelateerde instantie van klasse \textit{Inventory} als resultaat heeft.
 	\item De multipliciteit is $0..1$: Zoals hierboven, maar er is mogelijks geen resultaat.
-	\item De multipliciteit is van de vorm $0..n$, $0..*$, $1..n$ of $1..*$ waarbij $n \in \mathbb{N}$: We defini\"eren een methode \textit{getKlassenaam(int)} waar het argument de betekenis heeft van een index. Een uiteinde met een multipliciteit met een bovengrens groter dan 1 stellen we immers voor door een verzameling waar ieder lid een volgnummer heeft. Het opgegeven argument moet groter zijn dan 0. Als het argument groter is dan $n$ of als de ondergrens gelijk is aan 0 en de verzameling horend bij het uiteinde is leeg, heeft de oproep geen resultaat. De klasse \textit{Inventory} in figuur \ref{fig:diagram-voorbeeld} krijgt dus de methode \textit{getItem(int)}.
+	\item De multipliciteit is van de vorm $0..n$, $0..*$, $1..n$ of $1..*$ waarbij $n \in \mathbb{N}$: We defini\"eren een methode \textit{getKlassenaam(int)} waar het argument de betekenis heeft van een index. Een uiteinde met een multipliciteit met een bovengrens groter dan 1 stellen we immers voor door een verzameling waar ieder lid een volgnummer heeft. Het opgegeven argument moet groter zijn dan of gelijk 0. Als het argument groter is dan $m - 1$ waar $m$ de grootte van de verzameling, heeft de oproep geen resultaat. De klasse \textit{Inventory} in figuur \ref{fig:diagram-voorbeeld} krijgt dus de methode \textit{getItem(int)}.
 	\item Men kan een instantie aan het andere uiteinde van een associatie opvragen op basis van de waarde van een attribuut. Klasse \textit{Character} krijgt een methode \textit{getStatisticByName(string)}. Het resultaat is de gerelateerde instantie van klasse \textit{Statistic} die het opgegeven argument als waarde heeft van \textit{name}, als die bestaat. Als de opgegeven waarde geen unieke instantie benoemt, is het gedrag van dit soort methode niet gedefinieerd. Instructie 14 in figuur \ref{fig:seq-diagram-game} heeft dus een instantie van klasse \textit{Statistic} gerelateerd aan \textit{target} waarvoor \textit{name} gelijk is aan \textit{``hp''} als resultaat, als die bestaat.
 \end{itemize}
 
@@ -56,7 +56,7 @@ Wat betreft associaties beschouwen we enkel binaire associaties. Ze defini\"eren
 %\end{landscape}
 
 \section{De keuze voor lineaire tijdscalculus}\label{sec:sd-ltc}
-UML-diagrammen schrijven mogelijke toestanden van softwaresystemen en acties op deze voor. Die systemen kunnen van toestand veranderen tussen tijdstappen. Sequentiediagrammen zijn een manier om te beschrijven hoe zulke veranderingen teweeggebracht kunnen worden. Tijdens de uitvoering van een sequentiediagram mag het systeem enkel veranderen zoals beschreven door de huidige actie. Daarom hebben we een mechanisme nodig binnen FO($\cdot$) dat dynamische systemen en bewerkingen erop kan beschrijven. Tegelijk moet dat mechanisme garanderen dat eigenschappen van het systeem die niet worden be\"invloed door de huidige beschouwde actie van het sequentiediagram niet veranderen. Lineaire tijdscalculus\cite{BogaertsBart2014Sdsu}, oftewel LTC, voldoet aan deze voorwaarden. Daarom zullen we om sequentiediagrammen uitvoerbaar te maken binnen FO($\cdot$) het generatieproces voor het vocabularium en de theorie die we bekomen hebben in hoofdstuk \ref{sec:consistentie} uitbreiden volgens de principes van LTC. Dit betekent dat we de predicaten voor operaties die voorheen gegenereerd werden in hoofdstuk \ref{sec:consistentie} achterwege laten.
+UML-diagrammen schrijven mogelijke toestanden van softwaresystemen en acties op deze voor. Die systemen kunnen van toestand veranderen tussen tijdstappen. Sequentiediagrammen zijn een manier om te beschrijven hoe zulke veranderingen teweeggebracht kunnen worden. Tijdens de uitvoering van een sequentiediagram mag de toestand van het systeem enkel veranderen zoals beschreven door de huidige actie. Daarom hebben we een mechanisme nodig binnen FO($\cdot$) dat dynamische systemen en bewerkingen erop kan beschrijven. Tegelijk moet dat mechanisme garanderen dat eigenschappen van het systeem die niet worden be\"invloed door de huidige beschouwde actie van het sequentiediagram niet veranderen. Lineaire tijdscalculus\cite{BogaertsBart2014Sdsu} (LTC) voldoet aan deze voorwaarden. Daarom zullen we om sequentiediagrammen uitvoerbaar te maken binnen FO($\cdot$) het generatieproces voor het vocabularium en de theorie die we bekomen hebben in sectie \ref{sec:cd-rep-cons} uitbreiden volgens de principes van LTC. Dit betekent dat we de predicaten voor operaties die voorheen gegenereerd werden in sectie \ref{sec:cd-rep-cons} achterwege laten.
 
 In de volgende secties werken we deze uitbreiding uit voor het sequentiediagram in figuur \ref{fig:seq-diagram-game}.
 
@@ -191,18 +191,18 @@ Voor de andere variabelen wordt er een causatiezin toegevoegd voor elke instruct
 \end{align*}
 
 
-De zin drukt uit dat de getter wordt opgeroepen op \textit{target} en dat er wordt gevraagd naar een instantie van \textit{Statistic} dat in verband staat met \textit{target} en als naam ``defence'' heeft. Die instantie wordt dan als waarde toegekend aan de variabele \textit{defence}.
+De zin drukt uit dat de \textit{getter} wordt opgeroepen op \textit{target} en dat er wordt gevraagd naar een instantie van \textit{Statistic} dat in verband staat met \textit{target} en als naam ``defence'' heeft. Die instantie wordt dan als waarde toegekend aan de variabele \textit{defence}.
 
 De volledige uitvoertheorie voor diagram \ref{fig:seq-diagram-game} is beschikbaar op de volgende online locatie: \url{https://pastebin.com/WGQjr2bv}.
 
 \section{Het uitvoeren van gecombineerde fragmenten}\label{sec:combined-fragment}
-Het opstellen van causatiezinnen voor \textit{SDPointAt/2} ten gevolge van gecombineerde fragmenten is niet vanzelfsprekend. Deze sectie beschrijft onze methode om dit te bewerkstelligen.
+Het opstellen van causatiezinnen voor \textit{SDPointAt/2} ten gevolge van geneste gecombineerde fragmenten is niet vanzelfsprekend. Deze sectie beschrijft onze methode om dit te bewerkstelligen.
 Bij de vertaling van sequentiediagrammen houden we in de interne voorstelling binnen onze vertaler van een gecombineerd fragment volgende zaken bij:
 
 \begin{itemize}
 	\item Alle gecombineerde fragmenten die kinderen zijn van het fragment.
 	\item Het fragment dat de ouder is van het fragment in kwestie, als die bestaat.
-	\item Alle berichten die rechtstreeks deel zijn van het fragment. Een bericht is rechtstreeks deel van een fragment als het bericht een deel is van het fragment, maar geen rechtstreeks deel is van een kind of afstammeling van het fragment.
+	\item Alle berichten die rechtstreeks deel zijn van het fragment. Een bericht is rechtstreeks deel van een fragment als het bericht een deel is van het fragment, maar geen rechtstreeks deel van een kind of afstammeling van het fragment.
 	\item De voorwaarde waaraan voldaan moet zijn om het fragment uit te voeren. 
 \end{itemize}
 
@@ -212,7 +212,7 @@ In de methode om in de uitvoertheorie het uitvoeringspad doorheen gecombineerde 
 
 \subsection{Transitie naar een fragment}\label{sec:transition-to}
 
-Het resultaat van deze procedure is een mapping van berichten waarnaar gesprongen kan worden bij het binnengaan van een fragment naar onder welke voorwaarde deze sprong gebeurt. We willen dat deze procedure dit niet enkel doet voor het gegeven fragment, maar ook voor alle kinderen van het fragment. Op die manier worden alle fragmenten verwerkt wanneer de procedure wordt opgeroepen voor alle fragmenten zonder ouders.
+Het resultaat van deze procedure is een afbeelding van berichten waarnaar gesprongen kan worden bij het binnengaan van een fragment naar onder welke voorwaarde deze sprong gebeurt. We willen dat deze procedure dit niet enkel doet voor het gegeven fragment, maar ook voor alle kinderen van het fragment. Op die manier worden alle fragmenten verwerkt wanneer de procedure wordt opgeroepen voor alle fragmenten zonder ouders.
 We geven een overzicht van de procedure in algoritme \ref{alg:transition-to-frag}.
 
 \parbreak

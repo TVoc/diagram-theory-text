@@ -20,13 +20,13 @@ Voor sequentiediagrammen willen we nagaan:
 	\item Of we automatisch kunnen controleren of dat gedrag beantwoordt aan bepaalde functionele eisen op het softwaresysteem.
 \end{itemize} 
 
-We bouwen zulk een gereedschap op door klassediagrammen en sequentiediagrammen te representeren in FO($\cdot$), een uitbreiding van eerste-orde-predicatenlogica. We kiezen voor FO($\cdot$) in de plaats van eerste-orde-predicatenlogica of een deelverzameling ervan omwille van de expressiviteit. Inductieve definities in het bijzonder zullen een cruciale rol spelen bij het voorstellen van sequentiediagrammen.
+We bouwen zulk een gereedschap op door klassediagrammen en sequentiediagrammen voor te stellen in FO($\cdot$), een uitbreiding van eerste-orde-predicatenlogica. We kiezen voor FO($\cdot$) in de plaats van eerste-orde-predicatenlogica of een meer restrictieve taal omwille van de expressiviteit. Inductieve definities in het bijzonder spelen een cruciale rol bij het voorstellen van sequentiediagrammen.
 
 Sectie \ref{sec:uml-artifacts} geeft een overzicht van de artefacten die UML aanbiedt. Sectie \ref{sec:intro-idp} geeft een inleiding tot IDP\cite{DeCatBroes2014PLaa}, een kennisbanksysteem voor FO($\cdot$). Sectie \ref{sec:research-q} overloopt de probleemstellingen die we bekijken in deze masterproef. Sectie \ref{sec:text-structure} geeft het verdere verloop van deze tekst en beschrijft de bijdragen geleverd in deze masterproef.
 
 \section{Overzicht van UML-artefacten}\label{sec:uml-artifacts}
 
-James Rumbaugh et al.\cite{RumbaughJames2005Tuml} geven een informele indeling van de soorten artefacten in vier domeinen: Het structureel domein, het dynamisch domein, het fysisch domein en het domein van het modelbeheer. De volgende subsecties geven een kort overzicht van elk domein.
+James Rumbaugh et al.\cite{RumbaughJames2005Tuml} geven een informele indeling van de soorten artefacten in vier domeinen: Het structureel domein; het dynamisch domein; het fysisch domein; en het domein van het modelbeheer. De volgende subsecties geven een kort overzicht van elk domein.
 
 \subsection{Structureel domein}
 
@@ -63,7 +63,7 @@ Artefacten in het dynamisch domein bekijken het softwaresysteem vanuit de volgen
 	\item Het activiteitsoogpunt: Hieronder vallen activiteitsdiagrammen. Deze diagrammen beschrijven hoe de besturingsstroom van het systeem kan verlopen tussen activiteiten. Activiteiten zijn processen die bestaan in het systeem.
 	\item Het interactieoogpunt: Hieronder vallen sequentiediagrammen en communicatiediagrammen.
 	\begin{itemize}
-		\item Sequentiediagrammen beschrijven een tijdverloop van een interactie tussen objecten die instanties zijn van klasses gedefinieerd in een klassediagram. Deze diagrammen beschrijven hoe de toestand van \'e\'en of meerdere objecten verandert ten gevolge van een oproep van een methode gedefinieerd voor de klasse waar een bepaald object een instantie van is. Indien de operatie een resultaat heeft, wordt ook getoond hoe het resultaat wordt berekend.
+		\item Sequentiediagrammen beschrijven een tijdverloop van een interactie tussen objecten die instanties zijn van klasses gedefinieerd in een klassediagram. Deze diagrammen beschrijven hoe de toestand van \'e\'en of meerdere objecten verandert ten gevolge van een oproep van een methode gedefinieerd voor de klasse waar een bepaald object een instantie van is. Indien de methode een resultaat heeft, wordt ook getoond hoe het resultaat wordt berekend.
 		\item Communicatiediagrammen zijn gelijkaardig aan sequentiediagrammen, maar in plaats van het tijdverloop centraal te stellen tonen ze expliciet hoe de objecten betrokken in een oproep met elkaar in verband staan. 
 	\end{itemize}
 \end{itemize}
@@ -89,7 +89,7 @@ In dit domein beoogt men het beheer van de modellering van het systeem zelf. Tot
 
 \section{Het kennisbanksysteem IDP}\label{sec:intro-idp}
 
-Kennisbanksystemen\cite{1999XKSS} beogen het modelleren van kennis over een probleemdomein op een gestructureerde manier in een kennisbank. Ze bieden inferentiemethodes aan waarmee geredeneerd kan worden op die kennis. Zo kan een kennisbanksysteem nieuwe, meer precieze kennis afleiden. Ze laten ook het oplossen van concrete instanties van een probleem binnen het probleemdomein toe.
+Kennisbanksystemen\cite{1999XKSS} beogen het modelleren van kennis over een probleemdomein op een gestructureerde manier in een kennisbank. Ze bieden inferentiemethodes aan waarmee geredeneerd kan worden op die kennis. Zo kan een kennisbanksysteem nieuwe, meer precieze kennis afleiden of aantonen dat bepaalde eigenschappen gelden of niet gelden in de gegeven modellering van het domein. Ze laten ook het oplossen van concrete instanties van een probleem binnen het probleemdomein toe.
 
 In deze masterproef gebruiken we IDP\cite{DeCatBroes2014PLaa}. In IDP zijn kennisbanken opgesteld in FO($\cdot$), een uitbreiding van predicatenlogica.
 
@@ -104,7 +104,7 @@ Bij het opstellen van logische theorie\"en ondersteunt IDP alle concepten uit de
 	\item \textbf{Parti\"ele functies}: IDP laat toe om een functie te specificeren als \textit{partieel}. Dit betekent dat de functie niet noodzakelijk alle elementen van het domein afbeeldt op een element uit het codomein.
 \end{itemize}
 
-De inferentievormen die IDP ondersteunt zijn: Modelexpansie, wat een deels ingevulde structuur uitbreidt tot mogelijke modellen; bepalen of een structuur een model is voor een theorie en/of bepalen of een structuur kan uitgebreid worden tot een model voor de theorie; het vinden van optimale modellen gegeven een aggregate term; propagatie, wat gegeven een structuur en een theorie een preciezere structuur geeft die alle oplossingen behoudt; \textit{query}-inferentie, wat alle objecten die beantwoorden aan een bepaalde \textit{query} ophaalt uit een gegeven structuur; deductie; \textit{theorem proving} door middel van de functie \textit{entails(theory, theory)}; en progressie\"inferentie, wat de simulatie van dynamische systemen gemodelleerd in de lineaire tijdscalculus\cite{BogaertsBart2014Sdsu} toelaat.
+De inferentievormen die IDP ondersteunt zijn: Modelexpansie, wat een deels ingevulde structuur uitbreidt tot mogelijke modellen; bepalen of een structuur een model is voor een theorie en/of bepalen of een structuur kan uitgebreid worden tot een model voor de theorie; het vinden van optimale modellen gegeven een aggregate term; propagatie, wat gegeven een structuur en een theorie een preciezere structuur geeft die alle oplossingen behoudt; \textit{query}-inferentie, wat alle objecten die beantwoorden aan een bepaalde \textit{query} ophaalt uit een gegeven structuur; \textit{theorem proving} door middel van de functie \textit{entails(theory, theory)}; en progressie\"inferentie, wat de simulatie van dynamische systemen gemodelleerd in de lineaire tijdscalculus\cite{BogaertsBart2014Sdsu} toelaat.
 
 De basisblokken van een specificatie in IDP zijn als volgt:
 
@@ -128,7 +128,7 @@ We beschouwen twee categorie\"en van gebreken in een klassediagram:
 
 \begin{itemize}
 	\item \textbf{Inconsistenties:} Het klassediagram is zo opgebouwd dat geen enkele mogelijke toestand van de software kan beantwoorden aan de voorwaarden die worden opgelegd. Dit betekent dat het stuk van de software dat wordt beschreven in het diagram onmogelijk kan functioneren.
-	\item \textbf{Kwaliteitsgebreken:} Deze gebreken hebben een negatieve impact op de kwaliteit van het softwareontwerp. Zo kunnen ze bijvoorbeeld onduidelijkheden in het ontwerp introduceren of het onderhoud van de software \'e\'enmaal ingezet in productie bemoeilijken.
+	\item \textbf{Kwaliteitsgebreken:} Deze gebreken hebben een negatieve impact op de kwaliteit van het softwareontwerp. Zo kunnen ze het bijvoorbeeld moeilijker maken om het diagram te begrijpen.
 \end{itemize}
 
 We onderzoeken hoe we klassediagrammen kunnen vertalen naar een voorstelling die ons toelaat om automatisch de consistentie van het diagram te controleren en om bepaalde soorten kwaliteitsgebreken op te sporen.
@@ -151,7 +151,7 @@ Hoofdstuk \ref{sec:literatuur} geeft een overzicht van literatuur omtrent het ge
 
 Hoofdstuk \ref{sec:consistentie} beschrijft hoe we FO($\cdot$) gebruiken om klassediagrammen voor te stellen. We tonen aan dat we consistentie van een klassediagram kunnen verifi\"eren met modelexpansie. We kunnen enkele vormen van inconsistentie opsporen met \textit{theorem proving}, maar er is verder onderzoek nodig om op bepaalde andere vormen van inconsistentie te kunnen controleren. Dit hoofdstuk beschrijft ook een alternatieve voorstellingswijze die we gebruiken om bepaalde kwaliteitsgebreken op te sporen. We tonen aan dat we de aanwezigheid van losstaande klasses, \textit{many-to-many} associaties en onvoldoende nauw gespecificeerde bovengrenzen op een uiteinde van een associatie kunnen detecteren met modelexpansie.
 
-\sloppy Hoofdstuk \ref{sec:gedrag} beschrijft hoe we sequentiediagrammen voorstellen in lineaire tijdscalculus\cite{BogaertsBart2014Sdsu}, een methode om in FO($\cdot$) dynamische systemen te modelleren.
+\sloppy Hoofdstuk \ref{sec:gedrag} beschrijft hoe we sequentiediagrammen voorstellen in de lineaire tijdscalculus\cite{BogaertsBart2014Sdsu}, een methode om in FO($\cdot$) dynamische systemen te modelleren.
 
 Hoofdstuk \ref{sec:evaluatie} evalueert ons vertalingsproces. We modelleren twee spellen, met voor elk spel een klassediagram en een stel sequentiediagrammen. Die diagrammen gebruiken we enerzijds om met progressie\"inferentie de spellen te simuleren en anderzijds om verificaties van gewenste eigenschappen uit te voeren met modelexpansie. Daarbij letten we op rekentijd en geheugengebruik. We tonen aan dat we de spellen Nim en Reversi elk kunnen modelleren in een klassediagram en een stel sequentiediagrammen. Met de theorie opgesteld volgens de regels beschreven in hoofdstukken \ref{sec:consistentie} en \ref{sec:gedrag} kunnen we een spelverloop van Nim simuleren. We nemen waar dat er relatief veel tijd en geheugen nodig is om deze simulaties uit te voeren. Verder tonen we aan dat we kunnen verifi\"eren of de uitvoer van een sequentiediagram voldoet aan bepaalde eisen op de methode gemodelleerd in dat sequentiediagram. Als laatste tonen we aan dat we kunnen controleren of de sequentiediagrammen garanderen dat een spelbeurt in Nim altijd verloopt zoals voorgeschreven door de spelregels.
 

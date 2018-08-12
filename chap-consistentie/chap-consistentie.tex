@@ -1,5 +1,5 @@
 \chapter{Een semantiek voor UML-klassediagrammen en controle op consistentie en kwaliteitsgebreken}\label{sec:consistentie}
-Sectie \ref{sec:cd-components} geeft een beschrijving van de verscheidene componenten in een klassediagram die we beschouwen in deze masterproef. Die beschrijving gebruiken we om een modelsemantiek te defini\"eren voor klassediagrammen in sectie \ref{sec:cd-semantics}. Op basis van deze semantiek defini\"eren we consistentie en inconsistentie van een klassediagram. Sectie \ref{sec:cd-rep-cons} beschrijft een methode om een voorstellingswijze voor klassediagrammen in FO($\cdot$) te bekomen die overeenkomt met die semantiek. Zo kunnen we consistentie en bepaalde soorten inconsistentie van een klassediagram nagaan. Tenslotte beschrijft sectie \ref{sec:kwaliteitsgebrek} een alternatieve voorstellingsmethode voor klassediagrammen om bepaalde soorten kwaliteitsgebrekken op te sporen.
+Sectie \ref{sec:cd-components} geeft een beschrijving van de verscheidene componenten in een klassediagram die we beschouwen in deze masterproef. Die beschrijving gebruiken we om een modelsemantiek te defini\"eren voor klassediagrammen in sectie \ref{sec:cd-semantics}. Op basis van deze semantiek defini\"eren we consistentie en inconsistentie van een klassediagram. Sectie \ref{sec:cd-rep-cons} beschrijft een methode om een voorstellingswijze voor klassediagrammen in FO($\cdot$) te bekomen die overeenkomt met die semantiek. Zo kunnen we in sectie \ref{sec:cons-verify} consistentie en bepaalde soorten inconsistentie van een klassediagram nagaan. Tenslotte beschrijft sectie \ref{sec:kwaliteitsgebrek} een alternatieve voorstellingsmethode voor klassediagrammen om bepaalde soorten kwaliteitsgebrekken op te sporen.
 
 \section{Componenten van een klassediagram}\label{sec:cd-components}
 
@@ -8,7 +8,7 @@ We gebruiken figuren \ref{fig:voorbeeld1} en \ref{fig:voorbeeld2} ter illustrati
 \begin{figure}[h]
 	\centering
 	\includegraphics[width=0.6\textwidth]{chap-consistentie/voorbeeld1.png}
-	\caption{Klasses, associaties en generalisaties}
+	\caption{Klasses, associaties en overervingsrelaties}
 	\label{fig:voorbeeld1}
 \end{figure}
 
@@ -21,7 +21,7 @@ We gebruiken figuren \ref{fig:voorbeeld1} en \ref{fig:voorbeeld2} ter illustrati
 
 \subsection{Klasse}
 
-Klassediagrammen beschrijven de structuur van een object in het gemodelleerde probleemdomein. Die structuur bestaat uit discrete stukken informatie die het object bevat of kan bevatten, de bewerkingen die beschikbaar zijn voor een object, en een beschrijving van hoe men het object kan relateren aan andere objecten uit het probleemdomein. \textbf{Klasses} bepalen hoe die structuur eruit ziet voor een object. We zeggen dat een object een \textbf{instantie} is van een klasse als de toestand van en bewerkingen beschikbaar op dat object overeenkomen met die klasse. Dit concept defini\"eren we preciezer later in deze sectie.
+Klassediagrammen beschrijven de structuur van een object in het gemodelleerde probleemdomein. Die structuur bestaat uit discrete stukken informatie die het object bevat of kan bevatten, de bewerkingen die beschikbaar zijn voor een object, en een beschrijving van hoe men het object in verband kan brengen met andere objecten uit het probleemdomein. \textbf{Klasses} bepalen hoe die structuur eruit ziet voor een object. We zeggen dat een object een \textbf{instantie} is van een klasse als de toestand van en bewerkingen beschikbaar op dat object overeenkomen met die klasse. Dit concept defini\"eren we preciezer later in deze sectie.
 
 Een klasse bestaat uit de volgende elementen:
 
@@ -41,7 +41,7 @@ De \textbf{instantiatie} van een klasse is de verzameling van alle instanties va
 
 Een object kan een instantie zijn van meerdere klasses. In de eerste plaats is een object een directe instantie van een bepaalde klasse. Als die klasse deel uitmaakt van een klassehi\"erarchie, betekent dit dat het object een indirecte instantie is van alle superklasses van de klasse. Beschouw het diagram in figuur \ref{fig:multi-inheritance}. Het duidt directe overervingsrelaties aan door pijlen met een leeg hoofd. De klasse van waaruit de pijl vertrekt is de subklasse terwijl de klasse waarnaar de pijl wijst de superklasse is.
 
-Een klasse kan betrokken zijn bij meerdere directe overervingsrelaties. De klasse kan een superklasse zijn van meerdere klasses. De klasse kan ook de subklasse zijn van meerdere klasses; dit noemen we meervoudige overerving.
+Een klasse kan betrokken zijn bij meerdere directe overervingsrelaties. De klasse kan een superklasse zijn van meerdere klasses. De klasse kan ook de subklasse zijn van meerdere klasses. Dit drukt meervoudige overerving uit.
 
 In figuur \ref{fig:multi-inheritance} is klasse \textit{Z} een subklasse van klasse \textit{Y}. Door meervoudige overerving is klasse \textit{Y} een subklasse van klasses \textit{X} en \textit{O}. De transitieve sluiting over directe overervingsrelaties betekent dat directe instanties van klasse \textit{Z} ook instanties zijn van de klasses \textit{X} en \textit{O}.
 
@@ -54,9 +54,9 @@ UML gebruikt meervoudige overerving om \textbf{meervoudige classificatie}\cite{R
 	\label{fig:multi-inheritance}
 \end{figure}
 
-Subklasses erven alle attributen en operaties en van al hun superklasses.
+Subklasses erven alle attributen en operaties van al hun superklasses.
 
-De specificatie van klassediagrammen stelt dat in een klassehi\"erarchie een attribuut met een bepaalde signatuur, bestaande uit zijn naam, type en multipliciteit, maar \'e\'enmaal mag gedefinieerd worden. Verder mag een operatie met een bepaalde signatuur, zijnde haar naam, lijst van parameters met hun bijhorende type, en resultaattype maar eenmaal gedefinieerd worden in deze klassehi\"erarchie, tenzij een subklasse de operatie met die signatuur herdefinieert. Dit noemt men \textit{\textbf{overriding}}. Doorgaans doet men dit om aan te geven dat een subklasse de implementatie van een bepaalde methode anders invult. De specificatie van UML\cite{OMG-UML} stelt dat bij \textit{overriding} de ontwerper zelf moet beslissen of \textit{covariantie}, \textit{contravariantie} of \textit{invariantie} voor de types van de parameters en resultaat van een operatie geldt. Covariantie betekent dat een type vervangen mag worden door een subtype. Contravariantie betekent dat een type vervangen mag worden door een supertype. Invariantie betekent dat een type niet mag veranderen. Elk van deze vormen van variantie kan gelden voor parametertypes en resultaattypes.
+De specificatie van klassediagrammen stelt dat in een klassehi\"erarchie een attribuut met een bepaalde signatuur, bestaande uit zijn naam, type en multipliciteit, maar \'e\'enmaal mag gedefinieerd worden. Verder mag een operatie met een bepaalde signatuur, zijnde haar naam, lijst van parameters met hun bijhorende type, en resultaattype maar eenmaal gedefinieerd worden in deze klassehi\"erarchie, tenzij een subklasse de operatie met die signatuur herdefinieert. Dit noemt men \textit{\textbf{overriding}}. Doorgaans doet men dit om aan te geven dat een subklasse de implementatie van een bepaalde methode anders invult. De specificatie van UML\cite{OMG-UML} stelt dat bij \textit{overriding} de ontwerper zelf moet beslissen of \textbf{covariantie}, \textbf{contravariantie} of \textbf{invariantie} voor de types van de parameters en resultaat van een operatie geldt. Covariantie betekent dat een type vervangen mag worden door een subtype. Contravariantie betekent dat een type vervangen mag worden door een supertype. Invariantie betekent dat een type niet mag veranderen. Elk van deze vormen van variantie kan gelden voor parametertypes en resultaattypes.
 
 Als een klasse deel uitmaakt van meerdere klassehi\"erarchie\"en, mag die klasse maar een definitie van een operatie van een bepaalde signatuur overerven van ten hoogste \'e\'en klassehi\"erarchie. Als een klasse een operatie van een bepaalde signatuur zelf herdefinieert, blijft het diagram wel geldig als die klasse anders meer dan \'e\'en definitie van een operatie van dezelfde signatuur zou overerven.
 
@@ -71,8 +71,6 @@ Een binaire associatie relateert een object van een klasse aan objecten van ofwe
 Elk uiteinde van een associatie is onderhevig aan een multipliciteit, genoteerd als $n..m$ met $n,m \in \mathbb{N}$ en $n \leq m$ of $n..*$ met $n \in \mathbb{N}$. Beschouw de associatie \textit{B}---\textit{C} in figuur \ref{fig:voorbeeld1}. Een object van klasse \textit{B} moet gerelateerd zijn aan minimaal \'e\'en object van klasse \textit{C}. Er is geen bovengrens op de hoeveelheid objecten van klasse \textit{C} waaraan een object van klasse \textit{B} gerelateerd is. Een object van klasse \textit{C} moet gerelateerd zijn aan minimaal \'e\'en object van klasse \textit{B} en maximaal drie objecten van klasse \textit{B}.
 
 De multipliciteiten op de associatie \textit{A}---\textit{A} impliceren dat elk object van klasse \textit{A} moet gerelateerd zijn aan exact \'e\'en object van klasse \textit{A}, zij het zichzelf of een ander object.
-
-Het is toegelaten om tussen twee klasses meerdere associatierelaties te defini\"eren. Deze worden beschouwd als aparte associaties en kunnen hun eigen multipliciteiten defini\"eren. Voor eenvoud van implementatie beschouwen we echter in deze masterproef enkel klassediagrammen die tussen twee klasses hoogstens \'e\'en associatierelatie defini\"eren.
 
 In deze masterproef beschouwen we alleen bidirectionele associaties. Dit betekent dat beide uiteindes van een associatie \textbf{navigeerbaar} zijn. Gegeven een object kan men navigatie over een associatie naar het andere uiteinde uitvoeren, wat mogelijks een object of een verzameling van objecten als resultaat heeft. Wat dit concreet betekent, hangt af van de grenzen van de multipliciteit op het uiteinde aan de andere kant in de associatie:
 
@@ -99,13 +97,13 @@ De semantiek voor ternaire associaties opgesteld aan de hand van figuur \ref{fig
 
 Merk op dat, als in figuur \ref{fig:voorbeeld2} $i$ gelijk is aan 1, deze semantiek impliceert dat voor alle mogelijke tupels $(d,e)$ waar $d \in D, e \in E$ er minstens \'e\'en gerelateerd object van klasse \textit{F} moet bestaan. Daarom is het gebruikelijk om de ondergrenzen voor alle uiteindes gelijk te stellen aan 0.
 
-Ook meervoudige associaties zijn navigeerbaar. Voor associaties met een ariteit van $n$ heeft navigatie nu een tupel met ariteit $(n-1)$ als invoer. De $(n-1)$ elementen van het tupel bestaan uit objecten van de gerelateerde klasse horend bij elk uiteinde van de associatie waarbij \'e\'en uiteinde wordt uitgesloten. Er wordt genavigeerd naar het uiteinde die uitgesloten werd uit het tupel. De concrete betekenis van navigatie is analoog aan die van binaire associaties zoals beschreven in sectie \ref{sec:bin-assoc}.
+Ook meervoudige associaties zijn navigeerbaar. Voor associaties met een ariteit van $n$ heeft navigatie nu een tupel met ariteit $(n-1)$ als invoer. De $(n-1)$ elementen van het tupel bestaan uit objecten van de gerelateerde klasse horend bij elk uiteinde van de associatie waarbij \'e\'en uiteinde wordt uitgesloten. Er wordt genavigeerd naar het uiteinde die uitgesloten werd uit het tupel. De concrete betekenis van navigatie is analoog aan die voor binaire associaties.
 
 \subsubsection{Het verband tussen associaties en overerving}
 
 Subklasses nemen deel aan alle associaties gedefinieerd voor alle superklasses. Beschouw figuur \ref{fig:assoc-hier}. De klasse \textit{N} neemt deel aan zowel de associatie \textit{L}---\textit{M} als de associatie \textit{N}---\textit{O}. Het is niet zo dat een tupel dat behoort tot de associatie \textit{N}---\textit{O} behoort tot de associatie \textit{L}---\textit{M}. Associaties die een subklasse overerft en associaties die direct zijn gedefinieerd voor een subklasse zijn onafhankelijk van elkaar.
 
-UML laat wel toe dat de ontwerper een associatie specialiseert\cite{RumbaughJames2005Tuml}. Beschouw figuur \ref{fig:assoc-gen}. De associatie \textit{J}---\textit{K} specialiseert de associatie \textit{H}---\textit{I}. Hierbij is het verplicht dat de klasses verbonden in de specialiserende associatie subklasses zijn van de klasses verbonden in de associatie die gespecialiseerd wordt. Figuur \ref{fig:assoc-gen} stelt dat alle tupels die behoren tot de associatie \textit{J}---\textit{K} ook behoren tot de associatie \textit{H}---\textit{I}, maar niet omgekeerd.
+UML laat wel toe dat de ontwerper een associatie specialiseert\cite{RumbaughJames2005Tuml}. Beschouw figuur \ref{fig:assoc-gen}. De associatie \textit{J}---\textit{K} specialiseert de associatie \textit{H}---\textit{I}. Hierbij is het verplicht dat de klasses verbonden in de specialiserende associatie subklasses zijn van de klasses verbonden in de associatie die gespecialiseerd wordt. Figuur \ref{fig:assoc-gen} stelt dat alle tupels die behoren tot de associatie \textit{J}---\textit{K} ook behoren tot de associatie \textit{H}---\textit{I}, maar niet noodzakelijk omgekeerd.
 
 \begin{figure}
 	\centering
@@ -127,7 +125,7 @@ UML laat wel toe dat de ontwerper een associatie specialiseert\cite{RumbaughJame
 
 \section{Semantiek voor klassediagrammen}\label{sec:cd-semantics}
 
-In deze sectie beschrijven we een modelsemantiek voor klassediagrammen gebaseerd op de componenten genoemd in sectie \ref{sec:cd-components} en de eigenschappen daarvan.
+Deze sectie beschrijft een modelsemantiek voor klassediagrammen gebaseerd op de componenten genoemd in sectie \ref{sec:cd-components} en de eigenschappen daarvan.
 
 Een model is een verzameling van de volgende delen:
 
@@ -138,7 +136,7 @@ Een model is een verzameling van de volgende delen:
 	\item Voor elke associatie een verzameling van $n$-aire tupels, waar $n$ de ariteit van de associatie.
 \end{itemize}
 
-Een model voldoet aan een klassediagram als en slechts als er aan de volgende voorwaarden voldaan is:
+Een model voldoet aan een klassediagram als en slechts het voldoet aan de volgende voorwaarden:
 
 \begin{enumerate}
 	\item Als een object een directe instantie is van een klasse, moet dat object ook een instantie zijn van alle superklasses.\label{rule:instance}
@@ -223,7 +221,7 @@ Beschouw het diagram in figuur \ref{fig:incon-assoc-multi}. De associaties \text
 
 Beschouw het diagram in figuur \ref{fig:incon-gen-assoc}. Stel dat klasse \textit{V} als directe instantie \textit{v} heeft en klasse \textit{W} als directe instanties \textit{w1} en \textit{w2}. We stellen $\{(v, w1); (v, w2)\}$. \textit{w1} en \textit{w2} zijn echter ook instanties van klasse \textit{V}, waardoor er vier nieuwe objecten nodig zijn om de associatie voor beide objecten te vervullen. Het probleem zet zich voor de vier objecten verder. Dit zorgt weer voor oneindig grote niet-lege modellen en inconsistentie van het diagram.
 
-Beschouw het diagram in figuur \ref{fig:incon-assoc-spec}. Een instantie van klasse \textit{C} moet gerelateerd zijn aan twee instanties van klasse \textit{D}. Deze tupels moeten ook lid zijn van de associatie \textit{A}---\textit{B}, maar de multipliciteiten op die associatie beletten dat beide tupels tegelijkertijd lid zijn. De voorwaarde dat alle tupels in de associatie \textit{C}---\textit{D} lid moeten zijn van de associatie \textit{A}---\textit{B} is dus geschonden. Dit zorgt ervoor dat klasse \textit{C} inconsistent is. Een gelijkaardige redenering geldt voor klasse \textit{D}.
+Beschouw het diagram in figuur \ref{fig:incon-assoc-spec}. Een instantie van klasse \textit{C} moet gerelateerd zijn aan twee instanties van klasse \textit{D}. Deze tupels moeten ook lid zijn van de associatie \textit{A}---\textit{B}, maar de multipliciteiten op die associatie beletten dat beide tupels tegelijkertijd lid zijn. De voorwaarde dat alle tupels in de associatie \textit{C}---\textit{D} lid moeten zijn van de associatie \textit{A}---\textit{B} is dus geschonden. Dit zorgt ervoor dat de instantiatie van \textit{C} noodzakelijk leeg is. \textit{C} is dus inconsistent. Een gelijkaardige redenering geldt voor klasse \textit{D}.
 
 \section{Voorstellingswijze van klassediagrammen in FO($\cdot$) volgens de voorgestelde semantiek}\label{sec:cd-rep-cons}
 
@@ -231,7 +229,7 @@ Deze sectie beschrijft hoe we klassediagrammen voorstellen in FO($\cdot$). Daarv
 
 Het merendeel van het werk in deze sectie bestaat erin om de methode om klassediagrammen te vertalen naar eerste-orde-predicatenlogica ge\"introduceerd in Daniela Berardi et al.\cite{BerardiDaniela2005RoUc} aan te passen om gebruik te maken van logische types zoals gedefinieerd in FO($\cdot$).
 
-Aan de hand van het voorbeeld in figuur \ref{fig:diagram-voorbeeld} illustreren we welke regels we gebruiken om een theorie op te bouwen.
+Aan de hand van het voorbeeld in figuur \ref{fig:diagram-voorbeeld} illustreren we welke regels we gebruiken om een theorie op te bouwen. Dit diagram stelt een spel voor waar personages zich bevinden op een rechthoekig veld. Personages hebben bepaalde eigenschappen in de vorm van numerieke parameters, kunnen voorwerpen bezitten en kunnen elkaar aanvallen met wapens.
 
 \begin{figure}[h]
 	\includegraphics[width=0.95\textwidth]{chap-consistentie/diagram-voorbeeld.png}
@@ -239,13 +237,13 @@ Aan de hand van het voorbeeld in figuur \ref{fig:diagram-voorbeeld} illustreren 
 	\label{fig:diagram-voorbeeld}
 \end{figure}
 
-Meer bepaald willen we uitdrukken welke \textbf{klasses} er bestaan in het diagram, welke \textbf{attributen} en \textbf{operaties} elke klasse bevat, welke \textbf{associaties} er bestaan tussen de verscheidene klasses en welke \textbf{klassehi\"erarchie\"en} er bestaan.
+We willen uitdrukken welke \textbf{klasses} er bestaan in het diagram, welke \textbf{attributen} en \textbf{operaties} elke klasse bevat, welke \textbf{associaties} er bestaan tussen de verscheidene klasses en welke \textbf{klassehi\"erarchie\"en} er bestaan.
 
 \subsection{Logische types voor objecten}
-We moeten een manier hebben om objecten te benoemen in een theorie en te specificeren tot welke klasse die objecten behoren. Voor beide van deze noden zijn logische types geschikt. We voegen voor elke klasse een logisch type toe aan het vocabularium. Er is een logisch type \textit{Character}, een logisch type \textit{Position}, etc. Op deze manier garanderen we voorwaarde \ref{rule:instance} voor modellen van een klassediagram.
+We moeten een manier hebben om objecten te benoemen in een theorie en te specificeren tot welke klasse die objecten behoren. Voor beide van deze noden zijn logische types geschikt. We voegen voor elke klasse een logisch type toe aan het vocabularium. Er is bijvoorbeeld een logisch type \textit{Character} en een logisch type \textit{Position}. Op deze manier garanderen we voorwaarde \ref{rule:instance} voor modellen van een klassediagram.
 
 \subsection{Voorstellen van attributen}
-Voor elk attribuut voegen we een binair predicaat toe waarvan de naam beantwoordt aan het patroon: \textit{Klassenaamattribuutnaam}. Voor klasse \textit{Character} en attribuut \textit{name} resulteert dit dus in het predicaat \textit{Charactername/2}. Het eerste argument van dit predicaat is een \textit{Character}. Het type van het tweede argument hangt af van wat er in het diagram staat: Als het een primitief type is zoals \textit{string} of \textit{int}, zal dat ook het type zijn van het tweede predicaat; in het andere geval is het type van het tweede argument het overeenkomstig logisch type voor die klasse. Op deze manier dwingen we af dat elk argument van het predicaat van het juiste type is.
+Voor elk attribuut voegen we een binair predicaat toe waarvan de naam beantwoordt aan het patroon: \textit{Klassenaamattribuutnaam}. Voor klasse \textit{Character} en attribuut \textit{name} resulteert dit dus in het predicaat \textit{Charactername/2}. Het eerste argument van dit predicaat is een \textit{Character}. Het type van het tweede argument hangt af van wat er in het diagram staat. Als het een primitief type is zoals \textit{string} of \textit{int}, zal dat ook het type zijn van het tweede predicaat. In het andere geval is het type van het tweede argument het overeenkomstig logisch type voor die klasse. Op deze manier dwingen we af dat elk argument van het predicaat van het juiste type is.
 De signatuur van \textit{Charactername/2} is daarom \textit{Charactername(Character, string)}.
 Voor elk attribuut wordt ook een regel omtrent multipliciteit afgeleid. Zij \textit{lowerBound} de ondergrens en \textit{upperBound} de bovengrens. Dan is de meest algemene vorm van deze regel als volgt:
 	
@@ -262,16 +260,16 @@ waarbij \textit{lowerBound} wordt weggelaten als deze $0$ is en \textit{upperBou
 Voor \textit{Charactername/2} wordt daarom afgeleid:
 	
 \begin{align*}
-	\forall{o1}[Character]\exists!{x}[string](Charactername(o,x)).
+	\forall{o1}[Character]\exists_{=1}{x}[string](Charactername(o,x)).
 \end{align*}
 
 Met deze predicaten en de beperkingen erop garanderen we voorwaarde \ref{rule:attr} voor modellen van een klassediagram.
 
 \subsection{Voorstellen van operaties}\label{sec:cons-method}
 Voor elke operatie voegen we een functie toe dat beantwoordt aan volgend patroon: \sloppy
-	 \textit{Klassenaamoperatienaam/(m+1) : ResultaatType}, waarbij $m$ het aantal argumenten dat als invoer wordt meegegeven aan de operatie en \textit{ResultaatType} het type van het resultaat, zij het een primitief type of een klasse. De signatuur ziet eruit als \textit{$Klassenaamoperatienaam(o,p_1,\ldots,p_m)$}, waarbij \textit{o} het object van het logisch type overeenkomstig de klasse waarvan de operatie deel is en \textit{$p_1$} \ldots \textit{$p_m$} de argumenten. Indien er geen argumenten zijn, ziet de signatuur eruit als \textit{Klassenaamoperatienaam(o)}. Voor \textit{determineDamageWeaponFrom(Weapon)} van \textit{Character} wordt dit dus \textit{CharacterdetermineDamageFrom(Character,Weapon) : int}.
+	 \textit{Klassenaamoperatienaam/(m+1) : ResultaatType}, waarbij $m$ het aantal argumenten dat als invoer wordt meegegeven aan de operatie en \textit{ResultaatType} het type van het resultaat, zij het een primitief type of een klasse. De signatuur ziet eruit als \textit{$Klassenaamoperatienaam(O,P_1,\ldots,P_m)\ :\ R$}, waarbij \textit{O} het logisch type overeenkomstig de klasse waarvan de operatie deel is, \textit{$P_1$} \ldots \textit{$P_m$} de logische types overeenkomstig de respectievelijke argumenten en \textit{$R$} het logisch type overeenkomstig het resultaat. Indien er geen argumenten zijn, ziet de signatuur eruit als \textit{Klassenaamoperatienaam(O) : R}. Voor \textit{determineDamageWeaponFrom(Weapon)} van \textit{Character} wordt dit dus \textit{CharacterdetermineDamageFrom(Character,Weapon) : int}.
 
-Voor elke combinatie van object waarop de operatie wordt opgeroepen en mogelijke invoerparameters moet het het geval zijn dat er \'e\'en enkel resultaat is. Dit is triviaal het geval aangezien een functie elk element uit het domein afbeeldt op exact \'e\'en element uit het codomein.
+Voor elke combinatie van object waarop de operatie wordt opgeroepen en mogelijke invoerparameters moet gelden dat er \'e\'en enkel resultaat is. Dit is triviaal het geval aangezien een functie elk element uit het domein afbeeldt op exact \'e\'en element uit het codomein.
 
 Met deze functies garanderen we voorwaarde \ref{rule:op} voor modellen van een klassediagram.
 
@@ -314,7 +312,7 @@ Aangezien FO($\cdot$) een getypeerde logica is, is het eenvoudig om klassehi\"er
 
 Op deze manier garanderen we dat alle modellen van de gegenereerde logische theorie beantwoorden aan de semantiek van overerving zoals besproken in alle voorwaardes behalve voorwaarde \ref{rule:assoc-con}.
 
-Dit heeft echter een gevolg voor interpretaties van het logisch type overeenkomstig met een superklasse in een mogelijke structuur volgens het uitvoervocabularium. Indien klasse \textit{Z} een subklasse is van klasse \textit{X} uit de vorige paragraaf, dan moeten alle objecten die behoren tot klasse \textit{Z} ook behoren tot klasse \textit{X}, en zo ook moeten alle objecten die behoren tot klasses \textit{Z} en \textit{X} behoren tot klasse \textit{Y}.
+Dit heeft echter een gevolg voor interpretaties van het logisch type overeenkomstig met een superklasse in een mogelijke structuur volgens het uitvoervocabularium. Indien klasse \textit{Z} een subklasse is van klasse \textit{X} uit de vorige paragraaf, dan moeten alle objecten die behoren tot klasse \textit{Z} ook behoren tot klasse \textit{X}, en zo ook moeten alle objecten die behoren tot klasses \textit{Z} en \textit{X} behoren tot klasse \textit{Y}. Dit leidt tot enig manueel werk om in IDP een geldige invoerstructuur voor inferentie op te geven.
 
 \subsubsection{Een nieuw predicaat \textit{IsSupertypeOf/2}}
 
@@ -322,7 +320,7 @@ Het is mogelijk om automatisch de geschikte interpretaties te laten berekenen do
 
 Om lidmaatschap van een klasse uit te drukken, zijn er verder twee nieuwe predicaten nodig: \textit{RuntimeClass(ClassObject, Object)}, wat voor elk object uitdrukt van welke klasse het een directe instantie is; en \textit{StaticClass(ClassObject, Object)}, wat voor elk object uitdrukt van welke klasses het een directe of indirecte instantie is.
 
-Er zijn ook twee predicaten nodig om overervingsrelaties tussen klasses te modelleren: \textit{IsDirectSupertypeOf(ClassObject, ClassObject)} om directe overervingsrelaties voor te stellen; en \textit{IsSupertypeOf(ClassObject, ClassObject)} dat de transitieve sluiting voor \textit{IsDirectSupertypeOf} voorstelt. Aangezien het in predicatenlogica onmogelijk is om een algemene voorstelling voor transitieve sluitingen uit te drukken, maken we gebruik van inductieve definities\cite{DeCatBroes2014PLaa}:
+Er zijn ook twee predicaten nodig om overervingsrelaties tussen klasses te modelleren: \textit{IsDirectSupertypeOf(ClassObject, ClassObject)} om directe overervingsrelaties voor te stellen; en \textit{IsSupertypeOf(ClassObject, ClassObject)} dat de transitieve sluiting voor \textit{IsDirectSupertypeOf/2} voorstelt. Aangezien het in predicatenlogica onmogelijk is om een algemene voorstelling voor transitieve sluitingen uit te drukken, maken we gebruik van inductieve definities\cite{DeCatBroes2014PLaa}:
 
 \begin{align}
 \{
@@ -380,7 +378,7 @@ Voor de associatie \textit{J}---\textit{K} in diagram \ref{fig:assoc-gen} krijge
 
 Sectie \ref{sec:semantics-gen} stelt dat een klassehi\"erarchie een attribuut met een bepaalde signatuur maar eenmaal mag defini\"eren. Verder mag een klasse een definitie van een operatie met een bepaalde signatuur overerven van slechts \'e\'en klassehi\"erarchie, tenzij de klasse de operatie herdefinieert door middel van \textit{overriding}. Voor eenvoud van implementatie controleert onze voorstellingswijze niet op herdefinities van attributen of operaties. Als een operatie wordt geherdefinieerd door \textit{overriding}, worden de oorspronkelijke operatie en de herdefinitie ervan behandeld als twee aparte operaties. Indien we toch zouden willen controleren op conflicterende definities en \textit{overriding} zouden willen modelleren, moeten we attributen en operaties \textbf{re\"ificeren}. Dit houdt in dat het vocabularium een logisch type bevat voor attributen en een logisch type voor operaties. Voor attributen moeten we dan functies defini\"eren voor elk aspect van de signatuur van het attribuut: naam, ondergrens van de multipliciteit, bovengrens van de multipliciteit en type van het attribuut. We moeten dan ook een binair predicaat defini\"eren dat voor elke klasse specificeert welke attributen ze defini\"eren. Analoog verkrijgen we voor operaties functies die de naam en resultaattype geven en een predicaat dat voor alle operaties definieert welke parameters ze hebben. Verder moet er een binair predicaat zijn dat attributen met equivalente definities met elkaar in verband brengt. Daarbij vergelijken we de attributen van een bepaalde klasse enkel met attributen van klasses die deel uitmaken van de klassehi\"erarchie\"en waar die klasse lid van is. We voegen ook zulk een predicaat toe voor operaties, met een analoge invulling. De uitvoertheorie stelt dan dat de interpretatie van het predicaat voor duplicate attributen leeg is en dat operaties enkel in verband mogen staan met elkaar als een klasse een operatie overerft van maar \'e\'en hi\"erarchie of als de subklasse de operatie herdefinieert door middel van \textit{overriding}.
 
-\section{Het verifi\"eren van consistentie en inconsistentie}
+\section{Het verifi\"eren van consistentie en inconsistentie}\label{sec:cons-verify}
 
 Consistentie van een klassediagram kan aangetoond worden door, gegeven een theorie afgeleid volgens de regels beschreven in sectie \ref{sec:cd-rep-cons}, niet-lege structuren te geven als invoer voor modelexpansie. Indien een structuur uitgebreid kan worden tot een model, is consistentie bewezen.
 
@@ -388,7 +386,7 @@ Bijlage \ref{app:consistentie} bevat het resultaat van de vertaling volgens de r
 
 Als we een structuur die \'e\'en directe instantie toekent aan elke klasse opgeven voor deze theorie, breidt IDP ze uit tot een model voor de theorie. De conclusie is dus dat het diagram in figuur \ref{fig:diagram-voorbeeld} consistent is.
 
-Analoog kan men de consistentie van een klasse controleren door invoerstructuren op te geven die mintens \'e\'en instantie toekennen aan de klasse.
+Analoog kan men de consistentie van een klasse controleren door invoerstructuren op te geven die minstens \'e\'en instantie toekennen aan de klasse.
 
 Om te controleren op inconsistentie gebruiken we de functie \textit{entails(theory, theory)} aangeboden door IDP\cite{DeCatBroes2014PLaa}. Deze functie controleert of de rechtse theorie een logisch gevolg is van de linkse theorie. We laten IDP gebruik maken van SPASS\cite{SPASS}.
 
@@ -452,9 +450,9 @@ Er zijn drie kwaliteitsgebreken waarnaar wordt gezocht in de resulterende theori
 \begin{itemize}
 	\item \textbf{\textit{Many-to-many} associaties}: Dit zijn associaties waar de bovengrens van de multipliciteiten aan beide kanten gelijk is aan $*$. Het voorkomen van een \textit{many-to-many} associatie is doorgaans een teken dat er een klasse ontbreekt in het ontwerp. Het is dus van groot belang dat dit wordt opgespoord en opgelost.
 	
-	\item \textbf{Losstaande klasse}: Concreet is een losstaande klasse een klasse die geen associatie heeft met een andere klasse in het ontwerp. Zulk een klasse is nutteloos en moet ofwel verbonden worden met een andere klasse of verwijderd worden.
+	\item \textbf{Losstaande klasse}: Concreet is een losstaande klasse een klasse die geen associatie heeft met een andere klasse in het ontwerp. Zulk een klasse is nutteloos en moet ofwel geassocieerd worden met een andere klasse of verwijderd worden.
 	
-	\item \textbf{Onvoldoende precieze bovengrens ten gevolge van gelijk aantal instanties}\cite{Balaban2015}: Beschouw figuur \ref{fig:cycle}. De associaties \textit{Alice}---\textit{Bob} en \textit{Bob}---\textit{Charlie} hebben als gevolg dat de klasses \textit{Alice}, \textit{Bob} en \textit{Charlie} even veel instanties hebben. Dit heeft echter tot effect dat in de associatie \textit{Charlie}---\textit{Alice} een instantie van \textit{Charlie} nooit gerelateerd zal zijn tot twee instanties van \textit{Alice}. Dit maakt de bovengrens van 2 op het uiteinde \textit{Alice} dus onvoldoende precies. Aangezien dit effect niet onmiddelijk duidelijk is, lost de ontwerper dit best op om de verstaanbaarheid van het diagram te verbeteren. Als hij wil toelaten dat een instantie van \textit{Charlie} toch gerelateerd kan zijn aan twee instanties van \textit{Alice}, kan hij de ondergrens op het uiteinde \textit{Alice} of de bovengrens op het uiteinde \textit{Charlie} veranderen. De ontwerper heeft de optie om de multipliciteit op \textit{Alice} te veranderen naar $1$ als hij het toch niet nodig vindt dat een instantie van \textit{Charlie} gerelateerd kan zijn aan meerdere instanties van \textit{Alice}. Figuur \ref{fig:cyclegen} toont het algemeen patroon voor dit gebrek voor drie klasses. De associaties \textit{Y}---\textit{Z} en \textit{Z}---\textit{X} dwingen af dat alle drie klasses even veel instanties bevatten. In de associatie \textit{X}---\textit{Y} zorgen de multipliciteit van $k$ op het uiteinde \textit{X} en de ondergrens van $k$ op het uiteinde \textit{Y} ervoor dat een instantie van \textit{X} nooit gerelateerd kan zijn aan meer dan $k$ instanties van \textit{Y}. Analoog aan het geval in figuur \ref{fig:cycle} moet de ontwerper de multipliciteit op \textit{Y} veranderen naar $k$. Als hij toch wil toelaten dat een instantie van \textit{X} gerelateerd kan zijn aan meer dan $k$ instanties van \textit{Y}, verandert hij de ondergrens op het uiteinde \textit{Y} naar $j < k$, of hij verandert de bovengrens op het uiteinde \textit{X} naar $m > k$. Het patroon in figuur \ref{fig:cyclegen} is makkelijk te veralgemenen tot meer dan drie klasses.
+	\item \textbf{Onvoldoende precieze bovengrens ten gevolge van gelijk aantal instanties}\cite{Balaban2015}: Beschouw figuur \ref{fig:cycle}. De associaties \textit{Alice}---\textit{Bob} en \textit{Bob}---\textit{Charlie} hebben als gevolg dat de klasses \textit{Alice}, \textit{Bob} en \textit{Charlie} even veel instanties hebben. Dit heeft echter tot effect dat in de associatie \textit{Charlie}---\textit{Alice} een instantie van \textit{Charlie} nooit gerelateerd zal zijn tot twee instanties van \textit{Alice}. Dit maakt de bovengrens van 2 op het uiteinde \textit{Alice} dus onvoldoende precies. Aangezien dit effect niet onmiddelijk duidelijk is, lost de ontwerper dit best op om de verstaanbaarheid van het diagram te verbeteren. Als hij wil toelaten dat een instantie van \textit{Charlie} toch gerelateerd kan zijn aan twee instanties van \textit{Alice}, kan hij de ondergrens op het uiteinde \textit{Alice} of de bovengrens op het uiteinde \textit{Charlie} veranderen. De ontwerper heeft de optie om de multipliciteit op \textit{Alice} te veranderen naar $1$ als hij het toch niet nodig vindt dat een instantie van \textit{Charlie} gerelateerd kan zijn aan meerdere instanties van \textit{Alice}. Figuur \ref{fig:cyclegen} toont het algemeen patroon voor dit gebrek voor drie klasses. De associaties \textit{Y}---\textit{Z} en \textit{Z}---\textit{X} dwingen af dat alle drie klasses even veel instanties bevatten. In de associatie \textit{X}---\textit{Y} zorgen de multipliciteit van $k$ op het uiteinde \textit{X} en de ondergrens van $k$ op het uiteinde \textit{Y} ervoor dat een instantie van \textit{X} nooit gerelateerd kan zijn aan meer dan $k$ instanties van \textit{Y}. Analoog aan het geval in figuur \ref{fig:cycle} moet de ontwerper de multipliciteit op \textit{Y} veranderen naar $k$. Als hij toch wil toelaten dat een instantie van \textit{X} gerelateerd kan zijn aan meer dan $k$ instanties van \textit{Y}, verandert hij de ondergrens op het uiteinde \textit{Y} naar $j < k$, of verandert hij de bovengrens op het uiteinde \textit{X} naar $m > k$. Het patroon in figuur \ref{fig:cyclegen} is makkelijk te veralgemenen tot meer dan drie klasses.
 \end{itemize}
 
 We defini\"eren deze respectievelijke gebreken in de logische theorie door middel van de volgende logische zinnen:
